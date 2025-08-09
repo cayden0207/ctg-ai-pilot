@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+  }
+  
+  * {
+    @apply border-gray-200;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+  }
+  
+  .keyword-grid {
+    @apply grid grid-cols-3 gap-4 p-4 bg-white rounded-xl shadow-sm border;
+    grid-template-rows: repeat(3, minmax(50px, auto));
+  }
+  
+  .keyword-cell {
+    @apply p-2 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer border-2 border-dashed border-gray-200 hover:border-gray-300 text-center min-h-[50px] max-h-[70px] flex items-center justify-center max-w-full;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+  }
+  
+  .keyword-cell.selected {
+    @apply bg-primary-50 border-primary-400 text-primary-700;
+  }
+  
+  .keyword-cell.locked {
+    @apply bg-secondary-50 border-secondary-400 text-secondary-700;
+  }
+  
+  .keyword-cell.center {
+    @apply bg-gray-50 border-gray-300 text-gray-600;
+  }
+} 
