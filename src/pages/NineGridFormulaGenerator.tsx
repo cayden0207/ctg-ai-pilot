@@ -412,11 +412,11 @@ export function NineGridFormulaGenerator() {
               
               <button
                 onClick={handleExport}
-                disabled={generatedTitles.size === 0}
+                disabled={generatedTitles.length === 0}
                 className={cn(
                   "w-full py-2 px-4 rounded-lg font-medium transition-all",
                   "bg-gray-600 text-white hover:bg-gray-700",
-                  generatedTitles.size === 0 && "opacity-50 cursor-not-allowed"
+                  generatedTitles.length === 0 && "opacity-50 cursor-not-allowed"
                 )}
               >
                 <Download className="w-4 h-4 mr-2 inline" />
