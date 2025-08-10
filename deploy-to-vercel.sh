@@ -1,0 +1,45 @@
+#!/bin/bash
+
+echo "==================================="
+echo "Vercel 部署脚本"
+echo "==================================="
+echo ""
+
+# 检查是否已安装 Vercel CLI
+if ! command -v vercel &> /dev/null; then
+    echo "正在安装 Vercel CLI..."
+    npm install -g vercel
+fi
+
+echo "请按照以下步骤操作："
+echo ""
+echo "1. 首先登录 Vercel (如果还没登录)"
+echo "   运行: vercel login"
+echo ""
+echo "2. 登录成功后，运行部署命令："
+echo "   运行: vercel --prod"
+echo ""
+echo "3. 部署过程中的选项："
+echo "   - Set up and deploy: Y"
+echo "   - Which scope: 选择你的账号"
+echo "   - Link to existing project?: N (第一次部署选N)"
+echo "   - Project name: ctg-ai-pilot"
+echo "   - In which directory is your code located?: ./"
+echo "   - Want to modify settings?: N"
+echo ""
+echo "4. 部署完成后，添加环境变量："
+echo "   运行以下命令添加环境变量："
+echo ""
+echo "   vercel env add VITE_OPENAI_API_KEY production"
+echo "   vercel env add VITE_OPENAI_MODEL production"
+echo "   vercel env add VITE_DEEPSEEK_API_KEY production"
+echo "   vercel env add VITE_DEEPSEEK_MODEL production"
+echo ""
+echo "   或者访问 Vercel 网站在项目设置中添加环境变量"
+echo ""
+echo "5. 重新部署以应用环境变量："
+echo "   vercel --prod"
+echo ""
+echo "==================================="
+echo "准备好了吗？现在开始部署！"
+echo "==================================="

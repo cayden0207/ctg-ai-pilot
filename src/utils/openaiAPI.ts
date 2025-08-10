@@ -38,7 +38,7 @@ function getCurrentModel() {
 }
 
 // 统一的 Chat Completions 包装，自动在模型无效时回退到 gpt-4o-mini
-async function createChatCompletion(args: {
+export async function createChatCompletion(args: {
   messages: { role: 'system' | 'user' | 'assistant'; content: string }[];
   max_tokens: number;
   temperature: number;
