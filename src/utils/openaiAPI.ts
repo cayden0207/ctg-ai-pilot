@@ -30,7 +30,41 @@ function getCurrentClient() {
 
 // 获取当前模型
 function getCurrentModel() {
-  return import.meta.env.VITE_OPENAI_MODEL || 'gpt-5';
+  const envModel = import.meta.env.VITE_OPENAI_MODEL as string | undefined;
+  const fallback = 'gpt-4o-mini';
+  // 若未配置或配置了无效占位/过期名称，则回退
+  if (!envModel || /gpt-5|invalid|kp/i.test(envModel)) return fallback;
+  return envModel;
+}
+
+// 统一的 Chat Completions 包装，自动在模型无效时回退到 gpt-4o-mini
+async function createChatCompletion(args: {
+  messages: { role: 'system' | 'user' | 'assistant'; content: string }[];
+  max_tokens: number;
+  temperature: number;
+}) {
+  const client = getCurrentClient();
+  let model = getCurrentModel();
+  try {
+    return await client.chat.completions.create({
+      model,
+      messages: args.messages,
+      max_tokens: args.max_tokens,
+      temperature: args.temperature,
+    });
+  } catch (error: any) {
+    const msg = String(error?.message || error || '');
+    if (/invalid model/i.test(msg)) {
+      model = 'gpt-4o-mini';
+      return await client.chat.completions.create({
+        model,
+        messages: args.messages,
+        max_tokens: args.max_tokens,
+        temperature: args.temperature,
+      });
+    }
+    throw error;
+  }
 }
 
 // 检测是否为中文输入
@@ -178,7 +212,6 @@ export async function generateKeywords(
     }
 
     const client = getCurrentClient();
-    const model = getCurrentModel();
     const isChinese = isChineseInput(domainInput);
     const systemPrompt = getSystemPrompt(type, isChinese);
     
@@ -190,14 +223,13 @@ export async function generateKeywords(
         ${lockedKeywords.length > 0 ? `Locked keywords: ${lockedKeywords.join(', ')}` : ''}
         ${lockedKeywords.length > 0 ? `Please generate ${8 - lockedKeywords.length} new keywords, avoiding duplication with locked keywords.` : 'Please generate 8 keywords.'}`;
 
-    const response = await client.chat.completions.create({
-      model: model,
+    const response = await createChatCompletion({
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
+        { role: 'user', content: userPrompt },
       ],
       max_tokens: 200,
-      temperature: 0.7
+      temperature: 0.7,
     });
 
     const content = response.choices[0]?.message?.content || '';
@@ -234,7 +266,6 @@ export async function generateTopics(
     }
 
     const client = getCurrentClient();
-    const model = getCurrentModel();
     const isChinese = isChineseInput(domainSelected[0] || '');
     const systemPrompt = getTopicGenerationPrompt(isChinese, count);
     
@@ -254,14 +285,13 @@ export async function generateTopics(
         
         Generate ${count} viral topics:`;
 
-    const response = await client.chat.completions.create({
-      model: model,
+    const response = await createChatCompletion({
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
+        { role: 'user', content: userPrompt },
       ],
       max_tokens: 1000,
-      temperature: 0.8
+      temperature: 0.8,
     });
 
     const content = response.choices[0]?.message?.content || '';
@@ -306,8 +336,7 @@ export async function generateContentPlan(topic: string, language: 'zh' | 'en' =
     : `Topic: ${topic}
 Generate a complete content card with fields {hook, positioning, painpoint, solution, cta, outline}. Provide 3–5 concise solution bullets in one field (separated by commas/semicolons) and at least 5 outline items.`;
 
-  const resp = await client.chat.completions.create({
-    model,
+  const resp = await createChatCompletion({
     messages: [
       { role: 'system', content: system },
       { role: 'user', content: user },

@@ -1,10 +1,4 @@
-import OpenAI from 'openai';
-
-// 初始化 OpenAI 客户端
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
+import { createChatCompletion } from './openaiAPI';
 
 // 8个创意触发维度
 export interface TriggerDimension {
@@ -284,8 +278,7 @@ export async function generateDimensionKeywords(
     
     const prompt = getKeywordGenerationPrompt(dimensionId, topic, isChinese);
     
-    const response = await openai.chat.completions.create({
-      model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-5',
+    const response = await createChatCompletion({
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt }
@@ -333,8 +326,7 @@ export async function generateSimpleTopics(
     const totalCount = sets * 7;
     const prompt = getSimpleTopicGenerationPrompt(topic, dimensions, totalCount, isChinese);
     
-    const response = await openai.chat.completions.create({
-      model: import.meta.env.VITE_OPENAI_MODEL || 'gpt-5',
+    const response = await createChatCompletion({
       messages: [
         { role: 'system', content: isChinese ? '只输出标题，每行一条。' : 'Output only titles, one per line.' },
         { role: 'user', content: prompt }
