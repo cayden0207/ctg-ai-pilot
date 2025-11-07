@@ -41,7 +41,7 @@ function getCurrentClient() {
 function getCurrentModel() {
   if (currentProvider === 'deepseek') {
     const deepseekModel = import.meta.env.VITE_DEEPSEEK_MODEL as string | undefined;
-    return deepseekModel && deepseekModel.trim() ? deepseekModel : 'deepseek-chat-v3';
+    return deepseekModel && deepseekModel.trim() ? deepseekModel : 'deepseek-chat';
   }
   const envModel = import.meta.env.VITE_OPENAI_MODEL as string | undefined;
   const fallback = 'gpt-4o-mini';

@@ -11,15 +11,15 @@ export default async function handler(req: any, res: any) {
     }
 
     const {
-      model = 'deepseek-chat-v3',
+      model = 'deepseek-chat',
       messages = [],
       max_tokens = 800,
       temperature = 0.7,
       stream = false,
     } = req.body || {};
 
-    // 验证模型名称 - DeepSeek v3 模型
-    const validModels = ['deepseek-chat-v3', 'deepseek-reasoner'];
+    // 验证模型名称 - DeepSeek 官方支持的模型
+    const validModels = ['deepseek-chat', 'deepseek-reasoner'];
     if (!validModels.includes(model)) {
       console.warn(`警告: 使用的模型 '${model}' 可能无效。有效模型: ${validModels.join(', ')}`);
     }
