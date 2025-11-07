@@ -11,14 +11,9 @@ import {
 } from '../utils/nineGridFormulaAPI';
 import { LoadingOverlay } from '../components/LoadingSpinner';
 import { ApiStatus } from '../components/ApiStatus';
-import { LLMSelector } from '../components/LLMSelector';
 
-// SET选项
-const setOptions = [
-  { sets: 1, label: '1 SET', description: '每组生成6条（六类各1条）', total: 6 },
-  { sets: 3, label: '3 SET', description: '每组生成18条（六类各3条）', total: 18 },
-  { sets: 5, label: '5 SET', description: '每组生成30条（六类各5条）', total: 30 }
-];
+// 默认生成数量
+const DEFAULT_SETS = 3; // 默认生成3 SET（18条）
 
 // 九宫格位置映射
 const gridPositions = [
@@ -211,7 +206,7 @@ export function NineGridFormulaGenerator() {
   const [dimensions, setDimensions] = useState<TriggerDimension[]>(
     TRIGGER_DIMENSIONS.map(dim => ({ ...dim, keywords: [], locked: false, selectedKeywords: [] }))
   );
-  const [selectedSet, setSelectedSet] = useState(1);
+  const selectedSet = DEFAULT_SETS; // 固定使用3 SET
   const [generatedTitles, setGeneratedTitles] = useState<SimpleTopic[]>([]);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
   const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
@@ -337,91 +332,60 @@ export function NineGridFormulaGenerator() {
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">爆款选题生成控制台</h2>
-            <p className="text-sm text-gray-600">输入主题 → 生成关键词 → 选择SET → 生成选题</p>
+            <p className="text-sm text-gray-600">输入主题 → 生成关键词 → 生成选题</p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  选择SET数量
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {setOptions.map(option => (
-                    <button
-                      key={option.sets}
-                      onClick={() => setSelectedSet(option.sets)}
-                      className={cn(
-                        "p-2 rounded-lg border text-center transition-all",
-                        selectedSet === option.sets
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-200 hover:border-gray-300"
-                      )}
-                    >
-                      <div className="font-semibold text-sm">{option.label}</div>
-                      <div className="text-xs text-gray-500">{option.description}</div>
-                    </button>
-                  ))}
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <button
+              onClick={handleGenerateAllKeywords}
+              disabled={!centerTopic.trim() || isGeneratingKeywords}
+              className={cn(
+                "px-6 py-3 rounded-lg font-medium transition-all",
+                "bg-blue-600 text-white hover:bg-blue-700",
+                (!centerTopic.trim() || isGeneratingKeywords) && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              <RefreshCw className={cn("w-4 h-4 mr-2 inline", isGeneratingKeywords && "animate-spin")} />
+              生成关键词
+            </button>
+
+            <button
+              onClick={handleGenerateTitles}
+              disabled={!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)}
+              className={cn(
+                "px-6 py-3 rounded-lg font-medium transition-all",
+                "bg-gradient-to-r from-green-500 to-green-600 text-white",
+                "hover:from-green-600 hover:to-green-700",
+                (!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)) && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              <Sparkles className="w-4 h-4 mr-2 inline" />
+              生成{selectedSet}SET选题
+            </button>
+
+            <button
+              onClick={handleExport}
+              disabled={generatedTitles.length === 0}
+              className={cn(
+                "px-6 py-3 rounded-lg font-medium transition-all",
+                "bg-gray-600 text-white hover:bg-gray-700",
+                generatedTitles.length === 0 && "opacity-50 cursor-not-allowed"
+              )}
+            >
+              <Download className="w-4 h-4 mr-2 inline" />
+              导出选题
+            </button>
+
+            <div className="ml-auto bg-gray-50 rounded-lg px-4 py-2">
+              <div className="flex gap-6 text-center">
+                <div>
+                  <p className="text-xs text-gray-500">已生成</p>
+                  <p className="text-xl font-bold text-gray-900">{stats.totalGenerated}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">已复制</p>
+                  <p className="text-xl font-bold text-gray-900">{stats.totalCopied}</p>
                 </div>
               </div>
-
-              <button
-                onClick={handleGenerateAllKeywords}
-                disabled={!centerTopic.trim() || isGeneratingKeywords}
-                className={cn(
-                  "w-full py-2 px-4 rounded-lg font-medium transition-all",
-                  "bg-blue-600 text-white hover:bg-blue-700",
-                  (!centerTopic.trim() || isGeneratingKeywords) && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <RefreshCw className={cn("w-4 h-4 mr-2 inline", isGeneratingKeywords && "animate-spin")} />
-                生成关键词
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="grid grid-cols-2 gap-3 text-center">
-                  <div>
-                    <p className="text-xs text-gray-500">已生成</p>
-                    <p className="text-xl font-bold text-gray-900">{stats.totalGenerated}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">已复制</p>
-                    <p className="text-xl font-bold text-gray-900">{stats.totalCopied}</p>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                onClick={handleGenerateTitles}
-                disabled={!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)}
-                className={cn(
-                  "w-full py-2 px-4 rounded-lg font-medium transition-all",
-                  "bg-gradient-to-r from-green-500 to-green-600 text-white",
-                  "hover:from-green-600 hover:to-green-700",
-                  (!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)) && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <Sparkles className="w-4 h-4 mr-2 inline" />
-                 生成{selectedSet}SET选题
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <LLMSelector className="!p-3" />
-              
-              <button
-                onClick={handleExport}
-                disabled={generatedTitles.length === 0}
-                className={cn(
-                  "w-full py-2 px-4 rounded-lg font-medium transition-all",
-                  "bg-gray-600 text-white hover:bg-gray-700",
-                  generatedTitles.length === 0 && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <Download className="w-4 h-4 mr-2 inline" />
-                 导出选题
-              </button>
             </div>
           </div>
         </div>

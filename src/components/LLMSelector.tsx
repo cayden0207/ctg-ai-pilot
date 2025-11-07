@@ -13,16 +13,28 @@ export function LLMSelector({ className }: LLMSelectorProps) {
   const handleProviderChange = (provider: LLMProvider) => {
     setSelectedProvider(provider);
     setLLMProvider(provider);
+    // 通知其他组件（如 ApiStatus）更新状态
+    try {
+      window.dispatchEvent(new CustomEvent('llm-provider-changed', { detail: { provider } }));
+    } catch {}
   };
 
   const providers = [
     {
       id: 'openai' as LLMProvider,
       name: 'OpenAI',
-      model: 'GPT-5',
+      model: (import.meta.env.VITE_OPENAI_MODEL as string) || 'gpt-4o-mini',
       icon: Bot,
       color: 'from-green-500 to-green-600',
       description: '稳定可靠的选择'
+    },
+    {
+      id: 'deepseek' as LLMProvider,
+      name: 'DeepSeek',
+      model: (import.meta.env.VITE_DEEPSEEK_MODEL as string) || 'deepseek-chat',
+      icon: Bot,
+      color: 'from-purple-500 to-purple-600',
+      description: '中文表现优秀'
     }
   ];
 

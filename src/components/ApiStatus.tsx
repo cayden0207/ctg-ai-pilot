@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Wifi, WifiOff, AlertCircle } from 'lucide-react';
+import { getCurrentLLMProvider } from '../utils/openaiAPI';
 
 interface ApiStatusProps {
   className?: string;
@@ -9,19 +10,36 @@ export function ApiStatus({ className = '' }: ApiStatusProps) {
   const [isConnected, setIsConnected] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // 檢查 OpenAI API 密鑰是否配置
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  const computeStatus = () => {
+    const provider = getCurrentLLMProvider();
+    if (provider === 'deepseek') {
+      const key = import.meta.env.VITE_DEEPSEEK_API_KEY as string | undefined;
+      if (!key) {
+        setIsConnected(false);
+        setError('DeepSeek API 密钥未配置');
+      } else {
+        setIsConnected(true);
+        setError(null);
+      }
+      return;
+    }
+
+    // OpenAI key check
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
     if (!apiKey) {
       setIsConnected(false);
-      setError('OpenAI API 密鑰未配置');
-    } else if (!apiKey.startsWith('sk-')) {
-      setIsConnected(false);
-      setError('OpenAI API 密鑰格式不正確');
+      setError('OpenAI API 密钥未配置');
     } else {
       setIsConnected(true);
       setError(null);
     }
+  };
+
+  useEffect(() => {
+    computeStatus();
+    const handler = () => computeStatus();
+    window.addEventListener('llm-provider-changed', handler as EventListener);
+    return () => window.removeEventListener('llm-provider-changed', handler as EventListener);
   }, []);
 
   if (isConnected) {

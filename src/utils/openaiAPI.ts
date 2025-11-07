@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 
 // LLM 提供商类型
-export type LLMProvider = 'openai';
+export type LLMProvider = 'openai' | 'deepseek';
 
 // 初始化 OpenAI 客户端
 const openai = new OpenAI({
@@ -11,11 +11,20 @@ const openai = new OpenAI({
 
 
 // 当前使用的 LLM 提供商
-let currentProvider: LLMProvider = 'openai';
+let currentProvider: LLMProvider = ((): LLMProvider => {
+  try {
+    const saved = (typeof window !== 'undefined') ? (window.localStorage.getItem('llmProvider') as LLMProvider | null) : null;
+    if (saved === 'deepseek' || saved === 'openai') return saved;
+  } catch {}
+  return 'openai';
+})();
 
 // 设置当前使用的 LLM 提供商
 export function setLLMProvider(provider: LLMProvider) {
   currentProvider = provider;
+  try {
+    if (typeof window !== 'undefined') window.localStorage.setItem('llmProvider', provider);
+  } catch {}
 }
 
 // 获取当前使用的 LLM 提供商
@@ -30,9 +39,12 @@ function getCurrentClient() {
 
 // 获取当前模型
 function getCurrentModel() {
+  if (currentProvider === 'deepseek') {
+    const deepseekModel = import.meta.env.VITE_DEEPSEEK_MODEL as string | undefined;
+    return deepseekModel && deepseekModel.trim() ? deepseekModel : 'deepseek-chat-v3';
+  }
   const envModel = import.meta.env.VITE_OPENAI_MODEL as string | undefined;
   const fallback = 'gpt-4o-mini';
-  // 若未配置或配置了无效占位/过期名称，则回退
   if (!envModel || /gpt-5|invalid|kp/i.test(envModel)) return fallback;
   return envModel;
 }
@@ -43,6 +55,77 @@ export async function createChatCompletion(args: {
   max_tokens: number;
   temperature: number;
 }) {
+  if (currentProvider === 'deepseek') {
+    const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY as string | undefined;
+    const model = getCurrentModel();
+    if (!apiKey && !import.meta.env.PROD) throw new Error('DeepSeek API 密钥未配置');
+    try {
+      const useProxy = typeof window !== 'undefined' && import.meta.env.PROD;
+      const endpoint = useProxy ? '/api/deepseek' : 'https://api.deepseek.com/v1/chat/completions';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (!useProxy) {
+        // 仅在客户端直连时携带 Authorization；生产环境通过 Vercel 函数代理，不暴露密钥
+        headers['Authorization'] = `Bearer ${apiKey}`;
+      }
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model,
+          messages: args.messages,
+          max_tokens: args.max_tokens,
+          temperature: args.temperature,
+          stream: false,
+        }),
+      });
+      if (!resp.ok) {
+        const txt = await resp.text().catch(() => '');
+        const err = new Error(`DeepSeek API 调用失败: ${resp.status} ${txt}`) as any;
+        err.status = resp.status;
+        // 将错误类型穿透，避免把 invalid_request_error 误判为认证失败
+        if (txt && typeof txt === 'string') {
+          try { err.body = JSON.parse(txt); } catch {}
+        }
+        throw err;
+      }
+      const data = await resp.json();
+      return data;
+    } catch (error: any) {
+      const msg = String(error?.message || '');
+      const status = Number(error?.status || 0);
+      const bodyType = (error?.body && error.body.error && error.body.error.type) || '';
+      // 仅在明确的认证失败时回退
+      if (status === 401 || /authentication_error/i.test(bodyType)) {
+        console.warn('DeepSeek 认证失败，自动回退到 OpenAI');
+        // fall through to OpenAI branch below
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  // In production, use serverless proxy for OpenAI as well
+  if (import.meta.env.PROD) {
+    const model = getCurrentModel();
+    const resp = await fetch('/api/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        messages: args.messages,
+        max_tokens: args.max_tokens,
+        temperature: args.temperature,
+        stream: false,
+      }),
+    });
+    if (!resp.ok) {
+      const txt = await resp.text().catch(() => '');
+      throw new Error(`OpenAI API 调用失败: ${resp.status} ${txt}`);
+    }
+    return await resp.json();
+  }
+
+  // Dev: direct SDK
   const client = getCurrentClient();
   let model = getCurrentModel();
   try {
