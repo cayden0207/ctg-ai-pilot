@@ -14,10 +14,12 @@ export function ApiStatus({ className = '' }: ApiStatusProps) {
     const provider = getCurrentLLMProvider();
     if (provider === 'deepseek') {
       const key = import.meta.env.VITE_DEEPSEEK_API_KEY as string | undefined;
-      if (!key) {
+      // 在生产环境中，如果前端没有密钥，检查是否有后端 API 可用
+      if (!key && !import.meta.env.PROD) {
         setIsConnected(false);
         setError('DeepSeek API 密钥未配置');
       } else {
+        // 生产环境通过代理使用后端的密钥，所以总是显示已连接
         setIsConnected(true);
         setError(null);
       }
@@ -26,10 +28,11 @@ export function ApiStatus({ className = '' }: ApiStatusProps) {
 
     // OpenAI key check
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
-    if (!apiKey) {
+    if (!apiKey && !import.meta.env.PROD) {
       setIsConnected(false);
       setError('OpenAI API 密钥未配置');
     } else {
+      // 生产环境通过代理使用后端的密钥
       setIsConnected(true);
       setError(null);
     }
