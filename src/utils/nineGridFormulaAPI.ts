@@ -198,10 +198,9 @@ function getSimpleTopicGenerationPrompt(
   }, {} as Record<string, string>);
 
   return isChinese
-    ? `你是马来西亚资深短视频爆款选题策划，使用简体中文与本土化表达，为 IG Reels / TikTok / YouTube Shorts 生成吸引点击的优质选题。
+    ? `你是资深短视频选题专家，请基于下列信息生成${totalCount}条简洁选题标题：
 
 核心主题：${topic}
-
 可用关键词：
 - 受众标签：${keywords['受众标签'] || ''}
 - 典型痛点：${keywords['典型痛点'] || ''}
@@ -212,25 +211,12 @@ function getSimpleTopicGenerationPrompt(
 - 趋势/热点：${keywords['趋势/热点'] || ''}
 - 故事/案例：${keywords['故事/案例'] || ''}
 
-输出规则：
-- 总数 ${totalCount} 条选题，确保以下六类主题均衡覆盖（不强制使用前缀，分类自然融入标题）：
-  • 真人真事：真实人物经历、结果或转变
-  • 争议讨论：引发观点碰撞、反思或辩论
-  • 好奇心理：行业内幕、认知冲突、测试验证或揭秘
-  • 利益驱动：直接好处、解决方案或价值承诺
-  • 经验价值：信息差、经验分享、避雷指南
-  • FOMO心态：错过风险、少赚警示、时间紧迫
-
-- 标题长度15–40字，口语化、信息前置、钩子强烈，避免模板化句式。
-
-- 每个标题必须包含以下爆款元素中的至少三项：
-  1. 具体数字或数据支撑
-  2. 对比/冲突/反转
-  3. 明确对象或动作场景
-  4. 紧迫感或稀缺性暗示
-  5. 即时价值或结果承诺
-
-请直接生成 ${totalCount} 条选题，每行一条，无需解释或空行。`
+要求：
+- 只输出标题本身，每行一条，不要编号或分类
+- 15-40字，口语化，信息前置，有明确钩子
+- 尽量多样化角度，避免重复或近义改写
+- 合规：避免夸大承诺、绝对化表述、污名化群体
+现在开始生成：`
     : `You are a short-form video topic expert. Generate ${totalCount} concise topic lines based on:
 
 Core Topic: ${topic}
