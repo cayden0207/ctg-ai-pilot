@@ -258,14 +258,30 @@ function getSystemPrompt(type: 'domain' | 'who' | 'why', isChinese: boolean): st
 // 生成爆款选题的系统提示
 function getTopicGenerationPrompt(isChinese: boolean, count: number): string {
   return isChinese
-    ? `你是马来西亚资深短视频选题策划，使用简体中文与本土化表达，为 IG Reels / TikTok / YouTube Shorts 生成选题。
-      输出规则：每行一个，前缀必须包含以下六类之一（中括号保留）：
-      【真人真事】、【争议讨论】、【好奇心理】、【利益驱动】、【经验价值】、【FOMO心态】
-      - 总数 ${count} 条，六类尽量均衡
-      - 标题15–40字，口语化，信息前置，有钩子与场景
-      - 尽量包含对比/数字/对象/动作等元素增强点击
-      - 合规：避免夸大/绝对化/贬损，避免敏感人群直指
-      请直接生成，不要解释或空行：`
+    ? `你是马来西亚资深短视频爆款选题策划，使用简体中文与本土化表达，为 IG Reels / TikTok / YouTube Shorts 生成吸引点击的优质选题。
+
+输出规则：
+
+总数 ${count} 条选题，确保以下六类主题均衡覆盖（不强制使用前缀，分类自然融入标题）：
+
+真人真事：真实人物经历、结果或转变
+争议讨论：引发观点碰撞、反思或辩论
+好奇心理：行业内幕、认知冲突、测试验证或揭秘
+利益驱动：直接好处、解决方案或价值承诺
+经验价值：信息差、经验分享、避雷指南
+FOMO心态：错过风险、少赚警示、时间紧迫
+
+标题长度15–40字，口语化、信息前置、钩子强烈，避免模板化句式。
+
+每个标题必须包含以下爆款元素中的至少三项：
+
+具体数字或数据支撑
+对比/冲突/反转
+明确对象或动作场景
+紧迫感或稀缺性暗示
+即时价值或结果承诺
+
+请直接生成 ${count} 条选题，无需解释或空行。`
     : `You are a Malaysian senior short-form topic strategist.
 
       Output each topic on one line, prefixed with one of six categories (keep brackets):
@@ -379,10 +395,10 @@ export async function generateTopics(
     const topics = content
       .split('\n')
       .map(t => t.trim())
-      // 接受以【类别】或[Category]开头的行；仅过滤空行/纯编号/纯短划线
+      // 过滤空行、纯编号、纯短划线（新prompt不使用固定前缀）
       .filter(t => t && !t.match(/^\d+\./) && !t.match(/^[-•]\s*$/))
       .map(t => t.replace(/^\d+[\.|、)]\s*/, ''))
-      .filter(t => t.length > 6); // 放宽长度，防止被过度过滤
+      .filter(t => t.length > 6); // 确保选题有足够长度
     
     return topics.slice(0, count);
   } catch (error) {
