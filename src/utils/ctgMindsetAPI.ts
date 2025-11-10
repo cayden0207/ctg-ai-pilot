@@ -35,7 +35,7 @@ export async function sendCTGMessage(
         id: PROMPT_ID,
         version: "4"
       },
-      messages: messages  // 传递消息历史
+      input: messages  // 使用 input 参数而不是 messages
     };
 
     // 直接调用 OpenAI Responses API
