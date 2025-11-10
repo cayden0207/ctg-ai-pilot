@@ -88,7 +88,12 @@ export function CTGMindset() {
   };
 
   // 格式化消息内容（处理 Markdown 格式）
-  const formatMessageContent = (content: string) => {
+  const formatMessageContent = (content: string | any) => {
+    // 确保 content 是字符串
+    if (typeof content !== 'string') {
+      content = String(content || '');
+    }
+
     // 处理标题
     content = content.replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold mt-4 mb-2 text-gray-900">$1</h2>');
     content = content.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-3 mb-1 text-gray-800">$1</h3>');

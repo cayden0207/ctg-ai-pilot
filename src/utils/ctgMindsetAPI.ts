@@ -55,14 +55,33 @@ export async function sendCTGMessage(
     }
 
     const data = await response.json();
+    console.log('API Response:', data);
 
-    // 提取回复内容
-    const content = data.choices?.[0]?.message?.content ||
-                   data.choices?.[0]?.text ||
-                   data.output ||
-                   '抱歉，我暂时无法回答。请稍后再试。';
+    // 提取回复内容 - 检查不同的可能结构
+    let content: string = '';
 
-    return content;
+    // 检查各种可能的响应格式
+    if (data.choices && Array.isArray(data.choices) && data.choices.length > 0) {
+      const choice = data.choices[0];
+      if (choice.message?.content) {
+        content = choice.message.content;
+      } else if (choice.text) {
+        content = choice.text;
+      }
+    } else if (data.content) {
+      content = data.content;
+    } else if (data.output) {
+      content = data.output;
+    } else if (typeof data === 'string') {
+      content = data;
+    }
+
+    // 确保返回字符串
+    if (!content) {
+      content = '抱歉，我暂时无法回答。请稍后再试。';
+    }
+
+    return String(content);
   } catch (error) {
     console.error('CTG Mindset API 调用失败:', error);
     throw new Error('对话生成失败，请检查网络连接');
