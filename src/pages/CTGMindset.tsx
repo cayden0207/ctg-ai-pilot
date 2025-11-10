@@ -149,7 +149,7 @@ export function CTGMindset() {
               <h3 className="font-semibold mb-3">CTG 核心理念</h3>
               <ul className="space-y-2 text-sm text-purple-50">
                 <li>• 战略聚焦：战是方向，略是取舍</li>
-                <li>• 价值战 > 价格战</li>
+                <li>• 价值战 {'>'} 价格战</li>
                 <li>• 系统经营：标准→流程→训练→复制</li>
                 <li>• 利润结构：毛利≥30%，净利≥15%</li>
               </ul>
