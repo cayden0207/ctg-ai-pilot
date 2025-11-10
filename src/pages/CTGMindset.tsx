@@ -1,161 +1,267 @@
-import React from 'react';
-import { Brain, ExternalLink, MessageSquare, Sparkles, Target, Zap } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Brain, Send, Loader2, RotateCcw, ChevronRight, Sparkles } from 'lucide-react';
 import { ApiStatus } from '../components/ApiStatus';
+import { sendCTGMessage, CTGMessage, EXAMPLE_QUESTIONS } from '../utils/ctgMindsetAPI';
+import { cn } from '../utils/cn';
 
 export function CTGMindset() {
-  const gptUrl = 'https://chatgpt.com/g/g-6910b59fbd2081918570c0f9feb58ada-ctg-mindset';
+  const [messages, setMessages] = useState<CTGMessage[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const features = [
-    {
-      icon: Brain,
-      title: '战略思维分析',
-      description: '深度解析营销策略和商业模式'
-    },
-    {
-      icon: Target,
-      title: '精准定位指导',
-      description: '帮助找到目标受众和市场定位'
-    },
-    {
-      icon: Zap,
-      title: '创意灵感激发',
-      description: '提供创新的营销思路和方案'
-    },
-    {
-      icon: MessageSquare,
-      title: '实时对话咨询',
-      description: '即时回答营销相关问题'
+  // 自动滚动到底部
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // 发送消息
+  const handleSendMessage = async (message: string = inputMessage) => {
+    if (!message.trim() || isLoading) return;
+
+    const userMessage: CTGMessage = {
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      const response = await sendCTGMessage(message, messages);
+      const assistantMessage: CTGMessage = {
+        role: 'assistant',
+        content: response,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('发送消息失败:', error);
+      // 可以添加错误提示
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
+
+  // 使用示例问题
+  const handleExampleQuestion = (question: string) => {
+    setInputMessage(question);
+    handleSendMessage(question);
+  };
+
+  // 清除对话
+  const handleClearChat = () => {
+    setMessages([]);
+    setSelectedCategory(null);
+  };
+
+  // 格式化消息内容（处理 Markdown 格式）
+  const formatMessageContent = (content: string) => {
+    // 处理标题
+    content = content.replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold mt-4 mb-2 text-gray-900">$1</h2>');
+    content = content.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-3 mb-1 text-gray-800">$1</h3>');
+
+    // 处理加粗
+    content = content.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
+
+    // 处理【】标签
+    content = content.replace(/【([^】]+)】/g, '<span class="inline-block bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-sm font-medium mr-1">$1</span>');
+
+    // 处理列表
+    content = content.replace(/^[-•] (.+)$/gm, '<li class="ml-4">• $1</li>');
+    content = content.replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4">$1. $2</li>');
+
+    // 处理换行
+    content = content.replace(/\n/g, '<br/>');
+
+    return content;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              CTG Mindset AI 助手
-            </h1>
+            <div className="flex items-center">
+              <Brain className="h-8 w-8 text-purple-600 mr-3" />
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  CTG Mindset
+                </h1>
+                <p className="text-gray-600">战略智能体 | CEO 思维模式</p>
+              </div>
+            </div>
             <ApiStatus />
           </div>
-          <p className="text-gray-600 text-lg">
-            专业的营销策略 AI 顾问，助您突破思维瓶颈
-          </p>
         </div>
 
-        {/* Main Content */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Left Column - Introduction */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex items-center mb-4">
-                <Brain className="h-8 w-8 text-purple-600 mr-3" />
-                <h2 className="text-2xl font-semibold text-gray-800">
-                  关于 CTG Mindset
-                </h2>
-              </div>
-              <div className="prose prose-gray max-w-none">
-                <p className="text-gray-600 mb-4">
-                  CTG Mindset 是一个专门为内容创作者和营销人员设计的 AI 助手。
-                  它能够帮助您：
-                </p>
-                <ul className="space-y-2 text-gray-600">
-                  <li>• 制定内容营销策略</li>
-                  <li>• 分析目标受众心理</li>
-                  <li>• 优化转化漏斗</li>
-                  <li>• 提供创意方向建议</li>
-                  <li>• 解答营销疑难问题</li>
-                </ul>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* 左侧 - 示例问题 */}
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-white rounded-xl shadow-md p-4">
+              <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                <Sparkles className="h-5 w-5 mr-2 text-purple-600" />
+                快速开始
+              </h3>
+              <div className="space-y-3">
+                {EXAMPLE_QUESTIONS.map((category, idx) => (
+                  <div key={idx}>
+                    <button
+                      onClick={() => setSelectedCategory(
+                        selectedCategory === category.category ? null : category.category
+                      )}
+                      className="w-full text-left flex items-center justify-between p-2 rounded-lg hover:bg-purple-50 transition-colors"
+                    >
+                      <span className="font-medium text-gray-700">{category.category}</span>
+                      <ChevronRight className={cn(
+                        "h-4 w-4 text-gray-400 transition-transform",
+                        selectedCategory === category.category && "rotate-90"
+                      )} />
+                    </button>
+                    {selectedCategory === category.category && (
+                      <div className="mt-2 space-y-1 pl-4">
+                        {category.questions.map((question, qIdx) => (
+                          <button
+                            key={qIdx}
+                            onClick={() => handleExampleQuestion(question)}
+                            className="w-full text-left p-2 text-sm text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                          >
+                            {question}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {features.map((feature, index) => (
-                <div key={index} className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-                  <feature.icon className="h-6 w-6 text-purple-600 mb-2" />
-                  <h3 className="font-semibold text-gray-800 mb-1">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
+            {/* CTG 核心理念 */}
+            <div className="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-xl shadow-md p-4">
+              <h3 className="font-semibold mb-3">CTG 核心理念</h3>
+              <ul className="space-y-2 text-sm text-purple-50">
+                <li>• 战略聚焦：战是方向，略是取舍</li>
+                <li>• 价值战 > 价格战</li>
+                <li>• 系统经营：标准→流程→训练→复制</li>
+                <li>• 利润结构：毛利≥30%，净利≥15%</li>
+              </ul>
             </div>
           </div>
 
-          {/* Right Column - Chat Interface */}
-          <div className="space-y-6">
-            {/* Chat Preview Card */}
-            <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-lg p-8 text-white">
-              <div className="flex items-center mb-6">
-                <Sparkles className="h-10 w-10 mr-3" />
-                <div>
-                  <h3 className="text-2xl font-bold">开始对话</h3>
-                  <p className="text-purple-100">与 AI 营销顾问交流</p>
+          {/* 右侧 - 对话区域 */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-lg h-[600px] flex flex-col">
+              {/* 对话头部 */}
+              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  <span className="text-sm text-gray-600">AI 助手在线</span>
                 </div>
+                {messages.length > 0 && (
+                  <button
+                    onClick={handleClearChat}
+                    className="flex items-center text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    清除对话
+                  </button>
+                )}
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-6">
-                <p className="text-purple-50 mb-3">您可以询问：</p>
-                <div className="space-y-2 text-sm">
-                  <div className="bg-white/10 rounded px-3 py-2">
-                    "如何提高短视频的完播率？"
+              {/* 消息列表 */}
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                {messages.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Brain className="h-16 w-16 text-purple-200 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      欢迎使用 CTG Mindset
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      我是您的战略智能助手，可以帮您解决经营难题
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      选择左侧示例问题开始，或直接输入您的问题
+                    </p>
                   </div>
-                  <div className="bg-white/10 rounded px-3 py-2">
-                    "帮我分析这个产品的目标受众"
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((message, index) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "flex",
+                          message.role === 'user' ? 'justify-end' : 'justify-start'
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "max-w-[80%] rounded-lg px-4 py-3",
+                            message.role === 'user'
+                              ? 'bg-purple-600 text-white'
+                              : 'bg-gray-100 text-gray-800'
+                          )}
+                        >
+                          {message.role === 'assistant' ? (
+                            <div
+                              className="prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{
+                                __html: formatMessageContent(message.content)
+                              }}
+                            />
+                          ) : (
+                            <p className="whitespace-pre-wrap">{message.content}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex justify-start">
+                        <div className="bg-gray-100 rounded-lg px-4 py-3 flex items-center">
+                          <Loader2 className="h-4 w-4 animate-spin text-purple-600 mr-2" />
+                          <span className="text-gray-600">正在思考...</span>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
                   </div>
-                  <div className="bg-white/10 rounded px-3 py-2">
-                    "给我一个爆款内容的策划方案"
-                  </div>
-                </div>
+                )}
               </div>
 
-              <a
-                href={gptUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-full bg-white text-purple-600 font-semibold py-4 px-6 rounded-lg hover:bg-purple-50 transition-colors"
-              >
-                <MessageSquare className="h-5 w-5 mr-2" />
-                开始与 CTG Mindset 对话
-                <ExternalLink className="h-4 w-4 ml-2" />
-              </a>
-            </div>
-
-            {/* Usage Tips */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-800 mb-2">
-                💡 使用提示
-              </h4>
-              <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• 需要 ChatGPT Plus 订阅才能使用</li>
-                <li>• 对话将在 ChatGPT 网站上进行</li>
-                <li>• 可以保存对话历史记录</li>
-                <li>• 支持上传图片和文件分析</li>
-              </ul>
-            </div>
-
-            {/* Alternative Options */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-2">
-                🔧 其他选项
-              </h4>
-              <p className="text-sm text-blue-700 mb-3">
-                如果您没有 ChatGPT Plus，可以使用我们的内置 AI 功能：
-              </p>
-              <div className="space-y-2">
-                <a href="/nine-grid" className="block text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                  → 9宫格选题生成器
-                </a>
-                <a href="/nine-grid-formula" className="block text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                  → 九宫格爆款公式
-                </a>
-                <a href="/topic-results" className="block text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                  → 爆款选题分析
-                </a>
+              {/* 输入区域 */}
+              <div className="px-6 py-4 border-t border-gray-200">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="输入您的问题..."
+                    disabled={isLoading}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-50"
+                  />
+                  <button
+                    onClick={() => handleSendMessage()}
+                    disabled={!inputMessage.trim() || isLoading}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="h-5 w-5 mr-1" />
+                        发送
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
