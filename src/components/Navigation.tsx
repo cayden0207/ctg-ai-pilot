@@ -36,12 +36,13 @@ const navigationItems: NavigationItem[] = [
     href: '/nine-grid',
     icon: Target,
   },
-  {
-    id: 'ctg-mindset',
-    name: 'CTG Mindset AI',
-    href: '/ctg-mindset',
-    icon: Brain,
-  },
+  // Hidden for now - uncomment to enable
+  // {
+  //   id: 'ctg-mindset',
+  //   name: 'CTG Mindset AI',
+  //   href: '/ctg-mindset',
+  //   icon: Brain,
+  // },
 ];
 
 interface NavigationProps {
