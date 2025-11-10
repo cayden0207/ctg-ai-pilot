@@ -11,6 +11,30 @@ export function CTGMindset() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // 加载历史消息（现在由本地管理）
+  useEffect(() => {
+    // 可以从 localStorage 加载历史消息
+    const savedMessages = localStorage.getItem('ctg_mindset_messages');
+    if (savedMessages) {
+      try {
+        const parsedMessages = JSON.parse(savedMessages);
+        setMessages(parsedMessages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        })));
+      } catch (error) {
+        console.error('Failed to load message history:', error);
+      }
+    }
+  }, []);
+
+  // 保存消息到 localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('ctg_mindset_messages', JSON.stringify(messages));
+    }
+  }, [messages]);
+
   // 自动滚动到底部
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -58,6 +82,7 @@ export function CTGMindset() {
 
   // 清除对话
   const handleClearChat = () => {
+    localStorage.removeItem('ctg_mindset_messages'); // 清除本地存储的消息
     setMessages([]);
     setSelectedCategory(null);
   };
