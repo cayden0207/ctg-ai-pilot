@@ -33,7 +33,7 @@ export function getCurrentLLMProvider(): LLMProvider {
 }
 
 // 获取当前客户端
-function getCurrentClient() {
+export function getCurrentClient() {
   return openai;
 }
 

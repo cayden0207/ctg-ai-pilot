@@ -32,16 +32,18 @@ export async function sendCTGMessage(
     ];
 
     // 使用 prompt ID 调用 API
+    // OpenAI 的 prompt ID 需要通过特殊的 headers 或作为额外参数传递
     const response = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
+      temperature: 0.7,
+      max_tokens: 2000,
+      // @ts-ignore - OpenAI SDK 可能不支持直接的 prompt 参数
       prompt: {
         id: PROMPT_ID,
         version: '3'
-      } as any,
-      temperature: 0.7,
-      max_tokens: 2000
-    });
+      }
+    } as any);
 
     return response.choices[0]?.message?.content || '抱歉，我暂时无法回答。请稍后再试。';
   } catch (error) {
