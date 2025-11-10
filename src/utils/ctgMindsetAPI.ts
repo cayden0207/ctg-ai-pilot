@@ -36,9 +36,9 @@ export async function sendCTGMessage(
       content: [{ type: 'input_text', text: m.content }],
     }));
 
-    const body: any = {
-      model,
-      prompt: { id: PROMPT_ID },
+    // 首选：按官方推荐，直接提供 Prompt ID + version + input（包含用户提问与上下文）
+    const firstBody: any = {
+      prompt: { id: PROMPT_ID, version: '4' },
       input: {
         // 常见变量名覆盖（Prompt 可任选其一使用）
         question: message,
@@ -59,37 +59,22 @@ export async function sendCTGMessage(
       headers['Authorization'] = `Bearer ${apiKey}`;
     }
 
-    // Step 1: 官方示例最小化调用，仅携带 Prompt ID + version
+    // 直接发送 Prompt + input（包含用户消息和上下文）
     let resp = await fetch(endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ prompt: { id: PROMPT_ID, version: '4' } }),
+      body: JSON.stringify(firstBody),
     });
 
-    // Step 2: 若需要变量（400），提供带上下文的 input 映射
+    // 如果 4xx，再降级为纯对话输入（不带 Prompt），按 Responses 规范提供 messages
     if (!resp.ok && resp.status >= 400 && resp.status < 500) {
-      const txt = await resp.text().catch(() => '');
-      // 先尝试 Prompt-ID + input 变量的完整体
-      const richBody = {
-        prompt: { id: PROMPT_ID, version: '4' },
-        input: body.input,
-      } as any;
+      const asInput = asResponsesMessages; // already in Responses shape
+      const fallbackBody: any = { model, input: asInput };
       resp = await fetch(endpoint, {
         method: 'POST',
         headers,
-        body: JSON.stringify(richBody),
+        body: JSON.stringify(fallbackBody),
       });
-
-      // Step 3: 再失败则降级为纯对话输入（不带 Prompt），按 Responses 规范提供 messages
-      if (!resp.ok && resp.status >= 400 && resp.status < 500) {
-        const asInput = asResponsesMessages; // already in Responses shape
-        const fallbackBody: any = { model, input: asInput };
-        resp = await fetch(endpoint, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(fallbackBody),
-        });
-      }
     }
 
     if (!resp.ok) {
