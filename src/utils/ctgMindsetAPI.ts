@@ -15,72 +15,98 @@ export async function sendCTGMessage(
   conversationHistory: CTGMessage[] = []
 ): Promise<string> {
   try {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-
-    // 构建对话历史
-    const messages = [
-      ...conversationHistory.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      {
-        role: 'user' as const,
-        content: message
-      }
+    // 统一构建对话历史（仅保留 role/content，避免 Date 直接序列化）
+    const history = conversationHistory.map(msg => ({ role: msg.role, content: msg.content }));
+    const fullMessages = [
+      ...history,
+      { role: 'user' as const, content: message },
     ];
 
-    // 构建请求体 - 使用最新的 Responses API 格式
-    const requestBody = {
-      prompt: {
-        id: PROMPT_ID,
-        version: "4"
+    // 选择模型（对明显无效的值回退到 gpt-4o-mini）
+    const envModel = (import.meta.env.VITE_OPENAI_MODEL as string | undefined) || 'gpt-4o-mini';
+    const model = !envModel || /gpt-5|invalid|kp/i.test(envModel) ? 'gpt-4o-mini' : envModel;
+
+    // 在生产环境通过 Vercel 函数代理，不在前端暴露 API Key
+    const endpoint = import.meta.env.PROD ? '/api/responses' : 'https://api.openai.com/v1/responses';
+
+    // 构建请求体：使用 Prompt ID，并同时提供常见变量名，方便 Prompt 取值
+    const body: any = {
+      model,
+      prompt: { id: PROMPT_ID },
+      input: {
+        // 常见变量名覆盖（Prompt 可任选其一使用）
+        question: message,
+        query: message,
+        latest: message,
+        input: message,
+        context: history,
+        history,
+        messages: fullMessages,
       },
-      input: messages  // 使用 input 参数而不是 messages
     };
 
-    // 直接调用 OpenAI Responses API
-    const response = await fetch('https://api.openai.com/v1/responses', {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (!import.meta.env.PROD) {
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
+      if (!apiKey) throw new Error('OpenAI API 密钥未配置（开发环境）');
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    let resp = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify(requestBody)
+      headers,
+      body: JSON.stringify(body),
     });
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('API Error:', errorData);
-      throw new Error(`API request failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('API Response:', data);
-
-    // 提取回复内容 - 检查不同的可能结构
-    let content: string = '';
-
-    // 检查各种可能的响应格式
-    if (data.choices && Array.isArray(data.choices) && data.choices.length > 0) {
-      const choice = data.choices[0];
-      if (choice.message?.content) {
-        content = choice.message.content;
-      } else if (choice.text) {
-        content = choice.text;
+    // 如果因为 Prompt 输入验证失败，尝试无 Prompt 的降级路径（直接使用 messages）
+    if (!resp.ok && resp.status >= 400 && resp.status < 500) {
+      try {
+        const txt = await resp.text();
+        // 简单判断：如果提示 input/variables 不匹配，则改用 messages 直连 Responses
+        if (/input|variable|messages/i.test(txt)) {
+          const fallbackBody: any = { model, messages: fullMessages };
+          resp = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(fallbackBody),
+          });
+        } else {
+          // 不是变量问题，直接抛出
+          throw new Error(`API request failed: ${resp.status} ${txt}`);
+        }
+      } catch (e) {
+        throw e;
       }
-    } else if (data.content) {
-      content = data.content;
-    } else if (data.output) {
-      content = data.output;
-    } else if (typeof data === 'string') {
-      content = data;
     }
 
-    // 确保返回字符串
-    if (!content) {
-      content = '抱歉，我暂时无法回答。请稍后再试。';
+    if (!resp.ok) {
+      const errText = await resp.text().catch(() => '');
+      throw new Error(`API request failed: ${resp.status} ${errText}`);
     }
 
+    const data = await resp.json();
+    // 兼容 Responses API 响应结构与旧 Chat Completions 结构
+    let content = '';
+
+    // Responses API: 优先使用 output_text 或 output 数组
+    if (typeof data?.output_text === 'string' && data.output_text.trim()) {
+      content = data.output_text;
+    } else if (Array.isArray(data?.output) && data.output.length > 0) {
+      // 寻找第一个文本类型的内容
+      const first = data.output.find((o: any) => Array.isArray(o?.content) && o.content.length > 0) || data.output[0];
+      const part = Array.isArray(first?.content) ? first.content.find((c: any) => typeof c?.text === 'string') : null;
+      if (part?.text) content = part.text;
+    }
+
+    // Chat Completions 兼容
+    if (!content && Array.isArray(data?.choices) && data.choices.length > 0) {
+      const ch = data.choices[0];
+      if (typeof ch?.message?.content === 'string') content = ch.message.content;
+      else if (typeof ch?.text === 'string') content = ch.text;
+    }
+
+    if (!content && typeof data === 'string') content = data;
+    if (!content) content = '抱歉，我暂时无法回答。请稍后再试。';
     return String(content);
   } catch (error) {
     console.error('CTG Mindset API 调用失败:', error);
