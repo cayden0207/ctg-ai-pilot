@@ -31,8 +31,8 @@ export default async function handler(req: any, res: any) {
     // If `messages` is provided, forward it as `input`.
     if (input !== undefined) body.input = input;
     else if (messages !== undefined) body.input = messages;
-    // Always include model unless the Prompt explicitly overrides it server-side.
-    body.model = model;
+    // If a Prompt is provided, don't override with a model
+    if (!body.prompt) body.model = model;
 
     const upstream = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',

@@ -59,37 +59,36 @@ export async function sendCTGMessage(
       headers['Authorization'] = `Bearer ${apiKey}`;
     }
 
+    // Step 1: 官方示例最小化调用，仅携带 Prompt ID + version
     let resp = await fetch(endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify({ prompt: { id: PROMPT_ID, version: '4' } }),
     });
 
-    // 如果因为 Prompt 输入验证失败，尝试无 Prompt 的降级路径（直接将对话作为 input）
+    // Step 2: 若需要变量（400），提供带上下文的 input 映射
     if (!resp.ok && resp.status >= 400 && resp.status < 500) {
-      try {
-        const txt = await resp.text();
-        // 将历史转为 Responses API 规范的 input 结构
-        const toResponsesInput = (msgs: { role: string; content: string }[]) =>
-          msgs.map(m => ({
-            role: m.role,
-            content: [{ type: 'input_text', text: m.content }],
-          }));
+      const txt = await resp.text().catch(() => '');
+      // 先尝试 Prompt-ID + input 变量的完整体
+      const richBody = {
+        prompt: { id: PROMPT_ID, version: '4' },
+        input: body.input,
+      } as any;
+      resp = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(richBody),
+      });
 
-        // 简单判断：如果提示 input/variables 不匹配，则改用符合 Responses 规范的对话输入
-        if (/input|variable|messages|Unsupported parameter/i.test(txt)) {
-          const fallbackBody: any = { model, input: toResponsesInput(fullMessages) };
-          resp = await fetch(endpoint, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(fallbackBody),
-          });
-        } else {
-          // 不是变量问题，直接抛出
-          throw new Error(`API request failed: ${resp.status} ${txt}`);
-        }
-      } catch (e) {
-        throw e;
+      // Step 3: 再失败则降级为纯对话输入（不带 Prompt），按 Responses 规范提供 messages
+      if (!resp.ok && resp.status >= 400 && resp.status < 500) {
+        const asInput = asResponsesMessages; // already in Responses shape
+        const fallbackBody: any = { model, input: asInput };
+        resp = await fetch(endpoint, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(fallbackBody),
+        });
       }
     }
 
