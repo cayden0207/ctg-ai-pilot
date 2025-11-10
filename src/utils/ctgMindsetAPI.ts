@@ -36,20 +36,10 @@ export async function sendCTGMessage(
       content: [{ type: 'input_text', text: m.content }],
     }));
 
-    // 首选：按官方推荐，直接提供 Prompt ID + version + input（包含用户提问与上下文）
+    // 首选：完全对齐官方示例 —— input 直接为 Responses 规范的 messages 数组
     const firstBody: any = {
       prompt: { id: PROMPT_ID, version: '4' },
-      input: {
-        // 常见变量名覆盖（Prompt 可任选其一使用）
-        question: message,
-        query: message,
-        latest: message,
-        input: message,
-        context: history,
-        history,
-        // 如果 Prompt 定义了 messages 类型变量，可以直接使用此字段
-        messages: asResponsesMessages,
-      },
+      input: asResponsesMessages,
     };
 
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
