@@ -30,6 +30,12 @@ export async function sendCTGMessage(
     const endpoint = import.meta.env.PROD ? '/api/responses' : 'https://api.openai.com/v1/responses';
 
     // 构建请求体：使用 Prompt ID，并同时提供常见变量名，方便 Prompt 取值
+    // Responses 规范的 messages 结构
+    const asResponsesMessages = fullMessages.map(m => ({
+      role: m.role,
+      content: [{ type: 'input_text', text: m.content }],
+    }));
+
     const body: any = {
       model,
       prompt: { id: PROMPT_ID },
@@ -41,7 +47,8 @@ export async function sendCTGMessage(
         input: message,
         context: history,
         history,
-        messages: fullMessages,
+        // 如果 Prompt 定义了 messages 类型变量，可以直接使用此字段
+        messages: asResponsesMessages,
       },
     };
 
