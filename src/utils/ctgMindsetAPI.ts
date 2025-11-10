@@ -62,9 +62,16 @@ export async function sendCTGMessage(
     if (!resp.ok && resp.status >= 400 && resp.status < 500) {
       try {
         const txt = await resp.text();
-        // 简单判断：如果提示 input/variables 不匹配，则改用 messages 直连 Responses
-        if (/input|variable|messages/i.test(txt)) {
-          const fallbackBody: any = { model, input: fullMessages };
+        // 将历史转为 Responses API 规范的 input 结构
+        const toResponsesInput = (msgs: { role: string; content: string }[]) =>
+          msgs.map(m => ({
+            role: m.role,
+            content: [{ type: 'input_text', text: m.content }],
+          }));
+
+        // 简单判断：如果提示 input/variables 不匹配，则改用符合 Responses 规范的对话输入
+        if (/input|variable|messages|Unsupported parameter/i.test(txt)) {
+          const fallbackBody: any = { model, input: toResponsesInput(fullMessages) };
           resp = await fetch(endpoint, {
             method: 'POST',
             headers,
