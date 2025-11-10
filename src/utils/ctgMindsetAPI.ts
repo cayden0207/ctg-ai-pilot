@@ -1,8 +1,6 @@
-// CTG Mindset API using Prompt ID
-import { getCurrentClient } from './openaiAPI';
-
+// CTG Mindset API using OpenAI Responses API
 // Prompt ID configuration
-const PROMPT_ID = 'pmpt_6911bddc52d88194950311488eefb4b9907f17175';
+const PROMPT_ID = 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
 
 // 对话消息类型
 export interface CTGMessage {
@@ -17,9 +15,9 @@ export async function sendCTGMessage(
   conversationHistory: CTGMessage[] = []
 ): Promise<string> {
   try {
-    const client = getCurrentClient();
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-    // 构建消息历史
+    // 构建对话历史
     const messages = [
       ...conversationHistory.map(msg => ({
         role: msg.role,
@@ -31,21 +29,40 @@ export async function sendCTGMessage(
       }
     ];
 
-    // 使用 prompt ID 调用 API
-    // OpenAI 的 prompt ID 需要通过特殊的 headers 或作为额外参数传递
-    const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages,
-      temperature: 0.7,
-      max_tokens: 2000,
-      // @ts-ignore - OpenAI SDK 可能不支持直接的 prompt 参数
+    // 构建请求体 - 使用最新的 Responses API 格式
+    const requestBody = {
       prompt: {
         id: PROMPT_ID,
-        version: '3'
-      }
-    } as any);
+        version: "4"
+      },
+      messages: messages  // 传递消息历史
+    };
 
-    return response.choices[0]?.message?.content || '抱歉，我暂时无法回答。请稍后再试。';
+    // 直接调用 OpenAI Responses API
+    const response = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('API Error:', errorData);
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // 提取回复内容
+    const content = data.choices?.[0]?.message?.content ||
+                   data.choices?.[0]?.text ||
+                   data.output ||
+                   '抱歉，我暂时无法回答。请稍后再试。';
+
+    return content;
   } catch (error) {
     console.error('CTG Mindset API 调用失败:', error);
     throw new Error('对话生成失败，请检查网络连接');
