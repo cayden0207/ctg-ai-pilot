@@ -5,6 +5,7 @@ import { generateContentPlan } from '../utils/openaiAPI';
 interface TopicResultsProps {
   topics: string[];
   isLoading: boolean;
+  labels?: string[]; // 可选：与 topics 对应的类别标注
   onCopy?: (topic: string) => void;
   onExport?: () => void;
   onShare?: (topic: string) => void;
@@ -12,7 +13,7 @@ interface TopicResultsProps {
 
 // 简单列表展示，不再按“7大公式”分组
 
-export function TopicResults({ topics, isLoading, onCopy, onExport, onShare }: TopicResultsProps) {
+export function TopicResults({ topics, isLoading, labels, onCopy, onExport, onShare }: TopicResultsProps) {
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -73,6 +74,7 @@ export function TopicResults({ topics, isLoading, onCopy, onExport, onShare }: T
             key={idx}
             topic={topic}
             index={idx + 1}
+            label={labels?.[idx]}
             onCopy={onCopy}
             onShare={onShare}
           />
@@ -85,11 +87,12 @@ export function TopicResults({ topics, isLoading, onCopy, onExport, onShare }: T
 interface TopicCardProps {
   topic: string;
   index: number;
+  label?: string;
   onCopy?: (topic: string) => void;
   onShare?: (topic: string) => void;
 }
 
-function TopicCard({ topic, index, onCopy, onShare }: TopicCardProps) {
+function TopicCard({ topic, index, label, onCopy, onShare }: TopicCardProps) {
   const [isLoadingPlan, setIsLoadingPlan] = useState(false);
   const [plan, setPlan] = useState<any | null>(null);
 
@@ -128,7 +131,12 @@ function TopicCard({ topic, index, onCopy, onShare }: TopicCardProps) {
             <span className="inline-flex items-center justify-center w-6 h-6 bg-primary-100 text-primary-600 rounded-full text-sm font-medium mr-3">
               {index}
             </span>
-            <span className="text-sm text-gray-500">选题 #{index}</span>
+            <span className="text-sm text-gray-500 mr-2">选题 #{index}</span>
+            {label && (
+              <span className="inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                {label}
+              </span>
+            )}
           </div>
           <h4 className="text-gray-900 font-medium text-lg leading-relaxed mb-1">
             {topic}

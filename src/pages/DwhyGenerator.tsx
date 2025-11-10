@@ -6,7 +6,7 @@ import { LoadingOverlay } from '../components/LoadingSpinner';
 import { ApiStatus } from '../components/ApiStatus';
 import { LLMSelector } from '../components/LLMSelector';
 import { useKeywordGrid } from '../hooks/useKeywordGrid';
-import { generateTopics } from '../utils/openaiAPI';
+import { generateTopics, classifyTopics, TopicCategory } from '../utils/openaiAPI';
 import { cn } from '../utils/cn';
 
 // 跟随六种类型，每SET=6条
@@ -20,6 +20,7 @@ export function DwhyGenerator() {
   const [domainInput, setDomainInput] = useState('');
   const [selectedSets, setSelectedSets] = useState(1);
   const [generatedTopics, setGeneratedTopics] = useState<string[]>([]);
+  const [generatedLabels, setGeneratedLabels] = useState<TopicCategory[]>([]);
   const [isGeneratingTopics, setIsGeneratingTopics] = useState(false);
 
   const domainGrid = useKeywordGrid('domain');
@@ -71,6 +72,13 @@ export function DwhyGenerator() {
       const totalTopics = selectedSets * 6; // 每组按六类各1条
       const topics = await generateTopics(domainSelected, whoSelected, whySelected, totalTopics);
       setGeneratedTopics(topics);
+      try {
+        const labels = await classifyTopics(topics, 'zh');
+        setGeneratedLabels(labels as TopicCategory[]);
+      } catch (e) {
+        console.warn('选题分类失败，将不显示分类标注', e);
+        setGeneratedLabels([]);
+      }
     } catch (error) {
       console.error('生成选题失败:', error);
       // 显示错误提示
@@ -228,6 +236,7 @@ export function DwhyGenerator() {
         <TopicResults
           topics={generatedTopics}
           isLoading={isGeneratingTopics}
+          labels={generatedLabels}
           onCopy={handleCopyTopic}
           onExport={handleExportTopics}
         />

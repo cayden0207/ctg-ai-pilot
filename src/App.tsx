@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
 import { DwhyGenerator } from './pages/DwhyGenerator';
 import { NineGridFormulaGenerator } from './pages/NineGridFormulaGenerator';
+import { CTGMindset } from './pages/CTGMindset';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,6 +39,7 @@ function App() {
             <Routes>
               <Route path="/" element={<NineGridFormulaGenerator />} />
               <Route path="/nine-grid" element={<DwhyGenerator />} />
+              <Route path="/ctg-mindset" element={<CTGMindset />} />
               <Route path="/analytics" element={<ComingSoon title="数据分析" />} />
               <Route path="/optimizer" element={<ComingSoon title="内容优化器" />} />
               <Route path="/assistant" element={<ComingSoon title="AI 助手" />} />

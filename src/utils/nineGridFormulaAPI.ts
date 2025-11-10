@@ -335,13 +335,35 @@ export async function generateSimpleTopics(
       temperature: 0.8
     });
 
-    const content = response.choices[0]?.message?.content || '';
-    const topics = content.split('\n')
+    let content = response.choices[0]?.message?.content || '';
+    // 清除代码块包裹
+    content = content.replace(/```[a-zA-Z]*\n([\s\S]*?)```/g, '$1').trim();
+
+    let topics = content.split(/\r?\n+/)
       .map(t => t.trim())
-      .filter(t => t && !t.match(/^\d+[\.|、\)]\s*/))
-      .map(t => t.replace(/^\d+[\.|、\)]\s*/, ''))
+      // 仅过滤空行、纯短划线或纯编号
+      .filter(t => t && !/^[-•]\s*$/.test(t) && !/^\d+[\.、\)]\s*$/.test(t))
+      // 去除常见编号/列表前缀
+      .map(t => t.replace(/^\d+[\.、\)]\s*/, ''))
+      .map(t => t.replace(/^[-•*]\s*/, ''))
       .filter(t => t.length >= 8);
-    return topics.slice(0, totalCount);
+
+    if (topics.length === 0) {
+      try {
+        const j = JSON.parse(content);
+        if (Array.isArray(j)) topics = j.map(String).filter(s => s.trim().length >= 8);
+        if (!topics.length && j && Array.isArray(j.topics)) topics = j.topics.map(String).filter(s => s.trim().length >= 8);
+      } catch {}
+    }
+    if (topics.length === 0) {
+      topics = content.split(/[；;。\n]/).map(s => s.trim()).filter(s => s.length >= 8);
+    }
+
+    const finalTopics = topics.slice(0, totalCount);
+    if (!finalTopics.length) {
+      try { console.debug('[generateSimpleTopics] raw:', content.slice(0, 200)); } catch {}
+    }
+    return finalTopics;
   } catch (error) {
     console.error('生成选题失败:', error);
     throw error;

@@ -391,21 +391,121 @@ export async function generateTopics(
       temperature: 0.8,
     });
 
-    const content = response.choices[0]?.message?.content || '';
-    const topics = content
-      .split('\n')
+    let content = response.choices[0]?.message?.content || '';
+    // 去除代码块包裹
+    content = content.replace(/```[a-zA-Z]*\n([\s\S]*?)```/g, '$1').trim();
+
+    let topics = content
+      .split(/\r?\n+/)
       .map(t => t.trim())
-      // 过滤空行、纯编号、纯短划线（新prompt不使用固定前缀）
-      .filter(t => t && !t.match(/^\d+\./) && !t.match(/^[-•]\s*$/))
-      .map(t => t.replace(/^\d+[\.|、)]\s*/, ''))
-      .filter(t => t.length > 6); // 确保选题有足够长度
-    
-    return topics.slice(0, count);
+      // 仅过滤空行、纯短划线或纯编号（没有正文）
+      .filter(t => t && !/^[-•]\s*$/.test(t) && !/^\d+[\.、\)]\s*$/.test(t))
+      // 去掉常见编号/列表前缀
+      .map(t => t.replace(/^\d+[\.、\)]\s*/, ''))
+      .map(t => t.replace(/^[-•*]\s*/, ''))
+      .filter(t => t.length >= 6);
+
+    // 兜底：若为空，尝试从 JSON/段落中提取
+    if (topics.length === 0) {
+      try {
+        const j = JSON.parse(content);
+        if (Array.isArray(j)) topics = j.map(String).filter(s => s.trim().length >= 6);
+        if (!topics.length && j && Array.isArray(j.topics)) topics = j.topics.map(String).filter(s => s.trim().length >= 6);
+      } catch {}
+    }
+    if (topics.length === 0) {
+      topics = content.split(/[；;。\n]/).map(s => s.trim()).filter(s => s.length >= 6);
+    }
+
+    const finalTopics = topics.slice(0, count);
+    if (!finalTopics.length) {
+      try { console.debug('[generateTopics] raw:', content.slice(0, 200)); } catch {}
+    }
+    return finalTopics;
   } catch (error) {
     console.error('OpenAI API 调用失败:', error);
     throw new Error('生成失败');
   }
-} 
+}
+
+// 选题分类：返回与 topics 一一对应的类别标注
+export type TopicCategory = '真人真事' | '争议讨论' | '好奇心理' | '利益驱动' | '经验价值' | 'FOMO心态';
+
+export async function classifyTopics(topics: string[], language: 'zh' | 'en' = 'zh'): Promise<TopicCategory[]> {
+  if (!topics.length) return [];
+
+  // 先按 PSYCHOLOGY_UPGRADE_SUMMARY.md 的类别规则做本地判定（稳定、可控）
+  const order: TopicCategory[] = ['FOMO心态','争议讨论','真人真事','好奇心理','经验价值','利益驱动'];
+  const dict: Record<TopicCategory, RegExp[]> = {
+    'FOMO心态': [
+      /错过|最后|限时|马上|立刻|立即|赶紧|抓紧|现在就|今晚|截止|仅剩|趁|别再|不要|别犹豫|明天起|即将|涨价|停售|封禁|淘汰|晚了|赶在|最后一天|倒计时/,
+    ],
+    '争议讨论': [
+      /为什么|为啥|该不该|要不要|值不值|对不对|是不是|到底|该怎么|你怎么看|争议|辩论|反对|反驳|吐槽|谣言|骗局|坑|踩雷/,
+    ],
+    '真人真事': [
+      /我|亲身|真实|经历|故事|案例|记录|日记|挑战|实验|复盘|老板|顾客|客户|学员|网友|朋友|邻居|同事|妈妈|爸爸|孩子|他|她/,
+    ],
+    '好奇心理': [
+      /揭秘|内幕|真相|原来|竟然|你不知道|不知道的|首次|第一次|隐藏|秘密|冷知识|黑科技|测试|测评|实测|对比|PK|差距|反转/,
+    ],
+    '经验价值': [
+      /经验|心得|建议|避雷|注意|要点|清单|合集|盘点|指南|教程|技巧|方法|流程|步骤|策略|框架|心法|案例拆解|模版|模板|套路|三招|N招|教你|怎么做|做对/,
+    ],
+    '利益驱动': [
+      /省钱|省时|省力|划算|最划算|性价比|优惠|折扣|收益|回报|赚钱|变现|业绩|增长|提升|提高|暴涨|翻倍|转化|效率|成本|结果|价值/,
+    ],
+  };
+
+  const pickLocal = (t: string): TopicCategory => {
+    const text = t.trim();
+    let best: TopicCategory | null = null;
+    let bestScore = 0;
+    for (const cat of order) {
+      const regs = dict[cat];
+      let score = 0;
+      for (const rx of regs) if (rx.test(text)) score += 1;
+      // 额外规则：问号强提示争议；数字 + 招/步 倾向经验
+      if (cat === '争议讨论' && /\?/.test(text)) score += 1;
+      if (cat === '经验价值' && /\d+\s*(招|步|技巧)/.test(text)) score += 1;
+      if (score > bestScore) { bestScore = score; best = cat; }
+    }
+    return (best as TopicCategory) || '好奇心理';
+  };
+
+  const preliminary = topics.map(pickLocal);
+  // 如果都能本地判定，直接返回；否则再调用 LLM 做细分
+  if (preliminary.every(Boolean)) return preliminary;
+
+  try {
+    const isChinese = language === 'zh' || isChineseInput(topics[0] || '');
+    const system = isChinese
+      ? '你是资深内容分类器。请严格输出 JSON（仅 JSON）。'
+      : 'You are a content classifier. Output JSON only.';
+    const categoriesZh = ['真人真事','争议讨论','好奇心理','利益驱动','经验价值','FOMO心态'];
+    const user = isChinese
+      ? `将以下选题逐条归类为以下六类之一：${categoriesZh.join('、')}。\n严格返回 JSON 数组，长度与输入相同：\n${topics.map((t, i)=>`${i+1}. ${t}`).join('\n')}`
+      : `Classify each topic into exactly one of: Real Story, Debate, Curiosity, Benefit, Experience, FOMO. Return a pure JSON array with same length.\n${topics.map((t, i)=>`${i+1}. ${t}`).join('\n')}`;
+
+    const resp = await createChatCompletion({
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+      ],
+      max_tokens: Math.max(200, topics.length * 12),
+      temperature: 0.2,
+    });
+    let content = resp.choices[0]?.message?.content || '[]';
+    content = content.replace(/```json|```/g, '').trim();
+    const arr = JSON.parse(content);
+    if (Array.isArray(arr) && arr.length === topics.length) {
+      return arr as TopicCategory[];
+    }
+    return preliminary;
+  } catch {
+    return preliminary;
+  }
+}
 
 // 根据选题生成完整内容卡（HOOK/定位/痛点/方案/CTA）
 export async function generateContentPlan(topic: string, language: 'zh' | 'en' = 'zh') {

@@ -1,16 +1,17 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Target, 
-  BarChart3, 
-  FileText, 
-  Settings, 
+import {
+  Target,
+  BarChart3,
+  FileText,
+  Settings,
   Sparkles,
   Menu,
   X,
   Zap,
-  Grid3x3
+  Grid3x3,
+  Brain
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 
@@ -35,7 +36,12 @@ const navigationItems: NavigationItem[] = [
     href: '/nine-grid',
     icon: Target,
   },
-  
+  {
+    id: 'ctg-mindset',
+    name: 'CTG Mindset AI',
+    href: '/ctg-mindset',
+    icon: Brain,
+  },
 ];
 
 interface NavigationProps {
