@@ -27,8 +27,10 @@ export default async function handler(req: any, res: any) {
 
     const body: any = {};
     if (prompt || promptId) body.prompt = prompt || { id: String(promptId) };
+    // The Responses API does NOT accept top-level `messages`.
+    // If `messages` is provided, forward it as `input`.
     if (input !== undefined) body.input = input;
-    if (messages !== undefined) body.messages = messages;
+    else if (messages !== undefined) body.input = messages;
     // Always include model unless the Prompt explicitly overrides it server-side.
     body.model = model;
 
@@ -53,4 +55,3 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'Proxy error', detail: String(err?.message || err || 'unknown') });
   }
 }
-

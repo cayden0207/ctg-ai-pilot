@@ -58,13 +58,13 @@ export async function sendCTGMessage(
       body: JSON.stringify(body),
     });
 
-    // 如果因为 Prompt 输入验证失败，尝试无 Prompt 的降级路径（直接使用 messages）
+    // 如果因为 Prompt 输入验证失败，尝试无 Prompt 的降级路径（直接将对话作为 input）
     if (!resp.ok && resp.status >= 400 && resp.status < 500) {
       try {
         const txt = await resp.text();
         // 简单判断：如果提示 input/variables 不匹配，则改用 messages 直连 Responses
         if (/input|variable|messages/i.test(txt)) {
-          const fallbackBody: any = { model, messages: fullMessages };
+          const fallbackBody: any = { model, input: fullMessages };
           resp = await fetch(endpoint, {
             method: 'POST',
             headers,
