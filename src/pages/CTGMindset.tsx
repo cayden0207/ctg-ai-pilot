@@ -236,6 +236,5 @@ export function CTGMindset() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
