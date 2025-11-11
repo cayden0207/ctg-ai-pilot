@@ -1,7 +1,9 @@
 // CTG Mindset API using OpenAI Responses API
-// Prompt ID configuration (env override supported)
+// Prompt configuration (env override supported)
 const PROMPT_ID = (import.meta.env.VITE_CTG_PROMPT_ID as string | undefined)?.trim()
   || 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
+const PROMPT_VERSION = (import.meta.env.VITE_CTG_PROMPT_VERSION as string | undefined)?.trim()
+  || '7';
 
 // 对话消息类型
 export interface CTGMessage {
@@ -41,7 +43,7 @@ export async function sendCTGMessage(
 
     // 首选：完全对齐官方示例 —— input 直接为 Responses 规范的 messages 数组
     const firstBody: any = {
-      prompt: { id: PROMPT_ID, version: '4' },
+      prompt: { id: PROMPT_ID, version: PROMPT_VERSION },
       input: asResponsesMessages,
     };
 
