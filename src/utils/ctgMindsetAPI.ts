@@ -1,6 +1,7 @@
 // CTG Mindset API using OpenAI Responses API
-// Prompt ID configuration
-const PROMPT_ID = 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
+// Prompt ID configuration (env override supported)
+const PROMPT_ID = (import.meta.env.VITE_CTG_PROMPT_ID as string | undefined)?.trim()
+  || 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
 
 // 对话消息类型
 export interface CTGMessage {
