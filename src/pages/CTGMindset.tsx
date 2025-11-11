@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Brain, Send, Loader2, RotateCcw, ChevronRight, Sparkles } from 'lucide-react';
+import { Brain, Send, Loader2, RotateCcw } from 'lucide-react';
 import { ApiStatus } from '../components/ApiStatus';
-import { sendCTGMessage, CTGMessage, EXAMPLE_QUESTIONS } from '../utils/ctgMindsetAPI';
+import { sendCTGMessage, CTGMessage } from '../utils/ctgMindsetAPI';
 import { cn } from '../utils/cn';
 
 export function CTGMindset() {
   const [messages, setMessages] = useState<CTGMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // 加载历史消息（现在由本地管理）
@@ -74,17 +73,10 @@ export function CTGMindset() {
     }
   };
 
-  // 使用示例问题
-  const handleExampleQuestion = (question: string) => {
-    setInputMessage(question);
-    handleSendMessage(question);
-  };
-
   // 清除对话
   const handleClearChat = () => {
     localStorage.removeItem('ctg_mindset_messages'); // 清除本地存储的消息
     setMessages([]);
-    setSelectedCategory(null);
   };
 
   // 格式化消息内容（处理 Markdown 格式）
@@ -133,62 +125,9 @@ export function CTGMindset() {
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* 左侧 - 示例问题 */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="bg-white rounded-xl shadow-md p-4">
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
-                <Sparkles className="h-5 w-5 mr-2 text-purple-600" />
-                快速开始
-              </h3>
-              <div className="space-y-3">
-                {EXAMPLE_QUESTIONS.map((category, idx) => (
-                  <div key={idx}>
-                    <button
-                      onClick={() => setSelectedCategory(
-                        selectedCategory === category.category ? null : category.category
-                      )}
-                      className="w-full text-left flex items-center justify-between p-2 rounded-lg hover:bg-purple-50 transition-colors"
-                    >
-                      <span className="font-medium text-gray-700">{category.category}</span>
-                      <ChevronRight className={cn(
-                        "h-4 w-4 text-gray-400 transition-transform",
-                        selectedCategory === category.category && "rotate-90"
-                      )} />
-                    </button>
-                    {selectedCategory === category.category && (
-                      <div className="mt-2 space-y-1 pl-4">
-                        {category.questions.map((question, qIdx) => (
-                          <button
-                            key={qIdx}
-                            onClick={() => handleExampleQuestion(question)}
-                            className="w-full text-left p-2 text-sm text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded transition-colors"
-                          >
-                            {question}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CTG 核心理念 */}
-            <div className="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-xl shadow-md p-4">
-              <h3 className="font-semibold mb-3">CTG 核心理念</h3>
-              <ul className="space-y-2 text-sm text-purple-50">
-                <li>• 战略聚焦：战是方向，略是取舍</li>
-                <li>• 价值战 {'>'} 价格战</li>
-                <li>• 系统经营：标准→流程→训练→复制</li>
-                <li>• 利润结构：毛利≥30%，净利≥15%</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* 右侧 - 对话区域 */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg h-[600px] flex flex-col">
+        <div className="max-w-4xl mx-auto">
+          {/* 对话区域（移动端优化） */}
+          <div className="bg-white rounded-xl shadow-lg flex flex-col h-[75vh] sm:h-[78vh] md:h-[80vh]">
               {/* 对话头部 */}
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center">
@@ -207,7 +146,7 @@ export function CTGMindset() {
               </div>
 
               {/* 消息列表 */}
-              <div className="flex-1 overflow-y-auto px-6 py-4">
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
                 {messages.length === 0 ? (
                   <div className="text-center py-12">
                     <Brain className="h-16 w-16 text-purple-200 mx-auto mb-4" />
@@ -218,7 +157,7 @@ export function CTGMindset() {
                       我是您的战略智能助手，可以帮您解决经营难题
                     </p>
                     <p className="text-sm text-gray-500">
-                      选择左侧示例问题开始，或直接输入您的问题
+                      直接在下方输入您的问题开始对话
                     </p>
                   </div>
                 ) : (
@@ -233,7 +172,7 @@ export function CTGMindset() {
                       >
                         <div
                           className={cn(
-                            "max-w-[80%] rounded-lg px-4 py-3",
+                            "max-w-[85%] sm:max-w-[80%] rounded-lg px-3 sm:px-4 py-2.5 sm:py-3",
                             message.role === 'user'
                               ? 'bg-purple-600 text-white'
                               : 'bg-gray-100 text-gray-800'
@@ -247,14 +186,14 @@ export function CTGMindset() {
                               }}
                             />
                           ) : (
-                            <p className="whitespace-pre-wrap">{message.content}</p>
+                            <p className="whitespace-pre-wrap text-sm sm:text-base">{message.content}</p>
                           )}
                         </div>
                       </div>
                     ))}
                     {isLoading && (
                       <div className="flex justify-start">
-                        <div className="bg-gray-100 rounded-lg px-4 py-3 flex items-center">
+                        <div className="bg-gray-100 rounded-lg px-3 py-2.5 sm:px-4 sm:py-3 flex items-center">
                           <Loader2 className="h-4 w-4 animate-spin text-purple-600 mr-2" />
                           <span className="text-gray-600">正在思考...</span>
                         </div>
@@ -266,8 +205,8 @@ export function CTGMindset() {
               </div>
 
               {/* 输入区域 */}
-              <div className="px-6 py-4 border-t border-gray-200">
-                <div className="flex items-center gap-3">
+              <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-200">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
                     type="text"
                     value={inputMessage}
@@ -275,12 +214,12 @@ export function CTGMindset() {
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     placeholder="输入您的问题..."
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-50"
+                    className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-50"
                   />
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={!inputMessage.trim() || isLoading}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center"
+                    className="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center text-sm sm:text-base"
                   >
                     {isLoading ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
