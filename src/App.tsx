@@ -41,16 +41,16 @@ function App() {
           {/* Page Content */}
           <main className="flex-1 overflow-auto">
             <Routes>
-              <Route path="/" element={<NineGridAnalyzer />} />
-              <Route path="/nine-grid" element={<DwhyGenerator />} />
+              <Route path="/" element={<ProtectedRoute><NineGridAnalyzer /></ProtectedRoute>} />
+              <Route path="/nine-grid" element={<ProtectedRoute><DwhyGenerator /></ProtectedRoute>} />
               <Route path="/ctg-mindset" element={<ProtectedRoute><CTGMindset /></ProtectedRoute>} />
               <Route path="/login" element={<Login />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/admin/users" element={<AdminUsersPage />} />
-              <Route path="/analytics" element={<ComingSoon title="数据分析" />} />
-              <Route path="/optimizer" element={<ComingSoon title="内容优化器" />} />
-              <Route path="/assistant" element={<ComingSoon title="AI 助手" />} />
-              <Route path="/settings" element={<ComingSoon title="设置" />} />
+              <Route path="/analytics" element={<ProtectedRoute><ComingSoon title="数据分析" /></ProtectedRoute>} />
+              <Route path="/optimizer" element={<ProtectedRoute><ComingSoon title="内容优化器" /></ProtectedRoute>} />
+              <Route path="/assistant" element={<ProtectedRoute><ComingSoon title="AI 助手" /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><ComingSoon title="设置" /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>

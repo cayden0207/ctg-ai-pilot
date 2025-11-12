@@ -96,6 +96,7 @@ function AdminUsers() {
               <th className="text-left p-3">角色</th>
               <th className="text-left p-3">到期</th>
               <th className="text-left p-3">状态</th>
+              <th className="text-left p-3">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -107,6 +108,59 @@ function AdminUsers() {
               const expired = r.expiration_at && new Date(r.expiration_at) < new Date();
               const revoked = !!r.revoked_at;
               const status = revoked ? 'Revoked' : (expired ? 'Expired' : 'Active');
+              const renew = async (days?: number) => {
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const body: any = { user_id: r.id };
+                  if (typeof days === 'number') body.days = days;
+                  const resp = await fetch('/api/admin/renew', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify(body)
+                  });
+                  if (!resp.ok) throw new Error(await resp.text());
+                  fetchUsers();
+                } catch (e: any) { alert(e?.message || '续期失败'); }
+              };
+              const renewToDate = async () => {
+                const date = prompt('设置到期日 (YYYY-MM-DD)');
+                if (!date) return;
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const resp = await fetch('/api/admin/renew', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ user_id: r.id, expiration_at: date })
+                  });
+                  if (!resp.ok) throw new Error(await resp.text());
+                  fetchUsers();
+                } catch (e: any) { alert(e?.message || '续期失败'); }
+              };
+              const revoke = async () => {
+                if (!confirm('确认撤销此用户的访问权限？')) return;
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const resp = await fetch('/api/admin/revoke', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ user_id: r.id })
+                  });
+                  if (!resp.ok) throw new Error(await resp.text());
+                  fetchUsers();
+                } catch (e: any) { alert(e?.message || '撤销失败'); }
+              };
+              const restore = async () => {
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const resp = await fetch('/api/admin/restore', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ user_id: r.id })
+                  });
+                  if (!resp.ok) throw new Error(await resp.text());
+                  fetchUsers();
+                } catch (e: any) { alert(e?.message || '恢复失败'); }
+              };
               return (
                 <tr key={r.id} className="border-t">
                   <td className="p-3">{r.email}</td>
@@ -114,6 +168,15 @@ function AdminUsers() {
                   <td className="p-3">{r.role || 'member'}</td>
                   <td className="p-3">{r.expiration_at ? new Date(r.expiration_at).toLocaleDateString() : '-'}</td>
                   <td className="p-3">{status}</td>
+                  <td className="p-3 space-x-2">
+                    <button onClick={() => renew(30)} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">+30天</button>
+                    <button onClick={renewToDate} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">设日期</button>
+                    {!revoked ? (
+                      <button onClick={revoke} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100">撤销</button>
+                    ) : (
+                      <button onClick={restore} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">恢复</button>
+                    )}
+                  </td>
                 </tr>
               );
             })}
@@ -123,4 +186,3 @@ function AdminUsers() {
     </div>
   );
 }
-

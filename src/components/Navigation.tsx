@@ -14,6 +14,7 @@ import {
   Brain
 } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { useMembership } from '../hooks/useMembership';
 
 interface NavigationItem {
   id: string;
@@ -51,6 +52,7 @@ interface NavigationProps {
 
 export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps) {
   const location = useLocation();
+  const { email, status, loading, logout } = useMembership();
 
   return (
     <>
@@ -125,7 +127,22 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-gray-200 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center">
+                <span className={cn('w-2 h-2 rounded-full mr-2',
+                  status==='active' && 'bg-green-500',
+                  status==='expired' && 'bg-yellow-500',
+                  status==='revoked' && 'bg-red-500',
+                  status==='unauthorized' && 'bg-gray-300')
+                } />
+                <span className="text-gray-700">{email || '未登录'}</span>
+              </div>
+              {email && (
+                <button onClick={logout} className="text-xs text-gray-500 hover:text-gray-700">退出</button>
+              )}
+            </div>
+
             <Link
               to="/settings"
               className="flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors"
