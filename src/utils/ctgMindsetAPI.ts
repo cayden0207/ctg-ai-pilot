@@ -2,7 +2,7 @@
 // Prompt configuration (env override supported)
 const PROMPT_ID = (import.meta.env.VITE_CTG_PROMPT_ID as string | undefined)?.trim()
   || 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
-const PROMPT_VERSION = (import.meta.env.VITE_CTG_PROMPT_VERSION as string | undefined)?.trim()
+export const PROMPT_VERSION = (import.meta.env.VITE_CTG_PROMPT_VERSION as string | undefined)?.trim()
   || '7';
 
 // 对话消息类型

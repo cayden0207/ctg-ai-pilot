@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Brain, Send, Loader2, RotateCcw } from 'lucide-react';
 import { ApiStatus } from '../components/ApiStatus';
-import { sendCTGMessage, CTGMessage } from '../utils/ctgMindsetAPI';
+import { sendCTGMessage, CTGMessage, PROMPT_VERSION } from '../utils/ctgMindsetAPI';
 import { cn } from '../utils/cn';
 
 export function CTGMindset() {
@@ -132,7 +132,8 @@ export function CTGMindset() {
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-sm text-gray-600">AI 助手在线</span>
+                  <span className="text-sm text-gray-600">AI 秀宗在线</span>
+                  <span className="ml-2 text-xs text-gray-400">Prompt v{PROMPT_VERSION}</span>
                 </div>
                 {messages.length > 0 && (
                   <button
