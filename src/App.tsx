@@ -4,6 +4,10 @@ import { Navigation } from './components/Navigation';
 import { DwhyGenerator } from './pages/DwhyGenerator';
 import { NineGridAnalyzer } from './pages/NineGridAnalyzer';
 import { CTGMindset } from './pages/CTGMindset';
+import Login from './pages/Login';
+import AuthCallback from './pages/AuthCallback';
+import AdminUsersPage from './pages/AdminUsers';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -39,7 +43,10 @@ function App() {
             <Routes>
               <Route path="/" element={<NineGridAnalyzer />} />
               <Route path="/nine-grid" element={<DwhyGenerator />} />
-              <Route path="/ctg-mindset" element={<CTGMindset />} />
+              <Route path="/ctg-mindset" element={<ProtectedRoute><CTGMindset /></ProtectedRoute>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/admin/users" element={<AdminUsersPage />} />
               <Route path="/analytics" element={<ComingSoon title="数据分析" />} />
               <Route path="/optimizer" element={<ComingSoon title="内容优化器" />} />
               <Route path="/assistant" element={<ComingSoon title="AI 助手" />} />

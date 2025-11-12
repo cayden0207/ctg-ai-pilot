@@ -1,4 +1,5 @@
 // CTG Mindset API using OpenAI Responses API
+import { supabase } from '../lib/supabaseClient';
 // Prompt configuration (env override supported)
 const PROMPT_ID = (import.meta.env.VITE_CTG_PROMPT_ID as string | undefined)?.trim()
   || 'pmpt_6911bddc52d8819495031148eefb4b9907f171754493354a';
@@ -48,7 +49,11 @@ export async function sendCTGMessage(
     };
 
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (!import.meta.env.PROD) {
+    if (import.meta.env.PROD) {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+    } else {
       const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
       if (!apiKey) throw new Error('OpenAI API 密钥未配置（开发环境）');
       headers['Authorization'] = `Bearer ${apiKey}`;

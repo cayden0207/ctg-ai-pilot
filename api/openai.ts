@@ -1,3 +1,5 @@
+import { getAdminClient, verifyBearer } from './_lib/supabase';
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -5,6 +7,24 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    // Require active membership
+    try {
+      const ver = await verifyBearer(req);
+      if (!ver.user) return res.status(401).json({ error: 'unauthorized' });
+      const admin = getAdminClient();
+      const { data: profile } = await admin
+        .from('profiles')
+        .select('expiration_at, revoked_at')
+        .eq('user_id', ver.user.id)
+        .single();
+      const now = new Date();
+      const expired = profile?.expiration_at ? new Date(profile.expiration_at) < now : true;
+      const revoked = !!profile?.revoked_at;
+      if (revoked || expired) return res.status(403).json({ error: 'membership_inactive' });
+    } catch (e) {
+      return res.status(500).json({ error: 'auth_check_failed' });
+    }
+
     const apiKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({ error: 'OPENAI_API_KEY not configured' });
@@ -39,4 +59,3 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'Proxy error', detail: String(err?.message || err || 'unknown') });
   }
 }
-
