@@ -25,7 +25,7 @@ function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [expiration, setExpiration] = useState('');
+  const [months, setMonths] = useState<number>(12);
   const [creating, setCreating] = useState(false);
   const [magicLink, setMagicLink] = useState<string | null>(null);
 
@@ -52,17 +52,25 @@ function AdminUsers() {
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
+      // 计算到期时间：从当前时间起 months 个月，设为当天 23:59:59.999（UTC）
+      let expiration_at: string | null = null;
+      if (months && months > 0) {
+        const d = new Date();
+        d.setMonth(d.getMonth() + months);
+        d.setHours(23, 59, 59, 999);
+        expiration_at = d.toISOString();
+      }
       const resp = await fetch('/api/admin/create-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ email, name, expiration_at: expiration || null }),
+        body: JSON.stringify({ email, name, expiration_at }),
       });
       const json = await resp.json();
       if (!resp.ok) throw new Error(json?.error || '创建失败');
       setMagicLink(json?.magicLink || null);
       setEmail('');
       setName('');
-      setExpiration('');
+      setMonths(12);
       fetchUsers();
     } catch (e: any) {
       alert(e?.message || '创建失败');
@@ -78,7 +86,15 @@ function AdminUsers() {
         <div className="grid gap-3 sm:grid-cols-4">
           <input className="border px-3 py-2 rounded" placeholder="邮箱" value={email} onChange={(e)=>setEmail(e.target.value)} />
           <input className="border px-3 py-2 rounded" placeholder="姓名(可选)" value={name} onChange={(e)=>setName(e.target.value)} />
-          <input className="border px-3 py-2 rounded" type="date" value={expiration} onChange={(e)=>setExpiration(e.target.value)} />
+          <select
+            className="border px-3 py-2 rounded"
+            value={months}
+            onChange={(e)=>setMonths(Number(e.target.value) || 1)}
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+              <option key={m} value={m}>会员期限：{m} 个月</option>
+            ))}
+          </select>
           <button onClick={handleCreate} disabled={creating} className="bg-purple-600 text-white rounded px-4 py-2 hover:bg-purple-700 disabled:opacity-60">{creating ? '创建中…' : '创建用户并生成Magic Link'}</button>
         </div>
         {magicLink && (
