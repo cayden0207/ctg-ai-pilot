@@ -14,13 +14,23 @@ export function getAnonServerClient() {
   return createClient(url, anon, { auth: { persistSession: false } });
 }
 
+export function getUserAuthedClient(token: string) {
+  const url = process.env.SUPABASE_URL as string | undefined;
+  const anon = process.env.SUPABASE_ANON_KEY as string | undefined;
+  if (!url || !anon) throw new Error('Supabase anon env not configured');
+  return createClient(url, anon, {
+    auth: { persistSession: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+}
+
 export async function verifyBearer(req: any) {
   const header = req.headers['authorization'] || req.headers['Authorization'];
   const token = typeof header === 'string' && header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token) return { user: null, error: 'missing_token' } as const;
-  const admin = getAdminClient();
-  const { data, error } = await admin.auth.getUser(token);
-  if (error || !data?.user) return { user: null, error: 'invalid_token' } as const;
-  return { user: data.user, error: null } as const;
+  if (!token) return { user: null, token: null, error: 'missing_token' } as const;
+  // Use anon client for verification to reduce dependency on service role
+  const anon = getAnonServerClient();
+  const { data, error } = await anon.auth.getUser(token);
+  if (error || !data?.user) return { user: null, token: null, error: 'invalid_token' } as const;
+  return { user: data.user, token, error: null } as const;
 }
-

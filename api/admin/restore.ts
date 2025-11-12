@@ -1,4 +1,4 @@
-import { getAdminClient, verifyBearer } from '../_lib/supabase';
+import { getAdminClient, verifyBearer } from '../_lib/supabase.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -26,4 +26,3 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'server_error', detail: String(e?.message || e) });
   }
 }
-

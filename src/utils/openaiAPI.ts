@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { supabase } from '../lib/supabaseClient';
 
 // LLM 提供商类型
 export type LLMProvider = 'openai' | 'deepseek';
@@ -66,6 +67,11 @@ export async function createChatCompletion(args: {
       if (!useProxy) {
         // 仅在客户端直连时携带 Authorization；生产环境通过 Vercel 函数代理，不暴露密钥
         headers['Authorization'] = `Bearer ${apiKey}`;
+      } else {
+        // 生产环境通过服务端代理，同时携带 Supabase Bearer 以便统一鉴权（若函数侧启用）
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (token) headers['Authorization'] = `Bearer ${token}`;
       }
       const resp = await fetch(endpoint, {
         method: 'POST',
@@ -107,9 +113,13 @@ export async function createChatCompletion(args: {
   // In production, use serverless proxy for OpenAI as well
   if (import.meta.env.PROD) {
     const model = getCurrentModel();
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const resp = await fetch('/api/openai', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         model,
         messages: args.messages,

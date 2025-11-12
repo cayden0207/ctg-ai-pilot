@@ -14,11 +14,18 @@ export default function AuthCallback() {
         const code = url.searchParams.get('code');
         const error_description = url.searchParams.get('error_description');
         if (error_description) throw new Error(error_description);
-        if (!code) throw new Error('缺少 code');
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) throw error;
+
+        if (code) {
+          // OAuth / PKCE style callback with code
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+        } else {
+          // Magic Link / Hash token style callback
+          const { error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+          if (error) throw error;
+        }
+
         setMsg('登录成功，正在跳转…');
-        // Optionally restore to previous page if stored in sessionStorage
         const back = sessionStorage.getItem('post_login_redirect');
         if (back) {
           sessionStorage.removeItem('post_login_redirect');
@@ -36,4 +43,3 @@ export default function AuthCallback() {
     <div className="min-h-screen flex items-center justify-center text-gray-600">{msg}</div>
   );
 }
-
