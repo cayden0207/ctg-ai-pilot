@@ -20,8 +20,15 @@ export default function AuthCallback() {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
           if (error) throw error;
         } else {
-          // Magic Link / Hash token style callback
-          const { error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+          // Magic Link / Hash-token style callback
+          const hash = window.location.hash || '';
+          const sp = new URLSearchParams(hash.replace(/^#/, ''));
+          const access_token = sp.get('access_token');
+          const refresh_token = sp.get('refresh_token');
+          if (!access_token || !refresh_token) {
+            throw new Error('缺少 code 或 token');
+          }
+          const { error } = await supabase.auth.setSession({ access_token, refresh_token });
           if (error) throw error;
         }
 
