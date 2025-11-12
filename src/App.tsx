@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navigation } from './components/Navigation';
 import { DwhyGenerator } from './pages/DwhyGenerator';
-import { NineGridFormulaGenerator } from './pages/NineGridFormulaGenerator';
+import { NineGridAnalyzer } from './pages/NineGridAnalyzer';
 import { CTGMindset } from './pages/CTGMindset';
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
           {/* Page Content */}
           <main className="flex-1 overflow-auto">
             <Routes>
-              <Route path="/" element={<NineGridFormulaGenerator />} />
+              <Route path="/" element={<NineGridAnalyzer />} />
               <Route path="/nine-grid" element={<DwhyGenerator />} />
               <Route path="/ctg-mindset" element={<CTGMindset />} />
               <Route path="/analytics" element={<ComingSoon title="数据分析" />} />

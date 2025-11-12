@@ -1,19 +1,13 @@
 import React, { useState, useCallback } from 'react';
-import { Sparkles, Download, RefreshCw, Lock, Unlock, Target, Zap } from 'lucide-react';
+import { RefreshCw, Lock, Unlock, Target, Zap, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { 
-  generateDimensionKeywords, 
-  generateSimpleTopics, 
-  exportSimpleTopics,
+import {
+  generateDimensionKeywords,
   TRIGGER_DIMENSIONS,
-  TriggerDimension,
-  SimpleTopic
+  TriggerDimension
 } from '../utils/nineGridFormulaAPI';
 import { LoadingOverlay } from '../components/LoadingSpinner';
 import { ApiStatus } from '../components/ApiStatus';
-
-// 默认生成数量
-const DEFAULT_SETS = 3; // 默认生成3 SET（18条）
 
 // 九宫格位置映射
 const gridPositions = [
@@ -38,15 +32,16 @@ interface GridCellProps {
   onLockToggle?: () => void;
 }
 
-function GridCell({ 
-  dimension, 
-  isCenter, 
-  centerTopic, 
-  onCenterTopicChange, 
-  onRefresh, 
+function GridCell({
+  dimension,
+  isCenter,
+  centerTopic,
+  onCenterTopicChange,
+  onRefresh,
   isLoading,
-  onLockToggle 
+  onLockToggle
 }: GridCellProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   if (isCenter) {
     return (
       <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-xl">
@@ -107,25 +102,40 @@ function GridCell({
       </div>
       
       <p className="text-xs text-gray-500 mb-3">{dimension.description}</p>
-      
-      <div className="space-y-1 max-h-20 overflow-y-auto">
+
+      <div className="space-y-1">
         {dimension.keywords.length > 0 ? (
-          <div className="flex flex-wrap gap-1">
-            {dimension.keywords.slice(0, 6).map((keyword, index) => (
-              <span 
-                key={index} 
-                className="text-xs text-gray-700 bg-gray-100 hover:bg-blue-100 px-2 py-1 rounded-full cursor-pointer transition-colors"
-                title={keyword}
+          <>
+            <div className={cn("flex flex-wrap gap-1", !isExpanded && "max-h-20 overflow-hidden")}>
+              {(isExpanded ? dimension.keywords : dimension.keywords.slice(0, 4)).map((keyword, index) => (
+                <span
+                  key={index}
+                  className="text-xs text-gray-700 bg-gray-100 hover:bg-blue-100 px-2 py-1 rounded-full cursor-pointer transition-colors"
+                  title={keyword}
+                >
+                  {isExpanded || keyword.length <= 12 ? keyword : `${keyword.slice(0, 10)}...`}
+                </span>
+              ))}
+            </div>
+            {dimension.keywords.length > 4 && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 mt-1"
               >
-                {keyword.length > 8 ? `${keyword.slice(0, 8)}...` : keyword}
-              </span>
-            ))}
-            {dimension.keywords.length > 6 && (
-              <span className="text-xs text-gray-400 px-1">
-                +{dimension.keywords.length - 6}
-              </span>
+                {isExpanded ? (
+                  <>
+                    <ChevronUp className="w-3 h-3" />
+                    收起
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-3 h-3" />
+                    展开全部 ({dimension.keywords.length}个)
+                  </>
+                )}
+              </button>
             )}
-          </div>
+          </>
         ) : (
           <div className="text-xs text-gray-400 text-center py-4 border-2 border-dashed border-gray-200 rounded">
             <RefreshCw className="w-4 h-4 mx-auto mb-1 opacity-50" />
@@ -137,80 +147,13 @@ function GridCell({
   );
 }
 
-interface TitleResultsProps {
-  titles: SimpleTopic[];
-  isLoading: boolean;
-  onCopy: (title: string) => void;
-}
 
-function TitleResults({ titles, isLoading, onCopy }: TitleResultsProps) {
-  const [copiedTitle, setCopiedTitle] = useState<string>('');
-
-  const handleCopy = (title: string) => {
-    navigator.clipboard.writeText(title);
-    setCopiedTitle(title);
-    setTimeout(() => setCopiedTitle(''), 2000);
-    onCopy(title);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded mb-4"></div>
-          <div className="space-y-3">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <div key={i} className="h-3 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (titles.length === 0) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 text-center">
-        <div className="text-gray-400 mb-2">
-          <Sparkles className="w-12 h-12 mx-auto" />
-        </div>
-        <p className="text-gray-600">输入主题并生成关键词后，点击"生成选题"开始创作</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
-      {titles.map((title, index) => (
-        <div key={index} className="group flex items-center justify-between p-2 bg-white rounded-lg border hover:bg-gray-50">
-          <span className="text-sm text-gray-700 flex-1">{title}</span>
-          <button
-            onClick={() => handleCopy(title)}
-            className={cn(
-              "ml-2 px-2 py-1 text-xs rounded transition-colors",
-              copiedTitle === title
-                ? "bg-green-100 text-green-700"
-                : "bg-gray-100 hover:bg-gray-200 text-gray-600 opacity-0 group-hover:opacity-100"
-            )}
-          >
-            {copiedTitle === title ? '已复制' : '复制'}
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export function NineGridFormulaGenerator() {
+export function NineGridAnalyzer() {
   const [centerTopic, setCenterTopic] = useState('');
   const [dimensions, setDimensions] = useState<TriggerDimension[]>(
     TRIGGER_DIMENSIONS.map(dim => ({ ...dim, keywords: [], locked: false, selectedKeywords: [] }))
   );
-  const selectedSet = DEFAULT_SETS; // 固定使用3 SET
-  const [generatedTitles, setGeneratedTitles] = useState<SimpleTopic[]>([]);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
-  const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
-  const [stats, setStats] = useState({ totalGenerated: 0, totalCopied: 0 });
 
   const handleGenerateAllKeywords = useCallback(async () => {
     if (!centerTopic.trim()) return;
@@ -256,61 +199,16 @@ export function NineGridFormulaGenerator() {
   }, [centerTopic]);
 
   const handleToggleLock = useCallback((dimensionId: string) => {
-    setDimensions(prev => prev.map(dim => 
+    setDimensions(prev => prev.map(dim =>
       dim.id === dimensionId ? { ...dim, locked: !dim.locked } : dim
     ));
   }, []);
 
-  const handleGenerateTitles = useCallback(async () => {
-    if (!centerTopic.trim()) return;
-    
-    // 检查是否有关键词
-    const hasKeywords = dimensions.some(dim => dim.keywords.length > 0);
-    if (!hasKeywords) {
-      alert('请先生成关键词');
-      return;
-    }
-
-    setIsGeneratingTitles(true);
-    try {
-      const titles = await generateSimpleTopics(centerTopic, dimensions, selectedSet);
-      setGeneratedTitles(titles);
-      
-      // 计算生成的标题总数
-      setStats(prev => ({ ...prev, totalGenerated: prev.totalGenerated + titles.length }));
-    } catch (error) {
-      console.error('生成标题失败:', error);
-      alert('生成标题失败，请检查网络连接');
-    } finally {
-      setIsGeneratingTitles(false);
-    }
-  }, [centerTopic, dimensions, selectedSet]);
-
-  const handleCopy = useCallback(() => {
-    setStats(prev => ({ ...prev, totalCopied: prev.totalCopied + 1 }));
-  }, []);
-
-  const handleExport = useCallback(() => {
-    if (generatedTitles.length === 0) {
-      alert('没有可导出的标题');
-      return;
-    }
-
-    const content = exportSimpleTopics(generatedTitles, centerTopic, 'txt');
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `九宫格爆款标题_${centerTopic}_${selectedSet}SET_${new Date().toLocaleDateString()}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [generatedTitles, centerTopic, selectedSet]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-      <LoadingOverlay 
-        isVisible={isGeneratingKeywords || isGeneratingTitles} 
-        message={isGeneratingKeywords ? "正在生成关键词..." : "正在生成爆款标题..."} 
+      <LoadingOverlay
+        isVisible={isGeneratingKeywords}
+        message="正在生成关键词..."
       />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -320,8 +218,8 @@ export function NineGridFormulaGenerator() {
             <div className="flex items-center">
               <Zap className="h-8 w-8 text-yellow-500 mr-3" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">九宫格爆款选题生成器</h1>
-                <p className="text-gray-600 mt-1">核心主题 + 8个创意触发维度，批量生成简洁选题</p>
+                <h1 className="text-3xl font-bold text-gray-900">9宫格题材分析器</h1>
+                <p className="text-gray-600 mt-1">输入核心题材，获得8个维度的创意关键词进行头脑风暴</p>
               </div>
             </div>
             <ApiStatus />
@@ -331,8 +229,8 @@ export function NineGridFormulaGenerator() {
         {/* Control Panel */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="text-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">爆款选题生成控制台</h2>
-            <p className="text-sm text-gray-600">输入主题 → 生成关键词 → 生成选题</p>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">题材分析控制台</h2>
+            <p className="text-sm text-gray-600">输入核心题材，AI将为您生成8个维度的创意关键词</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <button
@@ -347,46 +245,6 @@ export function NineGridFormulaGenerator() {
               <RefreshCw className={cn("w-4 h-4 mr-2 inline", isGeneratingKeywords && "animate-spin")} />
               生成关键词
             </button>
-
-            <button
-              onClick={handleGenerateTitles}
-              disabled={!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)}
-              className={cn(
-                "px-6 py-3 rounded-lg font-medium transition-all",
-                "bg-gradient-to-r from-green-500 to-green-600 text-white",
-                "hover:from-green-600 hover:to-green-700",
-                (!centerTopic.trim() || isGeneratingTitles || dimensions.every(d => d.keywords.length === 0)) && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <Sparkles className="w-4 h-4 mr-2 inline" />
-              生成{selectedSet}SET选题
-            </button>
-
-            <button
-              onClick={handleExport}
-              disabled={generatedTitles.length === 0}
-              className={cn(
-                "px-6 py-3 rounded-lg font-medium transition-all",
-                "bg-gray-600 text-white hover:bg-gray-700",
-                generatedTitles.length === 0 && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <Download className="w-4 h-4 mr-2 inline" />
-              导出选题
-            </button>
-
-            <div className="ml-auto bg-gray-50 rounded-lg px-4 py-2">
-              <div className="flex gap-6 text-center">
-                <div>
-                  <p className="text-xs text-gray-500">已生成</p>
-                  <p className="text-xl font-bold text-gray-900">{stats.totalGenerated}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">已复制</p>
-                  <p className="text-xl font-bold text-gray-900">{stats.totalCopied}</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -408,13 +266,6 @@ export function NineGridFormulaGenerator() {
             );
           })}
         </div>
-
-        {/* Results */}
-        <TitleResults
-          titles={generatedTitles}
-          isLoading={isGeneratingTitles}
-          onCopy={handleCopy}
-        />
 
         {/* Quality Tips */}
         <div className="mt-8 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-6">
@@ -449,20 +300,20 @@ export function NineGridFormulaGenerator() {
           <h3 className="font-semibold text-blue-900 mb-4">📋 使用说明</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
             <div>
-              <h4 className="font-medium mb-2">1. 输入核心主题</h4>
+              <h4 className="font-medium mb-2">1. 输入核心题材</h4>
               <p>在中心格输入你的行业/产品/服务关键词，例如：SPC地板、婚礼摄影、咖啡馆经营</p>
             </div>
             <div>
               <h4 className="font-medium mb-2">2. 生成关键词</h4>
-              <p>系统会为8个维度生成相关关键词，可以锁定满意的维度或单独刷新</p>
+              <p>AI会为8个维度生成相关关键词，每个维度代表不同的创意角度</p>
             </div>
             <div>
-              <h4 className="font-medium mb-2">3. 选择SET数量</h4>
-               <p>1 SET = 7条选题，3 SET = 21条选题，5 SET = 35条选题</p>
+              <h4 className="font-medium mb-2">3. 灵活调整</h4>
+               <p>可以锁定满意的维度，单独刷新不满意的维度，直到获得理想的关键词组合</p>
             </div>
             <div>
-               <h4 className="font-medium mb-2">4. 生成选题</h4>
-               <p>结合关键词生成适配短视频平台的简洁选题</p>
+               <h4 className="font-medium mb-2">4. 头脑风暴</h4>
+               <p>使用这些关键词作为创意起点，进行内容创作的头脑风暴</p>
             </div>
           </div>
         </div>

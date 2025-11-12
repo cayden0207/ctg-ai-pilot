@@ -26,7 +26,7 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   {
     id: 'nine-grid-formula',
-    name: '九宫格爆款生成器',
+    name: '9宫格题材分析',
     href: '/',
     icon: Grid3x3,
   },
