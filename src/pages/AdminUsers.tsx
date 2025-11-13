@@ -28,6 +28,7 @@ function AdminUsers() {
   const [months, setMonths] = useState<number>(12);
   const [creating, setCreating] = useState(false);
   const [magicLink, setMagicLink] = useState<string | null>(null);
+  const [sentEmail, setSentEmail] = useState<boolean | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -68,6 +69,7 @@ function AdminUsers() {
       const json = await resp.json();
       if (!resp.ok) throw new Error(json?.error || '创建失败');
       setMagicLink(json?.magicLink || null);
+      setSentEmail(!!json?.sentEmail);
       setEmail('');
       setName('');
       setMonths(12);
@@ -97,9 +99,19 @@ function AdminUsers() {
           </select>
           <button onClick={handleCreate} disabled={creating} className="bg-purple-600 text-white rounded px-4 py-2 hover:bg-purple-700 disabled:opacity-60">{creating ? '创建中…' : '创建用户并生成Magic Link'}</button>
         </div>
-        {magicLink && (
+        {(magicLink || sentEmail !== null) && (
           <div className="text-sm text-gray-700 mt-3 break-all">
-            Magic Link（复制发给用户）: <a className="text-purple-700 underline" href={magicLink} target="_blank" rel="noreferrer">{magicLink}</a>
+            {sentEmail ? (
+              <span className="text-green-700">登录邮件已发送至 {email || '该用户邮箱'}。</span>
+            ) : sentEmail === false ? (
+              <span className="text-yellow-700">邮件发送未确认，请手动复制 Magic Link 发给用户。</span>
+            ) : null}
+            {magicLink && (
+              <>
+                <br />
+                Magic Link（复制发给用户）: <a className="text-purple-700 underline" href={magicLink} target="_blank" rel="noreferrer">{magicLink}</a>
+              </>
+            )}
           </div>
         )}
       </div>

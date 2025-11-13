@@ -1,4 +1,4 @@
-import { getAdminClient, verifyBearer } from '../_lib/supabase.js';
+import { getAdminClient, getAnonServerClient, verifyBearer } from '../_lib/supabase.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -40,7 +40,18 @@ export default async function handler(req: any, res: any) {
     }, { onConflict: 'user_id' });
     if (upErr) return res.status(500).json({ error: upErr.message });
 
-    return res.status(200).json({ ok: true, userId, magicLink });
+    // 尝试发送登录邮件（可选）。若失败，不阻塞创建流程。
+    let sentEmail = false;
+    try {
+      const anon = getAnonServerClient();
+      const { error: mailErr } = await anon.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirectTo, shouldCreateUser: false },
+      } as any);
+      if (!mailErr) sentEmail = true;
+    } catch {}
+
+    return res.status(200).json({ ok: true, userId, magicLink, sentEmail });
   } catch (e: any) {
     return res.status(500).json({ error: 'server_error', detail: String(e?.message || e) });
   }
