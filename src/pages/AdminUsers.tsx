@@ -136,6 +136,7 @@ function AdminUsers() {
               const expired = r.expiration_at && new Date(r.expiration_at) < new Date();
               const revoked = !!r.revoked_at;
               const status = revoked ? 'Revoked' : (expired ? 'Expired' : 'Active');
+              const roleLabel = r.role === 'admin' ? 'Admin' : 'Member';
               const renew = async (days?: number) => {
                 try {
                   const { data } = await supabase.auth.getSession();
@@ -189,11 +190,60 @@ function AdminUsers() {
                   fetchUsers();
                 } catch (e: any) { alert(e?.message || '恢复失败'); }
               };
+              const updateUser = async (payload: any) => {
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const resp = await fetch('/api/admin/update-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ user_id: r.id, ...payload }),
+                  });
+                  const json = await resp.json().catch(() => ({}));
+                  if (!resp.ok) throw new Error(json?.error || '更新失败');
+                  fetchUsers();
+                } catch (e: any) { alert(e?.message || '更新失败'); }
+              };
+              const editUser = async () => {
+                const newEmail = window.prompt('修改邮箱（留空则不变）', r.email || '');
+                const newName = window.prompt('修改姓名（留空则不变）', r.name || '');
+                const payload: any = {};
+                if (newEmail && newEmail !== r.email) payload.email = newEmail;
+                if (newName !== null && newName !== r.name) payload.name = newName;
+                if (Object.keys(payload).length === 0) return;
+                await updateUser(payload);
+              };
+              const toggleRole = async () => {
+                const nextRole = r.role === 'admin' ? 'member' : 'admin';
+                if (!window.confirm(`确认将该用户设为 ${nextRole === 'admin' ? '管理员' : '普通会员'}？`)) return;
+                await updateUser({ role: nextRole });
+              };
+              const resendMagic = async () => {
+                try {
+                  const { data } = await supabase.auth.getSession();
+                  const token = data.session?.access_token;
+                  const resp = await fetch('/api/admin/resend-magic-link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ user_id: r.id }),
+                  });
+                  const json = await resp.json().catch(() => ({}));
+                  if (!resp.ok) throw new Error(json?.error || '重发失败');
+                  const msg = json?.sentEmail
+                    ? '登录邮件已重新发送给用户。'
+                    : '已生成新的 Magic Link，请手动发送给用户。';
+                  if (json?.magicLink) {
+                    alert(`${msg}\n\nMagic Link: ${json.magicLink}`);
+                  } else {
+                    alert(msg);
+                  }
+                } catch (e: any) { alert(e?.message || '重发失败'); }
+              };
               return (
                 <tr key={r.id} className="border-t">
                   <td className="p-3">{r.email}</td>
                   <td className="p-3">{r.name || '-'}</td>
-                  <td className="p-3">{r.role || 'member'}</td>
+                  <td className="p-3">{roleLabel}</td>
                   <td className="p-3">{r.expiration_at ? new Date(r.expiration_at).toLocaleDateString() : '-'}</td>
                   <td className="p-3">{status}</td>
                   <td className="p-3 space-x-2">
@@ -204,6 +254,11 @@ function AdminUsers() {
                     ) : (
                       <button onClick={restore} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">恢复</button>
                     )}
+                    <button onClick={editUser} className="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded hover:bg-gray-100">编辑</button>
+                    <button onClick={toggleRole} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">
+                      {r.role === 'admin' ? '降为Member' : '设为Admin'}
+                    </button>
+                    <button onClick={resendMagic} className="text-xs bg-orange-50 text-orange-700 px-2 py-1 rounded hover:bg-orange-100">重发邮件</button>
                   </td>
                 </tr>
               );
