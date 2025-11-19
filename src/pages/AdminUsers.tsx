@@ -32,8 +32,15 @@ function AdminUsers() {
   const [search, setSearch] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'admin' | 'member'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'expired' | 'revoked'>('all');
-  const [sortKey, setSortKey] = useState<'email' | 'expiration' | 'status'>('expiration');
+  const [sortKey, setSortKey] = useState<'email' | 'expiration' | 'status' | 'lastLogin'>('expiration');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+  const [editEmail, setEditEmail] = useState('');
+  const [editName, setEditName] = useState('');
+  const [editRole, setEditRole] = useState<'admin' | 'member'>('member');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -45,6 +52,7 @@ function AdminUsers() {
       });
       const json = await resp.json();
       setRows(json?.users || []);
+      setSelectedIds([]);
     } finally {
       setLoading(false);
     }
@@ -86,6 +94,67 @@ function AdminUsers() {
     }
   };
 
+  const updateUser = async (userId: string, payload: any) => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      const resp = await fetch('/api/admin/update-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ user_id: userId, ...payload }),
+      });
+      const json = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(json?.error || '更新失败');
+      await fetchUsers();
+    } catch (e: any) {
+      alert(e?.message || '更新失败');
+      throw e;
+    }
+  };
+
+  const runBulk = async (action: 'renew30' | 'revoke' | 'restore') => {
+    if (!selectedIds.length) {
+      alert('请先勾选要操作的用户');
+      return;
+    }
+    if (action === 'revoke' && !window.confirm(`确认撤销 ${selectedIds.length} 个用户的访问权限？`)) return;
+    if (action === 'restore' && !window.confirm(`确认恢复 ${selectedIds.length} 个用户的访问权限？`)) return;
+    setBulkBusy(true);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+      const errs: string[] = [];
+      for (const id of selectedIds) {
+        try {
+          if (action === 'renew30') {
+            const resp = await fetch('/api/admin/renew', {
+              method: 'POST', headers, body: JSON.stringify({ user_id: id, days: 30 }),
+            });
+            if (!resp.ok) errs.push(await resp.text());
+          } else if (action === 'revoke') {
+            const resp = await fetch('/api/admin/revoke', {
+              method: 'POST', headers, body: JSON.stringify({ user_id: id }),
+            });
+            if (!resp.ok) errs.push(await resp.text());
+          } else if (action === 'restore') {
+            const resp = await fetch('/api/admin/restore', {
+              method: 'POST', headers, body: JSON.stringify({ user_id: id }),
+            });
+            if (!resp.ok) errs.push(await resp.text());
+          }
+        } catch (e: any) {
+          errs.push(String(e?.message || e));
+        }
+      }
+      if (errs.length) alert(`部分操作失败：\n${errs.slice(0, 3).join('\n')}${errs.length > 3 ? '\n...' : ''}`);
+      setSelectedIds([]);
+      await fetchUsers();
+    } finally {
+      setBulkBusy(false);
+    }
+  };
+
   const computeStatus = (row: UserRow) => {
     const expired = row.expiration_at && new Date(row.expiration_at) < new Date();
     const revoked = !!row.revoked_at;
@@ -119,13 +188,20 @@ function AdminUsers() {
         const db = b.expiration_at ? new Date(b.expiration_at).getTime() : 0;
         return (da - db) * dir;
       }
-      // status
-      const sa = computeStatus(a);
-      const sb = computeStatus(b);
-      return sa.localeCompare(sb) * dir;
+      if (sortKey === 'status') {
+        const sa = computeStatus(a);
+        const sb = computeStatus(b);
+        return sa.localeCompare(sb) * dir;
+      }
+      if (sortKey === 'lastLogin') {
+        const da = a.last_login_at ? new Date(a.last_login_at).getTime() : 0;
+        const db = b.last_login_at ? new Date(b.last_login_at).getTime() : 0;
+        return (da - db) * dir;
+      }
+      return 0;
     });
 
-  const toggleSort = (key: 'email' | 'expiration' | 'status') => {
+  const toggleSort = (key: 'email' | 'expiration' | 'status' | 'lastLogin') => {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -134,7 +210,7 @@ function AdminUsers() {
     }
   };
 
-  const sortLabel = (key: 'email' | 'expiration' | 'status') => {
+  const sortLabel = (key: 'email' | 'expiration' | 'status' | 'lastLogin') => {
     if (sortKey !== key) return '';
     return sortDir === 'asc' ? ' ↑' : ' ↓';
   };
@@ -195,7 +271,7 @@ function AdminUsers() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <div className="flex flex-wrap gap-2 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm items-center">
           <select
             className="border px-2 py-1 rounded"
             value={filterRole}
@@ -215,6 +291,29 @@ function AdminUsers() {
             <option value="expired">Expired</option>
             <option value="revoked">Revoked</option>
           </select>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => runBulk('renew30')}
+              disabled={bulkBusy || selectedIds.length === 0}
+              className="px-2 py-1 text-xs rounded border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-40"
+            >
+              批量+30天
+            </button>
+            <button
+              onClick={() => runBulk('revoke')}
+              disabled={bulkBusy || selectedIds.length === 0}
+              className="px-2 py-1 text-xs rounded border border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-40"
+            >
+              批量撤销
+            </button>
+            <button
+              onClick={() => runBulk('restore')}
+              disabled={bulkBusy || selectedIds.length === 0}
+              className="px-2 py-1 text-xs rounded border border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-40"
+            >
+              批量恢复
+            </button>
+          </div>
         </div>
       </div>
 
@@ -222,11 +321,28 @@ function AdminUsers() {
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 text-gray-600">
             <tr>
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300"
+                  checked={filteredAndSorted.length > 0 && selectedIds.length === filteredAndSorted.length}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedIds(filteredAndSorted.map((u) => u.id));
+                    } else {
+                      setSelectedIds([]);
+                    }
+                  }}
+                />
+              </th>
               <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('email')}>
                 邮箱{sortLabel('email')}
               </th>
               <th className="text-left p-3">姓名</th>
               <th className="text-left p-3">角色</th>
+              <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('lastLogin')}>
+                最后登录{sortLabel('lastLogin')}
+              </th>
               <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('expiration')}>
                 到期{sortLabel('expiration')}
               </th>
@@ -238,11 +354,12 @@ function AdminUsers() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="p-3 text-gray-500">加载中…</td></tr>
+              <tr><td colSpan={8} className="p-3 text-gray-500">加载中…</td></tr>
             ) : filteredAndSorted.length === 0 ? (
-              <tr><td colSpan={5} className="p-3 text-gray-500">暂无用户</td></tr>
+              <tr><td colSpan={8} className="p-3 text-gray-500">暂无用户</td></tr>
             ) : filteredAndSorted.map(r => {
               const statusKey = computeStatus(r);
+              const revoked = !!r.revoked_at;
               const status = statusKey === 'revoked' ? 'Revoked' : statusKey === 'expired' ? 'Expired' : 'Active';
               const roleLabel = r.role === 'admin' ? 'Admin' : 'Member';
               const renew = async (days?: number) => {
@@ -298,33 +415,16 @@ function AdminUsers() {
                   fetchUsers();
                 } catch (e: any) { alert(e?.message || '恢复失败'); }
               };
-              const updateUser = async (payload: any) => {
-                try {
-                  const { data } = await supabase.auth.getSession();
-                  const token = data.session?.access_token;
-                  const resp = await fetch('/api/admin/update-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                    body: JSON.stringify({ user_id: r.id, ...payload }),
-                  });
-                  const json = await resp.json().catch(() => ({}));
-                  if (!resp.ok) throw new Error(json?.error || '更新失败');
-                  fetchUsers();
-                } catch (e: any) { alert(e?.message || '更新失败'); }
-              };
-              const editUser = async () => {
-                const newEmail = window.prompt('修改邮箱（留空则不变）', r.email || '');
-                const newName = window.prompt('修改姓名（留空则不变）', r.name || '');
-                const payload: any = {};
-                if (newEmail && newEmail !== r.email) payload.email = newEmail;
-                if (newName !== null && newName !== r.name) payload.name = newName;
-                if (Object.keys(payload).length === 0) return;
-                await updateUser(payload);
+              const editUser = () => {
+                setEditingUser(r);
+                setEditEmail(r.email || '');
+                setEditName(r.name || '');
+                setEditRole(r.role === 'admin' ? 'admin' : 'member');
               };
               const toggleRole = async () => {
                 const nextRole = r.role === 'admin' ? 'member' : 'admin';
                 if (!window.confirm(`确认将该用户设为 ${nextRole === 'admin' ? '管理员' : '普通会员'}？`)) return;
-                await updateUser({ role: nextRole });
+                await updateUser(r.id, { role: nextRole });
               };
               const resendMagic = async () => {
                 try {
@@ -347,13 +447,37 @@ function AdminUsers() {
                   }
                 } catch (e: any) { alert(e?.message || '重发失败'); }
               };
+              const checked = selectedIds.includes(r.id);
+              const statusClass = statusKey === 'revoked'
+                ? 'bg-red-50 text-red-700'
+                : statusKey === 'expired'
+                  ? 'bg-yellow-50 text-yellow-700'
+                  : 'bg-green-50 text-green-700';
+
               return (
                 <tr key={r.id} className="border-t">
+                  <td className="p-3">
+                    <input
+                      type="checkbox"
+                      className="rounded border-gray-300"
+                      checked={checked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds((prev) => prev.includes(r.id) ? prev : [...prev, r.id]);
+                        } else {
+                          setSelectedIds((prev) => prev.filter((id) => id !== r.id));
+                        }
+                      }}
+                    />
+                  </td>
                   <td className="p-3">{r.email}</td>
                   <td className="p-3">{r.name || '-'}</td>
                   <td className="p-3">{roleLabel}</td>
+                  <td className="p-3">{r.last_login_at ? new Date(r.last_login_at).toLocaleString() : '-'}</td>
                   <td className="p-3">{r.expiration_at ? new Date(r.expiration_at).toLocaleDateString() : '-'}</td>
-                  <td className="p-3">{status}</td>
+                  <td className="p-3">
+                    <span className={`inline-flex px-2 py-1 rounded-full text-xs ${statusClass}`}>{status}</span>
+                  </td>
                   <td className="p-3 space-x-2">
                     <button onClick={() => renew(30)} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">+30天</button>
                     <button onClick={renewToDate} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">设日期</button>
@@ -374,6 +498,88 @@ function AdminUsers() {
           </tbody>
         </table>
       </div>
+
+      {editingUser && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
+            <h2 className="text-lg font-semibold">编辑用户</h2>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">邮箱</label>
+                <input
+                  className="w-full border px-3 py-2 rounded"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="user@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">姓名</label>
+                <input
+                  className="w-full border px-3 py-2 rounded"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="姓名（可选）"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">角色</label>
+                <select
+                  className="w-full border px-3 py-2 rounded"
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value as 'admin' | 'member')}
+                >
+                  <option value="member">Member</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => !savingEdit && setEditingUser(null)}
+                className="px-4 py-2 text-sm rounded border border-gray-200 text-gray-700 hover:bg-gray-50"
+              >
+                取消
+              </button>
+              <button
+                onClick={async () => {
+                  if (!editingUser) return;
+                  const payload: any = {};
+                  const emailTrim = editEmail.trim();
+                  if (!emailTrim) {
+                    alert('邮箱不能为空');
+                    return;
+                  }
+                  const emailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailTrim);
+                  if (!emailValid) {
+                    alert('请输入有效邮箱');
+                    return;
+                  }
+                  if (emailTrim !== editingUser.email) payload.email = emailTrim;
+                  const nameTrim = editName.trim();
+                  if (nameTrim !== (editingUser.name || '')) payload.name = nameTrim;
+                  if (editRole !== (editingUser.role === 'admin' ? 'admin' : 'member')) payload.role = editRole;
+                  if (Object.keys(payload).length === 0) {
+                    setEditingUser(null);
+                    return;
+                  }
+                  try {
+                    setSavingEdit(true);
+                    await updateUser(editingUser.id, payload);
+                    setEditingUser(null);
+                  } finally {
+                    setSavingEdit(false);
+                  }
+                }}
+                disabled={savingEdit}
+                className="px-4 py-2 text-sm rounded bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-60"
+              >
+                {savingEdit ? '保存中…' : '保存'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
