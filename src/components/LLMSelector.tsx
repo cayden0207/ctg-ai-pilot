@@ -1,104 +1,48 @@
 import React from 'react';
-import { Bot } from 'lucide-react';
+import { Bot, Cpu } from 'lucide-react';
+import { useMembership } from '../hooks/useMembership';
 import { cn } from '../utils/cn';
-import { LLMProvider, getCurrentLLMProvider, setLLMProvider } from '../utils/openaiAPI';
+import { getLLMConfig, setLLMModel } from '../utils/openaiAPI';
 
-interface LLMSelectorProps {
-  className?: string;
-}
+export function LLMSelector() {
+  const [model, setModel] = React.useState(getLLMConfig().model);
+  const { isAdmin } = useMembership();
 
-export function LLMSelector({ className }: LLMSelectorProps) {
-  const [selectedProvider, setSelectedProvider] = React.useState<LLMProvider>(getCurrentLLMProvider());
-
-  const handleProviderChange = (provider: LLMProvider) => {
-    setSelectedProvider(provider);
-    setLLMProvider(provider);
-    // 通知其他组件（如 ApiStatus）更新状态
-    try {
-      window.dispatchEvent(new CustomEvent('llm-provider-changed', { detail: { provider } }));
-    } catch {}
+  const handleModelChange = (newModel: 'gpt-4' | 'deepseek-chat') => {
+    setLLMModel(newModel);
+    setModel(newModel);
   };
 
-  const providers = [
-    {
-      id: 'openai' as LLMProvider,
-      name: 'OpenAI',
-      model: (import.meta.env.VITE_OPENAI_MODEL as string) || 'gpt-4o-mini',
-      icon: Bot,
-      color: 'from-green-500 to-green-600',
-      description: '稳定可靠的选择'
-    },
-    {
-      id: 'deepseek' as LLMProvider,
-      name: 'DeepSeek',
-      model: (import.meta.env.VITE_DEEPSEEK_MODEL as string) || 'deepseek-chat',
-      icon: Bot,
-      color: 'from-purple-500 to-purple-600',
-      description: '中文表现优秀'
-    }
-  ];
+  // 只有管理员才能看到这个选择器
+  if (!isAdmin) return null;
 
   return (
-    <div className={cn("bg-white rounded-lg shadow-sm border border-gray-200 p-4", className)}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-900">AI 模型选择</h3>
-        <div className="flex items-center space-x-1">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-xs text-gray-500">在线</span>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        {providers.map((provider) => {
-          const IconComponent = provider.icon;
-          const isSelected = selectedProvider === provider.id;
-          
-          return (
-            <button
-              key={provider.id}
-              onClick={() => handleProviderChange(provider.id)}
-              className={cn(
-                "w-full flex items-center justify-between p-3 rounded-lg border-2 transition-all duration-200",
-                isSelected
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-              )}
-            >
-              <div className="flex items-center space-x-3">
-                <div className={cn(
-                  "w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-r text-white",
-                  provider.color
-                )}>
-                  <IconComponent className="w-4 h-4" />
-                </div>
-                <div className="text-left">
-                  <div className="font-medium text-gray-900">{provider.name}</div>
-                  <div className="text-xs text-gray-500">{provider.model}</div>
-                </div>
-              </div>
-              
-              <div className="text-right">
-                <div className="text-xs text-gray-500">{provider.description}</div>
-                {isSelected && (
-                  <div className="flex items-center justify-end mt-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="ml-1 text-xs text-blue-600">已选择</span>
-                  </div>
-                )}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
-        <div className="flex items-start space-x-2">
-          <div className="w-1 h-1 bg-amber-500 rounded-full mt-1.5"></div>
-          <p className="text-xs text-amber-800">
-            不同模型可能产生不同风格的爆款选题，建议对比测试效果
-          </p>
-        </div>
-      </div>
+    <div className="flex items-center bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+      <button
+        onClick={() => handleModelChange('gpt-4')}
+        className={cn(
+          "flex items-center px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200",
+          model === 'gpt-4'
+            ? "bg-primary-50 text-primary-700 shadow-sm ring-1 ring-primary-200"
+            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+        )}
+      >
+        <Bot className="w-3.5 h-3.5 mr-1.5" />
+        GPT-4
+      </button>
+      <div className="w-px h-4 bg-gray-200 mx-1" />
+      <button
+        onClick={() => handleModelChange('deepseek-chat')}
+        className={cn(
+          "flex items-center px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200",
+          model === 'deepseek-chat'
+            ? "bg-primary-50 text-primary-700 shadow-sm ring-1 ring-primary-200"
+            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+        )}
+      >
+        <Cpu className="w-3.5 h-3.5 mr-1.5" />
+        DeepSeek
+      </button>
     </div>
   );
-} 
+}

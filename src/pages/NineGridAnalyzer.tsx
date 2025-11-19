@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { RefreshCw, Lock, Unlock, Target, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { RefreshCw, Lock, Unlock, Target, Zap, ChevronDown, ChevronUp, Sparkles, Info, Grid3x3 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import {
   generateDimensionKeywords,
@@ -42,106 +42,129 @@ function GridCell({
   onLockToggle
 }: GridCellProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // 核心卡片 (Center Card)
   if (isCenter) {
     return (
-      <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-xl">
-        <div className="flex items-center justify-center mb-4">
-          <Target className="w-8 h-8" />
+      <div className="relative overflow-hidden rounded-2xl shadow-2xl transform hover:scale-[1.02] transition-all duration-300 group">
+        {/* 动态背景 */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-700 text-white z-0" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-0 mix-blend-overlay" />
+        
+        {/* 内容层 */}
+        <div className="relative z-10 p-6 flex flex-col items-center justify-center h-full min-h-[280px]">
+          <div className="mb-5 p-3 bg-white/10 rounded-full backdrop-blur-md shadow-inner ring-1 ring-white/20">
+            <Target className="w-8 h-8 text-white" />
+          </div>
+          
+          <h3 className="text-lg font-bold text-white mb-4 tracking-wide">核心题材</h3>
+          
+          <div className="w-full max-w-[240px] relative group/input">
+            <input
+              type="text"
+              value={centerTopic}
+              onChange={(e) => onCenterTopicChange?.(e.target.value)}
+              placeholder="例如：护胃奶粉"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 backdrop-blur-sm rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent text-center font-medium transition-all"
+            />
+            <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover/input:opacity-100 pointer-events-none transition-opacity" />
+          </div>
+          
+          <p className="text-xs text-primary-100 text-center mt-4 max-w-[200px] leading-relaxed">
+            输入产品或服务名称<br/>AI 将围绕此核心展开头脑风暴
+          </p>
         </div>
-        <h3 className="text-lg font-bold text-center mb-4">核心主题</h3>
-        <input
-          type="text"
-          value={centerTopic}
-          onChange={(e) => onCenterTopicChange?.(e.target.value)}
-          placeholder="例如：护胃奶粉"
-          className="w-full px-3 py-2 bg-white/20 backdrop-blur rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 text-center"
-        />
-        <p className="text-xs text-white/80 text-center mt-2">
-          请输入具体的产品或服务名称
-        </p>
-        <p className="text-xs text-white/60 text-center mt-1">
-          越具体越好，如"护胃奶粉"而非"奶粉"
-        </p>
       </div>
     );
   }
 
   if (!dimension) return null;
 
+  // 普通维度卡片 (Satellite Cards)
   return (
-    <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="font-semibold text-gray-900 text-sm">{dimension.name}</h4>
-        <div className="flex items-center gap-1">
+    <div className={cn(
+      "card flex flex-col h-full min-h-[280px] relative group transition-all duration-300",
+      dimension.locked ? "ring-2 ring-amber-400/50 bg-amber-50/30" : "hover:shadow-xl hover:-translate-y-1"
+    )}>
+      {/* Header */}
+      <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 rounded-t-xl">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-4 rounded-full bg-gradient-to-b from-primary-500 to-secondary-500" />
+          <h4 className="font-semibold text-gray-900 text-sm">{dimension.name}</h4>
+        </div>
+        
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <button
             onClick={onLockToggle}
             className={cn(
-              "p-1 rounded text-xs",
+              "p-1.5 rounded-md transition-colors",
               dimension.locked
-                ? "text-orange-600 bg-orange-50"
-                : "text-gray-400 hover:text-gray-600"
+                ? "text-amber-600 bg-amber-100 hover:bg-amber-200"
+                : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
             )}
-            title={dimension.locked ? "已锁定" : "点击锁定"}
+            title={dimension.locked ? "解锁" : "锁定此维度"}
           >
-            {dimension.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+            {dimension.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={onRefresh}
             disabled={isLoading || dimension.locked}
             className={cn(
-              "p-1 rounded text-xs",
+              "p-1.5 rounded-md transition-colors",
               (isLoading || dimension.locked) 
                 ? "text-gray-300 cursor-not-allowed" 
-                : "text-gray-400 hover:text-gray-600"
+                : "text-gray-400 hover:text-primary-600 hover:bg-primary-50"
             )}
-            title="刷新关键词"
+            title="重新生成此维度"
           >
-            <RefreshCw className={cn("w-3 h-3", isLoading && "animate-spin")} />
+            <RefreshCw className={cn("w-3.5 h-3.5", isLoading && "animate-spin")} />
           </button>
         </div>
       </div>
       
-      <p className="text-xs text-gray-500 mb-3">{dimension.description}</p>
+      {/* Content */}
+      <div className="p-4 flex-1 flex flex-col">
+        <p className="text-xs text-gray-500 mb-4 line-clamp-2 min-h-[2.5em] leading-relaxed">
+          {dimension.description}
+        </p>
 
-      <div className="space-y-1">
-        {dimension.keywords.length > 0 ? (
-          <>
-            <div className={cn("flex flex-wrap gap-1", !isExpanded && "max-h-20 overflow-hidden")}>
-              {(isExpanded ? dimension.keywords : dimension.keywords.slice(0, 4)).map((keyword, index) => (
-                <span
-                  key={index}
-                  className="text-xs text-gray-700 bg-gray-100 hover:bg-blue-100 px-2 py-1 rounded-full cursor-pointer transition-colors"
-                  title={keyword}
+        <div className="flex-1">
+          {dimension.keywords.length > 0 ? (
+            <div className="space-y-2">
+              <div className={cn(
+                "flex flex-wrap gap-2 content-start",
+                !isExpanded && "max-h-[140px] overflow-hidden"
+              )}>
+                {(isExpanded ? dimension.keywords : dimension.keywords.slice(0, 6)).map((keyword, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-700 hover:shadow-sm cursor-pointer transition-all select-none"
+                  >
+                    {keyword}
+                  </span>
+                ))}
+              </div>
+              
+              {dimension.keywords.length > 6 && (
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="w-full py-1 flex items-center justify-center gap-1 text-[10px] font-medium text-gray-400 hover:text-primary-600 transition-colors border-t border-gray-100 mt-2"
                 >
-                  {isExpanded || keyword.length <= 12 ? keyword : `${keyword.slice(0, 10)}...`}
-                </span>
-              ))}
+                  {isExpanded ? (
+                    <>收起 <ChevronUp className="w-3 h-3" /></>
+                  ) : (
+                    <>查看全部 ({dimension.keywords.length}) <ChevronDown className="w-3 h-3" /></>
+                  )}
+                </button>
+              )}
             </div>
-            {dimension.keywords.length > 4 && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 mt-1"
-              >
-                {isExpanded ? (
-                  <>
-                    <ChevronUp className="w-3 h-3" />
-                    收起
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-3 h-3" />
-                    展开全部 ({dimension.keywords.length}个)
-                  </>
-                )}
-              </button>
-            )}
-          </>
-        ) : (
-          <div className="text-xs text-gray-400 text-center py-4 border-2 border-dashed border-gray-200 rounded">
-            <RefreshCw className="w-4 h-4 mx-auto mb-1 opacity-50" />
-            点击刷新生成关键词
-          </div>
-        )}
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center py-8 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50/50">
+              <Sparkles className="w-6 h-6 mb-2 opacity-40" />
+              <span className="text-xs">等待灵感注入...</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -161,7 +184,7 @@ export function NineGridAnalyzer() {
     setIsGeneratingKeywords(true);
     try {
       const promises = dimensions.map(async (dimension) => {
-        if (dimension.locked) return dimension; // 跳过锁定的维度
+        if (dimension.locked) return dimension;
         
         try {
           const keywords = await generateDimensionKeywords(centerTopic, dimension.id);
@@ -205,115 +228,83 @@ export function NineGridAnalyzer() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="space-y-8 pb-12">
       <LoadingOverlay
         isVisible={isGeneratingKeywords}
-        message="正在生成关键词..."
+        message="AI 正在进行头脑风暴..."
       />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <Zap className="h-8 w-8 text-yellow-500 mr-3" />
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">9宫格题材分析器</h1>
-                <p className="text-gray-600 mt-1">输入核心题材，获得8个维度的创意关键词进行头脑风暴</p>
-              </div>
-            </div>
-            <ApiStatus />
-          </div>
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+            <Grid3x3 className="w-6 h-6 text-primary-600" />
+            9宫格题材分析器
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            基于 <span className="font-semibold text-gray-700">垂直九宫格方法论</span>，全方位拆解爆款潜质。
+          </p>
         </div>
-
-        {/* Control Panel */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
-          <div className="text-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">题材分析控制台</h2>
-            <p className="text-sm text-gray-600">输入核心题材，AI将为您生成8个维度的创意关键词</p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <button
-              onClick={handleGenerateAllKeywords}
-              disabled={!centerTopic.trim() || isGeneratingKeywords}
-              className={cn(
-                "px-6 py-3 rounded-lg font-medium transition-all",
-                "bg-blue-600 text-white hover:bg-blue-700",
-                (!centerTopic.trim() || isGeneratingKeywords) && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <RefreshCw className={cn("w-4 h-4 mr-2 inline", isGeneratingKeywords && "animate-spin")} />
-              生成关键词
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <ApiStatus />
+          <button
+            onClick={handleGenerateAllKeywords}
+            disabled={!centerTopic.trim() || isGeneratingKeywords}
+            className={cn(
+              "btn btn-primary shadow-lg shadow-primary-500/20",
+              (!centerTopic.trim() || isGeneratingKeywords) && "opacity-70 cursor-not-allowed shadow-none"
+            )}
+          >
+            <Sparkles className={cn("w-4 h-4 mr-2", isGeneratingKeywords && "animate-spin")} />
+            {isGeneratingKeywords ? '分析中...' : '开始分析'}
+          </button>
         </div>
+      </div>
 
-        {/* Nine Grid */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {gridPositions.map((pos, index) => {
-            const dimension = dimensions.find(d => d.id === pos.dimension);
-            return (
-              <GridCell
-                key={index}
-                dimension={dimension}
-                isCenter={pos.dimension === 'center'}
-                centerTopic={centerTopic}
-                onCenterTopicChange={setCenterTopic}
-                onRefresh={() => handleRefreshDimension(pos.dimension)}
-                onLockToggle={() => handleToggleLock(pos.dimension)}
-                isLoading={isGeneratingKeywords}
-              />
-            );
-          })}
-        </div>
+      {/* The Nine Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {gridPositions.map((pos, index) => {
+          const dimension = dimensions.find(d => d.id === pos.dimension);
+          return (
+            <GridCell
+              key={index}
+              dimension={dimension}
+              isCenter={pos.dimension === 'center'}
+              centerTopic={centerTopic}
+              onCenterTopicChange={setCenterTopic}
+              onRefresh={() => handleRefreshDimension(pos.dimension)}
+              onLockToggle={() => handleToggleLock(pos.dimension)}
+              isLoading={isGeneratingKeywords}
+            />
+          );
+        })}
+      </div>
 
-        {/* Quality Tips */}
-        <div className="mt-8 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-6">
-          <h3 className="font-semibold text-amber-900 mb-4">💡 生成质量提示</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-amber-800">
-            <div>
-              <h4 className="font-medium mb-2">✅ 高质量关键词特征</h4>
-              <ul className="space-y-1">
-                <li>• 与主题直接相关（如护胃奶粉→胃痛、消化慢）</li>
-                <li>• 具体场景化（餐后、熬夜后、孕期）</li>
-                <li>• 贴近日常生活用语</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">❌ 需要避免的关键词</h4>
-              <ul className="space-y-1">
-                <li>• 过于泛化（节庆聚餐、生活方式）</li>
-                <li>• 与主题无关（SPC地板出现在护胃产品中）</li>
-                <li>• 过于商业化的表达</li>
-              </ul>
-            </div>
+      {/* Quality Tips */}
+      <div className="bg-white rounded-xl border border-blue-100 p-6 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="p-2 bg-blue-50 rounded-lg shrink-0">
+            <Info className="w-5 h-5 text-blue-600" />
           </div>
-          <div className="mt-4 p-3 bg-white/50 rounded-lg">
-            <p className="text-sm text-amber-800">
-              💡 <strong>建议</strong>：如果生成的关键词不够精准，可以：1) 使用更具体的主题词 2) 点击单个维度的刷新按钮重新生成 3) 使用锁定功能保留满意的维度
-            </p>
-          </div>
-        </div>
-
-        {/* Instructions */}
-            <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-          <h3 className="font-semibold text-blue-900 mb-4">📋 使用说明</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
-            <div>
-              <h4 className="font-medium mb-2">1. 输入核心题材</h4>
-              <p>在中心格输入你的行业/产品/服务关键词，例如：SPC地板、婚礼摄影、咖啡馆经营</p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">2. 生成关键词</h4>
-              <p>AI会为8个维度生成相关关键词，每个维度代表不同的创意角度</p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">3. 灵活调整</h4>
-               <p>可以锁定满意的维度，单独刷新不满意的维度，直到获得理想的关键词组合</p>
-            </div>
-            <div>
-               <h4 className="font-medium mb-2">4. 头脑风暴</h4>
-               <p>使用这些关键词作为创意起点，进行内容创作的头脑风暴</p>
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-900 mb-2">如何获得最佳效果？</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm text-gray-600">
+              <p className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                输入具体的细分产品，而非泛泛的行业词
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                善用"锁定"功能保留满意的灵感
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                针对不满意的维度可以单独点击刷新
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                组合不同维度的关键词来构建故事
+              </p>
             </div>
           </div>
         </div>

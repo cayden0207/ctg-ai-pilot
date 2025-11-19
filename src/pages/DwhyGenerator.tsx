@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Target, Zap, AlertCircle } from 'lucide-react';
+import { Target, Zap, AlertCircle, Sparkles, Wand2, Layers } from 'lucide-react';
 import { KeywordGrid } from '../components/KeywordGrid';
 import { TopicResults } from '../components/TopicResults';
 import { LoadingOverlay } from '../components/LoadingSpinner';
@@ -11,9 +11,9 @@ import { cn } from '../utils/cn';
 
 // 跟随六种类型，每SET=6条
 const setOptions = [
-  { sets: 1, total: 6, label: '1 SET', description: '每组生成6条（六类各1条）' },
-  { sets: 3, total: 18, label: '3 SET', description: '每组生成18条（六类各3条）' },
-  { sets: 5, total: 30, label: '5 SET', description: '每组生成30条（六类各5条）' }
+  { sets: 1, total: 6, label: '1 Set', description: '生成 6 条' },
+  { sets: 3, total: 18, label: '3 Sets', description: '生成 18 条' },
+  { sets: 5, total: 30, label: '5 Sets', description: '生成 30 条' }
 ];
 
 export function DwhyGenerator() {
@@ -90,7 +90,6 @@ export function DwhyGenerator() {
 
   const handleCopyTopic = useCallback((topic: string) => {
     navigator.clipboard.writeText(topic);
-    // 这里可以添加提示消息
   }, []);
 
   const handleExportTopics = useCallback(() => {
@@ -105,52 +104,32 @@ export function DwhyGenerator() {
   }, [generatedTopics]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <LoadingOverlay isVisible={isGeneratingTopics} message="正在生成短视频爆款选题..." />
+    <div className="space-y-8 pb-12">
+      <LoadingOverlay isVisible={isGeneratingTopics} message="AI 正在为您构思爆款脚本..." />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <Target className="h-8 w-8 text-primary-600 mr-3" />
-              <h1 className="text-3xl font-bold text-gray-900">爆款短视频内容GENERATOR</h1>
-            </div>
-            <ApiStatus />
-          </div>
-          <p className="text-gray-600 text-lg max-w-3xl">
-            基于垂直九宫格框架，通过 Domain（领域）、Who（目标人群）、Why（痛点）三个维度，
-            智能生成爆款短视频选题内容。
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
+            <Target className="w-6 h-6 text-primary-600" />
+            爆款选题生成器
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            通过 Domain (领域) + Who (人群) + Why (痛点) 三维矩阵，精准打击用户需求。
           </p>
         </div>
-
-        {/* Instructions */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-          <div className="flex items-start">
-            <AlertCircle className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-blue-800">
-              <strong>使用说明：</strong>
-              <ol className="list-decimal list-inside mt-1 space-y-1">
-                <li>选择 AI 模型（OpenAI 或 DeepSeek）</li>
-                <li>在 Domain 中心输入您的主题，按回车生成相关关键词</li>
-                <li>在每个九宫格中选择相关的关键词（左键选择，右键锁定）</li>
-                <li>确保每个维度至少选择一个关键词</li>
-                <li>选择SET数量（1 SET = 7条选题）并点击"生成短视频爆款选题"</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-
-        {/* LLM Selector */}
-        <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <ApiStatus />
           <LLMSelector />
         </div>
+      </div>
 
-        {/* Grids */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Domain Grid */}
-          <KeywordGrid
-            title="Domain - 领域"
+      {/* Control Grids */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Domain Grid */}
+        <div className="space-y-3">
+           <KeywordGrid
+            title="1. Domain (领域)"
             centerValue="主题"
             keywords={domainGrid.keywords}
             isLoading={domainGrid.isLoading}
@@ -162,85 +141,109 @@ export function DwhyGenerator() {
             onRefresh={() => handleRefresh('domain')}
             onKeywordToggle={domainGrid.toggleKeyword}
           />
+          <p className="text-xs text-gray-500 px-1">
+            👇 输入主题 (如: "美白牙膏") 并回车，AI 将生成相关细分领域。
+          </p>
+        </div>
 
-          {/* Who Grid */}
+        {/* Who Grid */}
+        <div className="space-y-3">
           <KeywordGrid
-            title="Who - 目标人群"
+            title="2. Who (目标人群)"
             centerValue="Who"
             keywords={whoGrid.keywords}
             isLoading={whoGrid.isLoading}
             onRefresh={() => handleRefresh('who')}
             onKeywordToggle={whoGrid.toggleKeyword}
           />
+          <p className="text-xs text-gray-500 px-1">
+            👇 点击选择你想触达的人群。右键可锁定关键词。
+          </p>
+        </div>
 
-          {/* Why Grid */}
+        {/* Why Grid */}
+        <div className="space-y-3">
           <KeywordGrid
-            title="Why - 痛点"
+            title="3. Why (痛点/需求)"
             centerValue="Why"
             keywords={whyGrid.keywords}
             isLoading={whyGrid.isLoading}
             onRefresh={() => handleRefresh('why')}
             onKeywordToggle={whyGrid.toggleKeyword}
           />
+          <p className="text-xs text-gray-500 px-1">
+            👇 选择用户最痛的痛点，这是爆款的核心。
+          </p>
         </div>
+      </div>
 
-        {/* Generate Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-            <div className="flex flex-col space-y-2">
-              <span className="text-sm font-medium text-gray-700">选择SET数量：</span>
-              <div className="flex space-x-2">
-                {setOptions.map(option => (
-                  <button
-                    key={option.sets}
-                    onClick={() => setSelectedSets(option.sets)}
-                    className={cn(
-                      "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-center",
-                      selectedSets === option.sets
-                        ? "bg-primary-600 text-white shadow-md"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    )}
-                  >
-                    <div className="font-semibold">{option.label}</div>
-                    <div className="text-xs opacity-80">{option.description}</div>
-                    <div className="text-xs opacity-60">共{option.total}条</div>
-                  </button>
-                ))}
-              </div>
+      {/* Action Bar */}
+      <div className="card p-5 sticky bottom-6 z-20 shadow-xl border-primary-100/50">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          
+          {/* Settings */}
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
+              <Layers className="w-4 h-4 text-primary-500" />
+              <span>生成数量:</span>
             </div>
-
-            <button
-              onClick={handleGenerateTopics}
-              disabled={!canGenerate() || isGeneratingTopics}
-              className={cn(
-                "btn btn-primary flex items-center space-x-2",
-                !canGenerate() && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <Zap className="h-4 w-4" />
-              <span>生成短视频爆款选题</span>
-            </button>
+            <div className="flex gap-2 bg-gray-50 p-1 rounded-lg border border-gray-200">
+              {setOptions.map(option => (
+                <button
+                  key={option.sets}
+                  onClick={() => setSelectedSets(option.sets)}
+                  className={cn(
+                    "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                    selectedSets === option.sets
+                      ? "bg-white text-primary-600 shadow-sm ring-1 ring-gray-200"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  {option.label} <span className="opacity-50">({option.total})</span>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {!canGenerate() && (
-            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <div className="flex items-center text-amber-800 text-sm">
-                <AlertCircle className="h-4 w-4 mr-2" />
-                <span>请在每个维度中至少选择一个关键词</span>
-              </div>
-            </div>
-          )}
+          {/* Main Button */}
+          <button
+            onClick={handleGenerateTopics}
+            disabled={!canGenerate() || isGeneratingTopics}
+            className={cn(
+              "btn btn-primary w-full md:w-auto px-8 py-3 text-base shadow-lg shadow-primary-500/25 group",
+              (!canGenerate() || isGeneratingTopics) && "opacity-70 cursor-not-allowed shadow-none bg-gray-400"
+            )}
+          >
+             {isGeneratingTopics ? (
+               <>
+                 <Wand2 className="w-5 h-5 mr-2 animate-spin" />
+                 正在编写剧本...
+               </>
+             ) : (
+               <>
+                 <Zap className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                 开始生成爆款选题
+               </>
+             )}
+          </button>
         </div>
 
-        {/* Results */}
-        <TopicResults
-          topics={generatedTopics}
-          isLoading={isGeneratingTopics}
-          labels={generatedLabels}
-          onCopy={handleCopyTopic}
-          onExport={handleExportTopics}
-        />
+        {!canGenerate() && (
+           <div className="mt-3 flex items-center justify-center gap-2 text-xs text-amber-600 bg-amber-50/50 py-2 rounded-lg border border-amber-100/50">
+             <AlertCircle className="w-3.5 h-3.5" />
+             请在 Domain, Who, Why 每个维度至少选择 1 个关键词
+           </div>
+        )}
       </div>
+
+      {/* Results Section */}
+      <TopicResults
+        topics={generatedTopics}
+        isLoading={isGeneratingTopics}
+        labels={generatedLabels}
+        onCopy={handleCopyTopic}
+        onExport={handleExportTopics}
+      />
     </div>
   );
-} 
+}
