@@ -29,6 +29,11 @@ function AdminUsers() {
   const [creating, setCreating] = useState(false);
   const [magicLink, setMagicLink] = useState<string | null>(null);
   const [sentEmail, setSentEmail] = useState<boolean | null>(null);
+  const [search, setSearch] = useState('');
+  const [filterRole, setFilterRole] = useState<'all' | 'admin' | 'member'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'expired' | 'revoked'>('all');
+  const [sortKey, setSortKey] = useState<'email' | 'expiration' | 'status'>('expiration');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -81,10 +86,77 @@ function AdminUsers() {
     }
   };
 
+  const computeStatus = (row: UserRow) => {
+    const expired = row.expiration_at && new Date(row.expiration_at) < new Date();
+    const revoked = !!row.revoked_at;
+    return revoked ? 'revoked' : expired ? 'expired' : 'active';
+  };
+
+  const filteredAndSorted = rows
+    .filter((r) => {
+      const term = search.trim().toLowerCase();
+      if (term) {
+        const inEmail = r.email?.toLowerCase().includes(term);
+        const inName = (r.name || '').toLowerCase().includes(term);
+        if (!inEmail && !inName) return false;
+      }
+      if (filterRole !== 'all') {
+        const roleNorm = (r.role || 'member') as 'admin' | 'member';
+        if (roleNorm !== filterRole) return false;
+      }
+      if (filterStatus !== 'all') {
+        if (computeStatus(r) !== filterStatus) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const dir = sortDir === 'asc' ? 1 : -1;
+      if (sortKey === 'email') {
+        return (a.email || '').localeCompare(b.email || '') * dir;
+      }
+      if (sortKey === 'expiration') {
+        const da = a.expiration_at ? new Date(a.expiration_at).getTime() : 0;
+        const db = b.expiration_at ? new Date(b.expiration_at).getTime() : 0;
+        return (da - db) * dir;
+      }
+      // status
+      const sa = computeStatus(a);
+      const sb = computeStatus(b);
+      return sa.localeCompare(sb) * dir;
+    });
+
+  const toggleSort = (key: 'email' | 'expiration' | 'status') => {
+    if (sortKey === key) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  };
+
+  const sortLabel = (key: 'email' | 'expiration' | 'status') => {
+    if (sortKey !== key) return '';
+    return sortDir === 'asc' ? ' ↑' : ' ↓';
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">用户管理</h1>
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+    <div className="p-6 space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold">用户管理</h1>
+        <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
+          <span className="inline-flex items-center">
+            <span className="w-2 h-2 rounded-full bg-green-500 mr-1" /> Active
+          </span>
+          <span className="inline-flex items-center">
+            <span className="w-2 h-2 rounded-full bg-yellow-500 mr-1" /> Expired
+          </span>
+          <span className="inline-flex items-center">
+            <span className="w-2 h-2 rounded-full bg-red-500 mr-1" /> Revoked
+          </span>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-4 mb-2">
         <div className="grid gap-3 sm:grid-cols-4">
           <input className="border px-3 py-2 rounded" placeholder="邮箱" value={email} onChange={(e)=>setEmail(e.target.value)} />
           <input className="border px-3 py-2 rounded" placeholder="姓名(可选)" value={name} onChange={(e)=>setName(e.target.value)} />
@@ -100,42 +172,78 @@ function AdminUsers() {
           <button onClick={handleCreate} disabled={creating} className="bg-purple-600 text-white rounded px-4 py-2 hover:bg-purple-700 disabled:opacity-60">{creating ? '创建中…' : '创建用户并生成Magic Link'}</button>
         </div>
         {(magicLink || sentEmail !== null) && (
-          <div className="text-sm text-gray-700 mt-3 break-all">
+          <div className="mt-3 space-y-1 text-sm">
             {sentEmail ? (
-              <span className="text-green-700">登录邮件已发送至 {email || '该用户邮箱'}。</span>
+              <div className="px-3 py-2 rounded bg-green-50 text-green-700">登录邮件已发送至 {email || '该用户邮箱'}。</div>
             ) : sentEmail === false ? (
-              <span className="text-yellow-700">邮件发送未确认，请手动复制 Magic Link 发给用户。</span>
+              <div className="px-3 py-2 rounded bg-yellow-50 text-yellow-700">邮件发送未确认，请手动复制 Magic Link 发给用户。</div>
             ) : null}
             {magicLink && (
-              <>
-                <br />
-                Magic Link（复制发给用户）: <a className="text-purple-700 underline" href={magicLink} target="_blank" rel="noreferrer">{magicLink}</a>
-              </>
+              <div className="px-3 py-2 rounded bg-purple-50 text-purple-800 break-all">
+                Magic Link：
+                <a className="ml-1 underline" href={magicLink} target="_blank" rel="noreferrer">{magicLink}</a>
+              </div>
             )}
           </div>
         )}
       </div>
-      <div className="bg-white rounded-lg shadow">
+
+      <div className="bg-white rounded-lg shadow p-4 mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <input
+          className="border px-3 py-2 rounded w-full sm:w-64"
+          placeholder="搜索邮箱或姓名"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <div className="flex flex-wrap gap-2 text-sm">
+          <select
+            className="border px-2 py-1 rounded"
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value as any)}
+          >
+            <option value="all">全部角色</option>
+            <option value="admin">Admin</option>
+            <option value="member">Member</option>
+          </select>
+          <select
+            className="border px-2 py-1 rounded"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value as any)}
+          >
+            <option value="all">全部状态</option>
+            <option value="active">Active</option>
+            <option value="expired">Expired</option>
+            <option value="revoked">Revoked</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50 text-gray-600">
             <tr>
-              <th className="text-left p-3">邮箱</th>
+              <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('email')}>
+                邮箱{sortLabel('email')}
+              </th>
               <th className="text-left p-3">姓名</th>
               <th className="text-left p-3">角色</th>
-              <th className="text-left p-3">到期</th>
-              <th className="text-left p-3">状态</th>
+              <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('expiration')}>
+                到期{sortLabel('expiration')}
+              </th>
+              <th className="text-left p-3 cursor-pointer" onClick={() => toggleSort('status')}>
+                状态{sortLabel('status')}
+              </th>
               <th className="text-left p-3">操作</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr><td colSpan={5} className="p-3 text-gray-500">加载中…</td></tr>
-            ) : rows.length === 0 ? (
+            ) : filteredAndSorted.length === 0 ? (
               <tr><td colSpan={5} className="p-3 text-gray-500">暂无用户</td></tr>
-            ) : rows.map(r => {
-              const expired = r.expiration_at && new Date(r.expiration_at) < new Date();
-              const revoked = !!r.revoked_at;
-              const status = revoked ? 'Revoked' : (expired ? 'Expired' : 'Active');
+            ) : filteredAndSorted.map(r => {
+              const statusKey = computeStatus(r);
+              const status = statusKey === 'revoked' ? 'Revoked' : statusKey === 'expired' ? 'Expired' : 'Active';
               const roleLabel = r.role === 'admin' ? 'Admin' : 'Member';
               const renew = async (days?: number) => {
                 try {
