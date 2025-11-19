@@ -82,7 +82,7 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
           <div className="flex items-center justify-center h-16 px-4 bg-gradient-to-r from-primary-600 to-secondary-600">
             <div className="flex items-center space-x-2">
               <Zap className="h-8 w-8 text-white" />
-              <span className="text-xl font-bold text-white">内容创作工具</span>
+              <span className="text-xl font-bold text-white">CTG AI-PILOT</span>
             </div>
           </div>
 

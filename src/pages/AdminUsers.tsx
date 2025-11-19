@@ -550,14 +550,7 @@ function AdminUsers() {
                   <td className="p-3">
                     <span className={`inline-flex px-2 py-1 rounded-full text-xs ${statusClass}`}>{status}</span>
                   </td>
-                  <td className="p-3 space-x-2">
-                    <button onClick={() => renew(30)} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">+30天</button>
-                    <button onClick={renewToDate} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">设日期</button>
-                    {!revoked ? (
-                      <button onClick={revoke} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100">撤销</button>
-                    ) : (
-                      <button onClick={restore} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">恢复</button>
-                    )}
+                  <td className="p-3 space-x-2 relative">
                     <button onClick={() => renew(30)} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">+30天</button>
                     {!revoked ? (
                       <button onClick={revoke} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100">撤销</button>
