@@ -263,10 +263,6 @@ export async function generateDimensionKeywords(
   dimensionId: string
 ): Promise<string[]> {
   try {
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      throw new Error('OpenAI API密钥未配置');
-    }
-
     const isChinese = isChineseInput(topic);
     
     // 强化系统提示，要求更高的相关性
@@ -318,10 +314,6 @@ export async function generateSimpleTopics(
   sets: number = 1
 ): Promise<SimpleTopic[]> {
   try {
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      throw new Error('OpenAI API密钥未配置');
-    }
-
     const isChinese = isChineseInput(topic);
     const totalCount = sets * 7;
     const prompt = getSimpleTopicGenerationPrompt(topic, dimensions, totalCount, isChinese);

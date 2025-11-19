@@ -189,10 +189,11 @@ export async function createChatCompletion(args: {
   }
 }
 
-// 检测是否为中文输入
-function isChineseInput(text: string): boolean {
-  const chineseRegex = /[\\u4e00-\\u9fff]/;
-  return chineseRegex.test(text);
+// 检测是否为中文输入 (支持字符串或数组)
+function isChineseInput(text: string | string[]): boolean {
+  const str = Array.isArray(text) ? text.join('') : text;
+  const chineseRegex = /[\u4e00-\u9fff]/;
+  return chineseRegex.test(str);
 }
 
 // 生成关键词的系统提示
@@ -322,7 +323,9 @@ export async function generateTopics(
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) throw new Error('OpenAI API 密钥未配置');
 
-    const isChinese = isChineseInput(domainSelected[0] || '');
+    // 综合检查所有维度的输入来判断语言
+    const allInputs = [...domainSelected, ...whoSelected, ...whySelected];
+    const isChinese = isChineseInput(allInputs);
     const systemPrompt = getTopicGenerationPrompt(isChinese, count);
     
     const userPrompt = isChinese
