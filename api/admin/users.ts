@@ -16,10 +16,21 @@ export default async function handler(req: any, res: any) {
 
     const { data, error } = await admin
       .from('profiles')
-      .select('user_id as id, email, name, role, expiration_at, revoked_at, last_login_at')
+      .select('user_id, email, name, role, expiration_at, revoked_at, last_login_at')
       .order('created_at', { ascending: false });
     if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json({ users: data });
+
+    const users = (data || []).map((row: any) => ({
+      id: row.user_id,
+      email: row.email,
+      name: row.name,
+      role: row.role,
+      expiration_at: row.expiration_at,
+      revoked_at: row.revoked_at,
+      last_login_at: row.last_login_at,
+    }));
+
+    return res.status(200).json({ users });
   } catch (e: any) {
     return res.status(500).json({ error: 'server_error', detail: String(e?.message || e) });
   }
