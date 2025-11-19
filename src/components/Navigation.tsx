@@ -11,7 +11,8 @@ import {
   X,
   Zap,
   Grid3x3,
-  Brain
+  Brain,
+  Users
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useMembership } from '../hooks/useMembership';
@@ -52,7 +53,7 @@ interface NavigationProps {
 
 export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps) {
   const location = useLocation();
-  const { email, status, loading, logout } = useMembership();
+  const { email, status, role, isAdmin, loading, logout } = useMembership();
 
   return (
     <>
@@ -87,7 +88,12 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2">
-            {navigationItems.map((item) => {
+            {navigationItems.concat(isAdmin ? [{
+              id: 'admin-users',
+              name: '会员管理',
+              href: '/admin/users',
+              icon: Users,
+            }] : []).map((item) => {
               const isActive = location.pathname === item.href;
               const Icon = item.icon;
               
@@ -136,7 +142,10 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
                   status==='revoked' && 'bg-red-500',
                   status==='unauthorized' && 'bg-gray-300')
                 } />
-                <span className="text-gray-700">{email || '未登录'}</span>
+                <span className="text-gray-700 truncate max-w-[120px]">{email || '未登录'}</span>
+                {isAdmin && (
+                  <span className="ml-2 px-2 py-0.5 text-[11px] rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">Admin</span>
+                )}
               </div>
               {email && (
                 <button onClick={logout} className="text-xs text-gray-500 hover:text-gray-700">退出</button>
