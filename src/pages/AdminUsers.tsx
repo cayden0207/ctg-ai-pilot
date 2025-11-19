@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { supabase } from '../lib/supabaseClient';
+import { cn } from '../utils/cn';
 
 interface UserRow {
   id: string;
@@ -10,6 +11,12 @@ interface UserRow {
   expiration_at?: string | null;
   revoked_at?: string | null;
   last_login_at?: string | null;
+}
+
+interface Toast {
+  id: number;
+  type: 'success' | 'error' | 'info';
+  message: string;
 }
 
 export default function AdminUsersPage() {
@@ -41,6 +48,17 @@ function AdminUsers() {
   const [editName, setEditName] = useState('');
   const [editRole, setEditRole] = useState<'admin' | 'member'>('member');
   const [savingEdit, setSavingEdit] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [moreOpenId, setMoreOpenId] = useState<string | null>(null);
+
+  const showToast = (type: Toast['type'], message: string) => {
+    const id = Date.now() + Math.random();
+    setToasts((prev) => [...prev, { id, type, message }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3200);
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -51,7 +69,12 @@ function AdminUsers() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await resp.json();
-      setRows(json?.users || []);
+      if (!resp.ok) {
+        showToast('error', json?.error || '加载用户失败');
+        setRows([]);
+      } else {
+        setRows(json?.users || []);
+      }
       setSelectedIds([]);
     } finally {
       setLoading(false);
@@ -83,12 +106,13 @@ function AdminUsers() {
       if (!resp.ok) throw new Error(json?.error || '创建失败');
       setMagicLink(json?.magicLink || null);
       setSentEmail(!!json?.sentEmail);
+      showToast('success', `已创建会员：${email}`);
       setEmail('');
       setName('');
       setMonths(12);
       fetchUsers();
     } catch (e: any) {
-      alert(e?.message || '创建失败');
+      showToast('error', e?.message || '创建失败');
     } finally {
       setCreating(false);
     }
@@ -105,9 +129,10 @@ function AdminUsers() {
       });
       const json = await resp.json().catch(() => ({}));
       if (!resp.ok) throw new Error(json?.error || '更新失败');
+      showToast('success', '用户资料已更新');
       await fetchUsers();
     } catch (e: any) {
-      alert(e?.message || '更新失败');
+      showToast('error', e?.message || '更新失败');
       throw e;
     }
   };
@@ -147,7 +172,11 @@ function AdminUsers() {
           errs.push(String(e?.message || e));
         }
       }
-      if (errs.length) alert(`部分操作失败：\n${errs.slice(0, 3).join('\n')}${errs.length > 3 ? '\n...' : ''}`);
+      if (errs.length) {
+        showToast('error', `部分操作失败：${errs[0]}`);
+      } else {
+        showToast('success', '批量操作已完成');
+      }
       setSelectedIds([]);
       await fetchUsers();
     } finally {
@@ -217,6 +246,28 @@ function AdminUsers() {
 
   return (
     <div className="p-6 space-y-4">
+      {/* Toasts */}
+      {toasts.length > 0 && (
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+          {toasts.map((t) => (
+            <div
+              key={t.id}
+              className={cn(
+                'px-4 py-2 rounded-lg shadow text-sm flex items-center gap-2 max-w-xs',
+                t.type === 'success' && 'bg-green-50 text-green-800 border border-green-100',
+                t.type === 'error' && 'bg-red-50 text-red-800 border border-red-100',
+                t.type === 'info' && 'bg-gray-50 text-gray-800 border border-gray-200',
+              )}
+            >
+              <span className="text-xs">
+                {t.type === 'success' ? '✓' : t.type === 'error' ? '⚠' : 'ℹ'}
+              </span>
+              <span className="flex-1 break-words">{t.message}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">用户管理</h1>
         <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
@@ -292,13 +343,13 @@ function AdminUsers() {
             <option value="revoked">Revoked</option>
           </select>
           <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => runBulk('renew30')}
-              disabled={bulkBusy || selectedIds.length === 0}
-              className="px-2 py-1 text-xs rounded border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:opacity-40"
-            >
-              批量+30天
-            </button>
+                    <button
+                      onClick={() => runBulk('renew30')}
+                      disabled={bulkBusy || selectedIds.length === 0}
+                      className="px-2 py-1 text-xs rounded border border-purple-200 text-purple-700 bg-white hover:bg-purple-50 disabled:opacity-40"
+                    >
+                      批量+30天
+                    </button>
             <button
               onClick={() => runBulk('revoke')}
               disabled={bulkBusy || selectedIds.length === 0}
@@ -356,7 +407,16 @@ function AdminUsers() {
             {loading ? (
               <tr><td colSpan={8} className="p-3 text-gray-500">加载中…</td></tr>
             ) : filteredAndSorted.length === 0 ? (
-              <tr><td colSpan={8} className="p-3 text-gray-500">暂无用户</td></tr>
+              <tr>
+                <td colSpan={8} className="p-6 text-center text-gray-500 text-sm">
+                  暂无用户。
+                  {search || filterRole !== 'all' || filterStatus !== 'all' ? (
+                    <span className="ml-1">尝试清除上方的搜索或筛选条件。</span>
+                  ) : (
+                    <span className="ml-1">在上方输入邮箱并点击「创建用户并生成Magic Link」来创建首位会员。</span>
+                  )}
+                </td>
+              </tr>
             ) : filteredAndSorted.map(r => {
               const statusKey = computeStatus(r);
               const revoked = !!r.revoked_at;
@@ -374,7 +434,8 @@ function AdminUsers() {
                   });
                   if (!resp.ok) throw new Error(await resp.text());
                   fetchUsers();
-                } catch (e: any) { alert(e?.message || '续期失败'); }
+                  showToast('success', '已为该用户续期');
+                } catch (e: any) { showToast('error', e?.message || '续期失败'); }
               };
               const renewToDate = async () => {
                 const date = prompt('设置到期日 (YYYY-MM-DD)');
@@ -388,7 +449,8 @@ function AdminUsers() {
                   });
                   if (!resp.ok) throw new Error(await resp.text());
                   fetchUsers();
-                } catch (e: any) { alert(e?.message || '续期失败'); }
+                  showToast('success', '到期时间已更新');
+                } catch (e: any) { showToast('error', e?.message || '续期失败'); }
               };
               const revoke = async () => {
                 if (!confirm('确认撤销此用户的访问权限？')) return;
@@ -401,7 +463,8 @@ function AdminUsers() {
                   });
                   if (!resp.ok) throw new Error(await resp.text());
                   fetchUsers();
-                } catch (e: any) { alert(e?.message || '撤销失败'); }
+                  showToast('success', '已撤销该用户访问权限');
+                } catch (e: any) { showToast('error', e?.message || '撤销失败'); }
               };
               const restore = async () => {
                 try {
@@ -413,7 +476,8 @@ function AdminUsers() {
                   });
                   if (!resp.ok) throw new Error(await resp.text());
                   fetchUsers();
-                } catch (e: any) { alert(e?.message || '恢复失败'); }
+                  showToast('success', '已恢复该用户访问权限');
+                } catch (e: any) { showToast('error', e?.message || '恢复失败'); }
               };
               const editUser = () => {
                 setEditingUser(r);
@@ -441,11 +505,11 @@ function AdminUsers() {
                     ? '登录邮件已重新发送给用户。'
                     : '已生成新的 Magic Link，请手动发送给用户。';
                   if (json?.magicLink) {
-                    alert(`${msg}\n\nMagic Link: ${json.magicLink}`);
+                    showToast('info', msg);
                   } else {
-                    alert(msg);
+                    showToast('info', msg);
                   }
-                } catch (e: any) { alert(e?.message || '重发失败'); }
+                } catch (e: any) { showToast('error', e?.message || '重发失败'); }
               };
               const checked = selectedIds.includes(r.id);
               const statusClass = statusKey === 'revoked'
@@ -486,11 +550,52 @@ function AdminUsers() {
                     ) : (
                       <button onClick={restore} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">恢复</button>
                     )}
-                    <button onClick={editUser} className="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded hover:bg-gray-100">编辑</button>
-                    <button onClick={toggleRole} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">
-                      {r.role === 'admin' ? '降为Member' : '设为Admin'}
+                    <button onClick={() => renew(30)} className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded hover:bg-purple-100">+30天</button>
+                    {!revoked ? (
+                      <button onClick={revoke} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100">撤销</button>
+                    ) : (
+                      <button onClick={restore} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded hover:bg-green-100">恢复</button>
+                    )}
+                    <button
+                      onClick={() => setMoreOpenId(moreOpenId === r.id ? null : r.id)}
+                      className="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded hover:bg-gray-100 relative"
+                    >
+                      更多
                     </button>
-                    <button onClick={resendMagic} className="text-xs bg-orange-50 text-orange-700 px-2 py-1 rounded hover:bg-orange-100">重发邮件</button>
+                    {moreOpenId === r.id && (
+                      <div className="absolute mt-1 right-3 z-20 w-40 bg-white border border-gray-200 rounded-lg shadow-lg text-xs text-gray-700">
+                        <button
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50"
+                          onClick={() => { setMoreOpenId(null); renewToDate(); }}
+                        >
+                          设定到期日
+                        </button>
+                        <button
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50"
+                          onClick={() => { setMoreOpenId(null); editUser(); }}
+                        >
+                          编辑资料
+                        </button>
+                        <button
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50"
+                          onClick={async () => {
+                            setMoreOpenId(null);
+                            await toggleRole();
+                          }}
+                        >
+                          {r.role === 'admin' ? '降为 Member' : '设为 Admin'}
+                        </button>
+                        <button
+                          className="w-full text-left px-3 py-2 hover:bg-gray-50"
+                          onClick={async () => {
+                            setMoreOpenId(null);
+                            await resendMagic();
+                          }}
+                        >
+                          重发登录邮件
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               );
@@ -500,9 +605,26 @@ function AdminUsers() {
       </div>
 
       {editingUser && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-semibold">编辑用户</h2>
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40"
+          onClick={() => !savingEdit && setEditingUser(null)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">编辑用户</h2>
+              <button
+                onClick={() => { if (!savingEdit) { setEditingUser(null); setEditError(null); } }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="text-xs text-gray-500">
+              {editingUser.email} · {editingUser.role === 'admin' ? 'Admin' : 'Member'}
+            </div>
             <div className="space-y-3">
               <div>
                 <label className="block text-sm text-gray-600 mb-1">邮箱</label>
@@ -512,6 +634,9 @@ function AdminUsers() {
                   onChange={(e) => setEditEmail(e.target.value)}
                   placeholder="user@example.com"
                 />
+                {editError && (
+                  <div className="mt-1 text-xs text-red-600">{editError}</div>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-gray-600 mb-1">姓名</label>
@@ -547,14 +672,15 @@ function AdminUsers() {
                   const payload: any = {};
                   const emailTrim = editEmail.trim();
                   if (!emailTrim) {
-                    alert('邮箱不能为空');
+                    setEditError('邮箱不能为空');
                     return;
                   }
                   const emailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailTrim);
                   if (!emailValid) {
-                    alert('请输入有效邮箱');
+                    setEditError('请输入有效邮箱');
                     return;
                   }
+                  setEditError(null);
                   if (emailTrim !== editingUser.email) payload.email = emailTrim;
                   const nameTrim = editName.trim();
                   if (nameTrim !== (editingUser.name || '')) payload.name = nameTrim;
