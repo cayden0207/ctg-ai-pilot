@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -50,8 +51,16 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
     return () => { mounted = false; };
   }, [requireAdmin]);
 
-  if (checking) return <div className="p-6 text-gray-500">加载中...</div>;
+  if (checking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-600">
+        <div className="flex items-center gap-3">
+          <LoadingSpinner size="md" />
+          <span className="text-sm">正在验证登录状态...</span>
+        </div>
+      </div>
+    );
+  }
   if (!allowed) return <Navigate to="/login" replace state={{ from: location }} />;
   return <>{children}</>;
 }
-

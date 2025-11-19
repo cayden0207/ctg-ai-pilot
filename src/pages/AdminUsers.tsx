@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { supabase } from '../lib/supabaseClient';
 import { cn } from '../utils/cn';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 interface UserRow {
   id: string;
@@ -405,7 +406,14 @@ function AdminUsers() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="p-3 text-gray-500">加载中…</td></tr>
+              <tr>
+                <td colSpan={8} className="p-6 text-gray-500">
+                  <div className="flex items-center justify-center gap-3 text-sm">
+                    <LoadingSpinner size="sm" />
+                    <span>正在加载会员列表...</span>
+                  </div>
+                </td>
+              </tr>
             ) : filteredAndSorted.length === 0 ? (
               <tr>
                 <td colSpan={8} className="p-6 text-center text-gray-500 text-sm">
