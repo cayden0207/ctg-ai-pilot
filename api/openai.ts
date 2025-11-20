@@ -1,5 +1,24 @@
 import { getAdminClient, verifyBearer } from './_lib/supabase.js';
 
+async function retryFetch(input: any, init: any, attempts = 3) {
+  let lastErr: any = null;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(input, init);
+      if (res.status >= 500) {
+        lastErr = new Error(`upstream ${res.status}`);
+      } else {
+        return res;
+      }
+    } catch (e: any) {
+      lastErr = e;
+    }
+    const backoff = Math.min(1000, 150 * Math.pow(2, i)) + Math.floor(Math.random() * 100);
+    await new Promise(r => setTimeout(r, backoff));
+  }
+  throw lastErr || new Error('upstream error');
+}
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -38,14 +57,14 @@ export default async function handler(req: any, res: any) {
       stream = false,
     } = req.body || {};
 
-    const upstream = await fetch('https://api.openai.com/v1/chat/completions', {
+    const upstream = await retryFetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({ model, messages, max_tokens, temperature, stream }),
-    });
+    }, 3);
 
     const text = await upstream.text();
     let data: any = null;
