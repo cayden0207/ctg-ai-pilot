@@ -4,6 +4,7 @@ import {
   Target,
   Grid3x3,
   Brain,
+  Megaphone,
   Users,
   Settings,
   LogOut,
@@ -40,6 +41,12 @@ const navigationItems: NavigationItem[] = [
     name: 'CTG Mindset AI',
     href: '/ctg-mindset',
     icon: Brain,
+  },
+  {
+    id: 'meta-ads-sim',
+    name: 'Meta Ads 模拟器',
+    href: '/meta-ads-simulation',
+    icon: Megaphone,
   },
 ];
 
