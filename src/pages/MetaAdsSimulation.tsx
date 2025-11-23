@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const BASE_PATH = '/meta-ads-simulation/';
 
 export function MetaAdsSimulation() {
+  const location = useLocation();
+  const navigateRR = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const clickHandlerRef = useRef<(e: MouseEvent) => void>();
   const [currentPage, setCurrentPage] = useState<string>('index.html');
@@ -28,16 +31,40 @@ export function MetaAdsSimulation() {
     }
   }, []);
 
-  const navigate = useCallback((path: string) => {
-    // Normalize path to relative filename under BASE_PATH
+  const normalizePage = useCallback((path: string) => {
     const cleaned = path.startsWith(BASE_PATH)
       ? path.slice(BASE_PATH.length)
       : path.startsWith('/')
         ? path.slice(path.lastIndexOf('/') + 1)
         : path;
-    const normalized = cleaned || 'index.html';
-    setCurrentPage(normalized);
+    return cleaned || 'index.html';
   }, []);
+
+  const syncFromLocation = useCallback(() => {
+    if (location.pathname.startsWith(BASE_PATH)) {
+      const next = normalizePage(location.pathname);
+      setCurrentPage(next);
+    } else if (location.pathname === '/meta-ads-simulation') {
+      setCurrentPage('index.html');
+    }
+  }, [location.pathname, normalizePage]);
+
+  useEffect(() => {
+    syncFromLocation();
+  }, [syncFromLocation]);
+
+  const navigate = useCallback((path: string) => {
+    const normalized = normalizePage(path);
+    setCurrentPage((prev) => {
+      if (prev !== normalized) return normalized;
+      return prev;
+    });
+    const targetPath =
+      normalized === 'index.html' ? '/meta-ads-simulation' : `/meta-ads-simulation/${normalized}`;
+    if (location.pathname !== targetPath) {
+      navigateRR(targetPath);
+    }
+  }, [normalizePage, location.pathname, navigateRR]);
 
   // Expose global hook for scripts and inline handlers
   useEffect(() => {
@@ -104,6 +131,11 @@ export function MetaAdsSimulation() {
         if (anchor) {
           const href = anchor.getAttribute('href');
           if (href && href.endsWith('.html')) {
+            e.preventDefault();
+            navigate(href);
+            return;
+          }
+          if (href && href.startsWith(BASE_PATH) && href.endsWith('.html')) {
             e.preventDefault();
             navigate(href);
             return;

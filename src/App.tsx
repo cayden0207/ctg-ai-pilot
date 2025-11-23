@@ -35,7 +35,7 @@ function App() {
                 <Route path="/" element={<ProtectedRoute><NineGridAnalyzer /></ProtectedRoute>} />
                 <Route path="/nine-grid" element={<ProtectedRoute><DwhyGenerator /></ProtectedRoute>} />
                 <Route path="/ctg-mindset" element={<ProtectedRoute><CTGMindset /></ProtectedRoute>} />
-                <Route path="/meta-ads-simulation" element={<ProtectedRoute><MetaAdsSimulation /></ProtectedRoute>} />
+                <Route path="/meta-ads-simulation/*" element={<ProtectedRoute><MetaAdsSimulation /></ProtectedRoute>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
