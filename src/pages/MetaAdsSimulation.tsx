@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const BASE_PATH = '/meta-ads-sim-assets/';
+const NAV_OFFSET = '18rem'; // matches w-72 sidebar on desktop
 
 export function MetaAdsSimulation() {
   const location = useLocation();
@@ -29,6 +30,33 @@ export function MetaAdsSimulation() {
       link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
       doc.head.appendChild(link);
     }
+  }, []);
+
+  const ensureLayoutOverrides = useCallback(() => {
+    const doc = document;
+    if (doc.getElementById('meta-sim-overrides')) return;
+    const style = doc.createElement('style');
+    style.id = 'meta-sim-overrides';
+    style.textContent = `
+      @media (min-width: 1024px) {
+        .meta-sim-host {
+          --meta-sim-offset: ${NAV_OFFSET};
+        }
+        .meta-sim-host .modal-overlay {
+          left: var(--meta-sim-offset) !important;
+          right: 0 !important;
+          width: auto !important;
+        }
+        .meta-sim-host .ads-layout {
+          margin-left: var(--meta-sim-offset) !important;
+          width: calc(100% - var(--meta-sim-offset)) !important;
+        }
+        .meta-sim-host .guide {
+          left: calc(var(--meta-sim-offset) + 16px) !important;
+        }
+      }
+    `;
+    doc.head.appendChild(style);
   }, []);
 
   const normalizePage = useCallback((path: string) => {
@@ -83,6 +111,7 @@ export function MetaAdsSimulation() {
 
   const loadPage = useCallback(async (page: string) => {
     ensureHeadAssets();
+    ensureLayoutOverrides();
     setLoading(true);
     setError(null);
     const url = new URL(`${BASE_PATH}${page}`, window.location.origin);
@@ -177,7 +206,7 @@ export function MetaAdsSimulation() {
       setError(err?.message || '加载出错');
       setLoading(false);
     }
-  }, [ensureHeadAssets, navigate, rewriteInlineNavigation]);
+  }, [ensureHeadAssets, ensureLayoutOverrides, navigate, rewriteInlineNavigation]);
 
   useEffect(() => {
     loadPage(currentPage);
@@ -191,7 +220,7 @@ export function MetaAdsSimulation() {
   }, [loading, error]);
 
   return (
-    <div className="relative">
+    <div className="relative meta-sim-host">
       {(loading || error) && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-sm">
           <div className="flex items-center gap-2 text-gray-700 text-sm">
