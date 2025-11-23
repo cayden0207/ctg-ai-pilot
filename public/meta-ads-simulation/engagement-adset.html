@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New Engagement Ad Set</title>
+    <link rel="icon" type="image/jpeg" href="Meta favicon.jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="shared-nav.js"></script>
+  </head>
+  <body class="app-bg">
+    <div class="ads-layout">
+      <aside class="rail">
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="4" y="14" width="4" height="7"/>
+            <rect x="10" y="9" width="4" height="12"/>
+            <rect x="16" y="4" width="4" height="17"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </aside>
+
+      <aside class="sidebar">
+        <div class="tree-item level-1" onclick="location.href='engagement-campaign.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+          </svg>
+          New Engagement Campaign
+        </div>
+        <div class="tree-item level-2 active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#1877f2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          New Engagement Ad Set
+        </div>
+        <div class="tree-item level-3" onclick="location.href='engagement-ad.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          </svg>
+          New Engagement Ad
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="crumbs">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span onclick="location.href='engagement-campaign.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+              </svg>
+              New Engagement Campaign
+            </span>
+            <span class="sep">›</span>
+            <span style="color:var(--primary);font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+              New Engagement Ad Set
+            </span>
+            <span class="sep">›</span>
+            <span onclick="location.href='engagement-ad.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+              1 Ad
+            </span>
+          </div>
+          <div class="crumb-actions">
+            <span class="status" style="display:flex;align-items:center;gap:6px">
+              <span style="width:8px;height:8px;border-radius:50%;border:2px solid #6b7280"></span>
+              <span style="color:#6b7280;font-size:13px">In draft</span>
+            </span>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#1877f2"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25a1.75 1.75 0 0 1 .445-.758l8.61-8.61Z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+              Edit
+            </button>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#65676b"><path d="M8 3c3 0 5.5 2 7 5-1.5 3-4 5-7 5s-5.5-2-7-5c1.5-3 4-5 7-5z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+              Review
+            </button>
+          </div>
+        </header>
+
+        <section class="canvas">
+          <div style="max-width:1050px">
+            <div style="display:flex;gap:16px">
+              <div style="flex:1">
+                <!-- Ad set name -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:15px">Ad set name</span>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <input id="adSetNameInput" class="input" value="New Engagement Ad Set" style="flex:1;font-size:14px" />
+                    <button class="btn ghost" style="font-size:14px;white-space:nowrap">Create template</button>
+                  </div>
+                </div>
+
+                <!-- Conversion -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:15px">Conversion</span>
+                  </div>
+                  <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Conversion location</div>
+                  <div style="position:relative;max-width:520px">
+                    <div id="selectConv" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false">
+                      <span id="selectConvValue">Message destinations</span>
+                      <i class="caret"></i>
+                    </div>
+                    <div id="convMenu" class="dropdown-panel" style="display:none">
+                      <div class="dropdown-item selected" data-value="Message destinations">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">Message destinations</div>
+                          <div class="muted">Get people to engage with your brand on Messenger, WhatsApp or Instagram.</div>
+                        </div>
+                      </div>
+                      <div class="dropdown-item" data-value="On your ad">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">On your ad</div>
+                          <div class="muted">Get people to watch a video or interact with your post or event.</div>
+                        </div>
+                      </div>
+                      <div class="dropdown-item" data-value="Calls">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">Calls</div>
+                          <div class="muted">Get people to call your business.</div>
+                        </div>
+                      </div>
+                      <div class="dropdown-item" data-value="Website">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">Website</div>
+                          <div class="muted">Get people to engage with your website.</div>
+                        </div>
+                      </div>
+                      <div class="dropdown-item" data-value="App">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">App</div>
+                          <div class="muted">Get people to engage with your app.</div>
+                        </div>
+                      </div>
+                      <div class="dropdown-item" data-value="Facebook Page">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700">Facebook Page</div>
+                          <div class="muted">Get people to engage with your Facebook Page.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Facebook Page -->
+                  <div style="margin-top:16px">
+                    <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Facebook Page
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div class="muted" style="font-size:13px;margin-bottom:8px">This page will represent your business in your ad and conversation.</div>
+                    <div class="page-tile">
+                      <div class="page-logo">G</div>
+                      <div style="flex:1">
+                        <div style="font-weight:700;font-size:14px">CTG Group</div>
+                      </div>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#1877f2"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25a1.75 1.75 0 0 1 .445-.758l8.61-8.61Z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+                    </div>
+                  </div>
+
+                  <!-- Message destinations -->
+                  <div style="margin-top:16px">
+                    <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Message destinations
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div class="muted" style="font-size:13px;margin-bottom:10px">Choose where to chat with people after they see your ad. <a class="link" href="#" onclick="event.preventDefault();">How this works</a></div>
+
+                    <div id="destAuto" class="dropdown-item selected" style="margin:0;border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer">
+                      <div class="rb"><div class="dot"></div></div>
+                      <div>
+                        <div style="font-weight:700;font-size:14px;margin-bottom:4px">Automatic destination (recommended)</div>
+                        <div class="muted" style="font-size:13px;margin-bottom:8px">We'll send people to the messaging app where they engage most and lower ad costs.</div>
+                        <div class="chips-row">
+                          <span class="chip messenger">CTG Group</span>
+                          <span class="chip ig">@changingthegame_17</span>
+                          <span class="chip wa">+60 11-1783 8775</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="destManual" class="dropdown-item" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer">
+                      <div class="rb"><div class="dot"></div></div>
+                      <div style="width:100%">
+                        <div style="font-weight:700;font-size:14px;margin-bottom:4px">Manual destination</div>
+                        <div class="muted" style="font-size:13px">We'll only send people to the messaging apps you choose.</div>
+                      </div>
+                    </div>
+
+                    <!-- Manual destination expanded content -->
+                    <div id="manualDestContent" style="display:none;margin-top:16px;padding:16px;background:#f0f2f5;border-radius:8px">
+                      <!-- Messenger -->
+                      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #ddd">
+                        <input type="checkbox" id="checkMessenger" checked style="width:20px;height:20px;margin-top:4px;cursor:pointer" />
+                        <div style="flex:1">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                            <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid #ddd">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="#0084FF"><path d="M12 2C6.48 2 2 6.15 2 11.3c0 2.9 1.45 5.48 3.72 7.18V22l3.38-1.85c.9.25 1.85.38 2.9.38 5.52 0 10-4.15 10-9.3S17.52 2 12 2zm1 12.5l-2.5-2.67-4.88 2.67L11 9l2.55 2.67L18.5 9 13 14.5z"/></svg>
+                            </div>
+                            <div style="flex:1">
+                              <div style="font-weight:700;font-size:14px;color:#050505">Messenger</div>
+                              <div style="font-size:13px;color:#65676b">CTG Group</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Instagram -->
+                      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #ddd">
+                        <input type="checkbox" id="checkInstagram" checked style="width:20px;height:20px;margin-top:4px;cursor:pointer" />
+                        <div style="flex:1">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);display:flex;align-items:center;justify-content:center">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+                            </div>
+                            <div style="flex:1">
+                              <div style="font-weight:700;font-size:14px;color:#050505">Instagram</div>
+                              <div style="font-size:13px;color:#65676b">@changingthegame_17</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- WhatsApp -->
+                      <div style="display:flex;align-items:flex-start;gap:12px">
+                        <input type="checkbox" id="checkWhatsApp" checked style="width:20px;height:20px;margin-top:4px;cursor:pointer" />
+                        <div style="flex:1">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                            <div style="width:40px;height:40px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            </div>
+                            <div style="flex:1">
+                              <div style="font-weight:700;font-size:14px;color:#050505">WhatsApp</div>
+                              <div style="font-size:13px;color:#65676b">+60 11-1783 8775</div>
+                            </div>
+                          </div>
+                          <div style="margin-top:12px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                              <div style="position:relative;flex:1">
+                                <select style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:white">
+                                  <option>+60 11-1783 8775</option>
+                                </select>
+                              </div>
+                              <span style="color:#65676b;font-size:14px">or</span>
+                              <button class="btn ghost" style="white-space:nowrap;font-size:14px">Connect another number</button>
+                            </div>
+                            <div style="background:white;border-radius:8px;padding:12px;margin-top:12px">
+                              <div style="display:flex;gap:10px">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#65676b;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
+                                <div style="font-size:13px;color:#050505;line-height:18px">
+                                  You can connect a maximum of 50 WhatsApp numbers per Facebook Page.<br/>
+                                  Edit WhatsApp numbers in <a class="link" href="#" onclick="event.preventDefault();">Business Manager</a> and number connections in <a class="link" href="#" onclick="event.preventDefault();">Page settings</a>.
+                                </div>
+                              </div>
+                            </div>
+                            <div style="font-size:12px;color:#65676b;line-height:18px;margin-top:12px">
+                              WhatsApp information, including names and phone numbers, is subject to the data use restrictions in the <a class="link" href="#" onclick="event.preventDefault();">Meta Advertising Policies</a>. Your business and ads must also comply with the <a class="link" href="#" onclick="event.preventDefault();">WhatsApp Commerce Policy</a>. Links to WhatsApp on your website may be modified when people view your site in Facebook or Instagram.<br/><br/>
+                              Your ads that click to WhatsApp show "Active on WhatsApp" when you're using the WhatsApp Business app. This lets people viewing your ads know they can expect a quick reply. You can turn this off in your WhatsApp privacy settings.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Performance goal -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="font-weight:700;font-size:20px;margin-bottom:8px;color:#050505">Performance goal</div>
+                  <div style="font-size:14px;color:#65676b;margin-bottom:12px">How you measure success for your ads. <a class="link" href="#" onclick="event.preventDefault();">About performance goals</a></div>
+
+                  <div style="position:relative">
+                    <div id="selectPerf" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false" style="border:2px solid #1877f2">
+                      <span id="selectPerfValue">Maximize number of conversations</span>
+                      <i class="caret"></i>
+                    </div>
+                    <div id="perfMenu" class="dropdown-panel" style="display:none;max-height:400px;overflow-y:auto">
+                      <!-- Engagement goals section -->
+                      <div style="padding:12px 16px;font-weight:700;font-size:15px;color:#050505;background:#f0f2f5">Engagement goals</div>
+                      <div class="dropdown-item selected" data-value="Maximize number of conversations" style="background:#e7f3ff;border-left:3px solid #1877f2;padding-left:13px">
+                        <div class="rb" style="border-color:#1877f2"><div class="dot" style="display:block;background:#1877f2"></div></div>
+                        <div>
+                          <div style="font-weight:700;font-size:14px;color:#050505">Maximize number of conversations</div>
+                          <div class="muted" style="font-size:13px">We'll try to show your ads to people most likely to have a conversation with you through messaging.</div>
+                        </div>
+                      </div>
+
+                      <!-- Other goals section -->
+                      <div style="padding:12px 16px;font-weight:700;font-size:15px;color:#050505;background:#f0f2f5;margin-top:8px">Other goals</div>
+                      <div class="dropdown-item" data-value="Maximize number of link clicks">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div>
+                          <div style="font-weight:700;font-size:14px;color:#050505">Maximize number of link clicks</div>
+                          <div class="muted" style="font-size:13px">We'll try to show your ads to the people most likely to click on them.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bid control -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="font-weight:700;font-size:20px;margin-bottom:8px;color:#050505">Bid control · <span style="color:#65676b;font-weight:400">Optional</span></div>
+
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <input class="input" placeholder="RMX.XX" style="flex:1;font-size:15px;height:36px" />
+                    <div style="font-size:15px;color:#050505;font-weight:500;padding-right:8px">MYR</div>
+                  </div>
+
+                  <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Meta will aim to spend your entire budget and get the most results using the highest volume bid strategy.</div>
+
+                  <div style="margin-top:16px">
+                    <div style="font-weight:700;font-size:15px;margin-bottom:4px;color:#050505">Value rules
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Create rules to tell us how much more certain audiences are worth to your business. Our system will optimize for outcomes based on these rules. <a class="link" href="#" onclick="event.preventDefault();">About value rules</a></div>
+                    <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:8px 12px">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg>
+                      Create a rule set
+                    </button>
+                  </div>
+
+                  <div style="margin-top:16px">
+                    <a class="link" href="#" onclick="event.preventDefault();" style="display:flex;align-items:center;gap:4px;font-size:14px">
+                      Show more options
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Budget & schedule -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Budget & schedule</span>
+                  </div>
+
+                  <!-- Budget -->
+                  <div style="margin-bottom:20px">
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Budget
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-bottom:10px">
+                      <div style="position:relative;flex:1">
+                        <div id="selectBudget" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false">
+                          <span id="selectBudgetValue">Daily budget</span>
+                          <i class="caret"></i>
+                        </div>
+                        <div id="budgetMenu" class="dropdown-panel" style="display:none">
+                          <div class="dropdown-item selected" data-value="Daily budget">
+                            <div class="rb"><div class="dot"></div></div>
+                            <div style="font-weight:600">Daily budget</div>
+                          </div>
+                          <div class="dropdown-item" data-value="Lifetime budget">
+                            <div class="rb"><div class="dot"></div></div>
+                            <div style="font-weight:600">Lifetime budget</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;padding:0 12px;background:white;flex:1">
+                        <span style="color:#65676b;font-size:15px;margin-right:8px">RM</span>
+                        <input type="number" value="60.00" style="border:none;outline:none;flex:1;font-size:15px;color:#050505" />
+                        <span style="color:#050505;font-size:15px;margin-left:8px">MYR</span>
+                      </div>
+                    </div>
+                    <div style="font-size:14px;color:#050505;line-height:20px">You'll spend an average of RM60.00 per day. Your maximum daily spend is <span style="font-weight:700">RM105.00</span> and your maximum weekly spend is <span style="font-weight:700">RM420.00</span>.</div>
+                    <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px;margin-top:4px;display:inline-block">About daily budget</a>
+                  </div>
+
+                  <!-- Schedule -->
+                  <div>
+                    <div style="font-weight:700;font-size:17px;margin-bottom:12px;color:#050505">Schedule</div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Start date</div>
+                    <div style="display:flex;gap:8px;margin-bottom:16px">
+                      <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:white;flex:1">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:8px"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M3 8h14M7 2v4M13 2v4"/></svg>
+                        <span style="font-size:15px;color:#050505">Oct 14, 2025</span>
+                      </div>
+                      <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:white;flex:1">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:8px"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3"/></svg>
+                        <span style="font-size:15px;color:#050505">11:56 AM</span>
+                        <span style="font-size:15px;color:#65676b;margin-left:6px">+08</span>
+                      </div>
+                    </div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">End date</div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+                      <input type="checkbox" id="endDateCheck" style="width:20px;height:20px;cursor:pointer" />
+                      <label for="endDateCheck" style="font-size:15px;color:#050505;cursor:pointer">Set an end date</label>
+                    </div>
+
+                    <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px">
+                      <a class="link" href="#" onclick="event.preventDefault();" style="display:flex;align-items:center;gap:4px;font-size:14px">
+                        Hide options
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 4L2 8h8L6 4z"/></svg>
+                      </a>
+                    </div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Budget scheduling
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Increase your budget during specific days or times.</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <input type="checkbox" id="budgetScheduleCheck" style="width:20px;height:20px;cursor:pointer" />
+                        <label for="budgetScheduleCheck" style="font-size:15px;color:#050505;cursor:pointer">Schedule budget increases</label>
+                      </div>
+                      <button class="btn ghost" style="font-size:14px;padding:6px 12px">View</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Audience controls -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Audience controls</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                  </div>
+                  <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Adjust audience controls to reflect legal or practical constraints only. <a class="link" href="#" onclick="event.preventDefault();">Learn more</a></div>
+
+                  <!-- Info box -->
+                  <div style="background:#e7f3ff;border:1px solid #c2e0ff;border-radius:8px;padding:12px;margin-bottom:16px">
+                    <div style="display:flex;gap:10px">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
+                      <div>
+                        <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:6px">You can set audience controls for this ad account to apply to all campaigns.</div>
+                        <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Set audience controls for all campaigns</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="position:relative;margin-bottom:20px">
+                    <div id="selectAudience" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false">
+                      <span id="selectAudienceValue">Use a saved audience</span>
+                      <i class="caret"></i>
+                    </div>
+                    <div id="audienceMenu" class="dropdown-panel" style="display:none">
+                      <div class="dropdown-item selected" data-value="Use a saved audience">
+                        <div class="rb"><div class="dot"></div></div>
+                        <div style="font-weight:600">Use a saved audience</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Locations -->
+                  <div style="margin-bottom:20px">
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">* Locations
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+
+                    <!-- Collapsed view -->
+                    <div id="locationCollapsed">
+                      <div style="font-size:14px;color:#050505;margin-bottom:8px">Reach people living in or recently in this location.</div>
+
+                      <!-- Location box (clickable to expand) -->
+                      <div id="locationBox" style="border:1px solid var(--border);border-radius:8px;padding:16px;background:white;cursor:pointer;margin-bottom:12px">
+                        <div style="font-weight:700;font-size:16px;color:#050505;margin-bottom:12px">Malaysia</div>
+                        <div style="display:flex;align-items:center;gap:12px">
+                          <div style="width:48px;height:48px;background:#e4e6eb;border-radius:8px;display:flex;align-items:center;justify-content:center">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                          </div>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:15px;color:#050505">Malaysia</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Expanded view -->
+                    <div id="locationExpanded" style="display:none">
+                      <div style="font-size:14px;color:#050505;margin-bottom:12px">Reach people living in or recently in this location.</div>
+
+                      <div style="border:1px solid var(--border);border-radius:8px;padding:16px;background:white;margin-bottom:12px">
+                        <div style="font-weight:700;font-size:16px;color:#050505;margin-bottom:12px">Malaysia</div>
+
+                        <!-- Selected location -->
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f0f2f5;border-radius:8px;margin-bottom:16px">
+                          <div style="width:48px;height:48px;background:#e4e6eb;border-radius:8px;display:flex;align-items:center;justify-content:center">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#22c55e">
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                          </div>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:15px;color:#050505">Malaysia</div>
+                          </div>
+                        </div>
+
+                        <!-- Search and controls -->
+                        <div style="display:flex;gap:8px;margin-bottom:12px">
+                          <div style="position:relative">
+                            <button id="includeExcludeBtn" class="btn ghost" style="padding:8px 16px;font-size:14px;border:1px solid var(--border)">
+                              <span id="includeExcludeText">Include</span>
+                              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="margin-left:4px"><path d="M6 8L2 4h8L6 8z"/></svg>
+                            </button>
+                            <div id="includeExcludeMenu" class="dropdown-panel" style="display:none;min-width:150px;left:0;top:100%;margin-top:4px">
+                              <div class="dropdown-item" data-value="Include" style="padding:10px 16px;cursor:pointer;font-size:14px">Include</div>
+                              <div class="dropdown-item" data-value="Exclude" style="padding:10px 16px;cursor:pointer;font-size:14px">Exclude</div>
+                            </div>
+                          </div>
+                          <div style="position:relative;flex:1">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#65676b">
+                              <circle cx="7" cy="7" r="5"/>
+                              <path d="M11 11l3 3"/>
+                            </svg>
+                            <input id="locationSearch" type="text" placeholder="Search locations" style="width:100%;padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:6px;font-size:14px" />
+                            <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-radius:6px;margin-top:4px;max-height:300px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100"></div>
+                          </div>
+                          <button class="btn ghost" style="padding:8px 16px;font-size:14px;border:1px solid var(--border)">
+                            Browse
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="margin-left:4px"><path d="M6 8L2 4h8L6 8z"/></svg>
+                          </button>
+                          <button id="toggleMapBtn" class="btn ghost" style="padding:8px 12px;border:1px solid var(--border)">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="transform:rotate(180deg)">
+                              <path d="M8 4L4 8h8L8 4z"/>
+                            </svg>
+                          </button>
+                        </div>
+
+                        <!-- Map container -->
+                        <div id="mapContainer" style="display:none;margin-top:12px">
+                          <div id="realMap" style="width:100%;height:400px;border-radius:8px;position:relative;overflow:hidden;z-index:1"></div>
+
+                          <!-- Drop pin button -->
+                          <div style="position:absolute;bottom:16px;right:16px;z-index:1000">
+                            <button id="dropPinBtn" style="padding:10px 20px;background:white;border:none;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.15);cursor:pointer;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                              </svg>
+                              Drop pin
+                            </button>
+                          </div>
+                        </div>
+
+                        <div style="margin-top:12px">
+                          <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Add locations in bulk</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <a class="link" href="#" onclick="event.preventDefault();" style="display:flex;align-items:center;gap:4px;font-size:14px;margin-bottom:16px">
+                    Show more options
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                  </a>
+
+                  <!-- Minimum age -->
+                  <div>
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Minimum age
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <ul style="padding-left:20px;margin:0 0 12px 0">
+                      <li style="font-size:14px;color:#050505">18</li>
+                      <li style="font-size:14px;color:#050505">Unknown age on WhatsApp: Included</li>
+                    </ul>
+
+                    <!-- Blue info box -->
+                    <div style="background:#e7f3ff;border-left:3px solid #1877f2;padding:12px;margin-bottom:16px">
+                      <div style="display:flex;gap:10px">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
+                        <div>
+                          <div style="font-weight:700;font-size:14px;color:#050505;margin-bottom:4px">Audience has been updated</div>
+                          <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:6px">To reach more people on the WhatsApp Status placement, the audience for this ad set includes people on WhatsApp whose age is unknown. <a class="link" href="#" onclick="event.preventDefault();">About reaching new audiences</a></div>
+                        </div>
+                        <button class="btn ghost" style="padding:4px;align-self:flex-start">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4L4 12M4 4l8 8"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Exclude custom audiences -->
+                  <div style="margin-bottom:20px">
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Exclude these custom audiences
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="position:relative">
+                      <input class="input" placeholder="Search existing audiences" style="padding-left:36px;font-size:14px" />
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#65676b"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+                    </div>
+                  </div>
+
+                  <!-- Languages -->
+                  <div>
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Languages
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+
+                    <!-- Collapsed view -->
+                    <div id="languageCollapsed" style="cursor:pointer">
+                      <div style="font-size:14px;color:#050505">All languages</div>
+                    </div>
+
+                    <!-- Expanded view -->
+                    <div id="languageExpanded" style="display:none">
+                      <div style="font-size:14px;color:#050505;margin-bottom:12px;line-height:20px">Only enter a language if you need to limit your audience to people who use a language that isn't common to your selected locations.</div>
+                      <div style="position:relative">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#65676b">
+                          <circle cx="7" cy="7" r="5"/>
+                          <path d="M11 11l3 3"/>
+                        </svg>
+                        <input id="languageSearch" type="text" placeholder="Search languages" style="width:100%;padding:10px 12px 10px 36px;border:2px solid #1877f2;border-radius:8px;font-size:14px;outline:none" />
+
+                        <!-- Language dropdown results -->
+                        <div id="languageResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-radius:8px;margin-top:4px;max-height:300px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100"></div>
+                      </div>
+
+                      <!-- Selected languages display -->
+                      <div id="selectedLanguages" style="margin-top:12px"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Advantage+ audience -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span style="font-weight:700;font-size:20px;color:#050505">Advantage+ audience</span>
+                    </div>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="color:#1877f2"><path d="M10 5v10M5 10h10"/></svg>
+                  </div>
+
+                  <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Our AI finds audiences for your ads. If you add an audience suggestion, you'll guide our AI towards people you think are likely to respond. <a class="link" href="#" onclick="event.preventDefault();">About Advantage+ audience</a></div>
+
+                  <button id="audienceSuggestionBtn" class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:8px 12px;margin-bottom:16px">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg>
+                    Audience suggestion (optional)
+                  </button>
+
+                  <!-- Expanded audience suggestion section -->
+                  <div id="audienceSuggestionExpanded" style="display:none;margin-bottom:16px">
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Custom audiences
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                      <div style="font-size:14px;color:#050505">Custom audiences</div>
+                      <button class="btn ghost" style="padding:6px 12px;font-size:14px;display:flex;align-items:center;gap:4px">
+                        Create new
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                      </button>
+                    </div>
+
+                    <div style="position:relative;margin-bottom:16px">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#65676b">
+                        <circle cx="7" cy="7" r="5"/>
+                        <path d="M11 11l3 3"/>
+                      </svg>
+                      <input type="text" placeholder="Search existing audiences" style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:8px;font-size:14px" />
+                    </div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Age
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+
+                    <div style="display:flex;gap:8px;margin-bottom:16px">
+                      <select style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:white" size="1">
+                        <option selected>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                        <option>27</option>
+                        <option>28</option>
+                        <option>29</option>
+                        <option>30</option>
+                        <option>31</option>
+                        <option>32</option>
+                        <option>33</option>
+                        <option>34</option>
+                        <option>35</option>
+                        <option>36</option>
+                        <option>37</option>
+                        <option>38</option>
+                        <option>39</option>
+                        <option>40</option>
+                        <option>41</option>
+                        <option>42</option>
+                        <option>43</option>
+                        <option>44</option>
+                        <option>45</option>
+                        <option>46</option>
+                        <option>47</option>
+                        <option>48</option>
+                        <option>49</option>
+                        <option>50</option>
+                        <option>51</option>
+                        <option>52</option>
+                        <option>53</option>
+                        <option>54</option>
+                        <option>55</option>
+                        <option>56</option>
+                        <option>57</option>
+                        <option>58</option>
+                        <option>59</option>
+                        <option>60</option>
+                        <option>61</option>
+                        <option>62</option>
+                        <option>63</option>
+                        <option>64</option>
+                        <option>65+</option>
+                      </select>
+                      <select style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:white">
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                        <option>27</option>
+                        <option>28</option>
+                        <option>29</option>
+                        <option>30</option>
+                        <option>31</option>
+                        <option>32</option>
+                        <option>33</option>
+                        <option>34</option>
+                        <option>35</option>
+                        <option>36</option>
+                        <option>37</option>
+                        <option>38</option>
+                        <option>39</option>
+                        <option>40</option>
+                        <option>41</option>
+                        <option>42</option>
+                        <option>43</option>
+                        <option>44</option>
+                        <option>45</option>
+                        <option>46</option>
+                        <option>47</option>
+                        <option>48</option>
+                        <option>49</option>
+                        <option>50</option>
+                        <option>51</option>
+                        <option>52</option>
+                        <option>53</option>
+                        <option>54</option>
+                        <option>55</option>
+                        <option>56</option>
+                        <option>57</option>
+                        <option>58</option>
+                        <option>59</option>
+                        <option>60</option>
+                        <option>61</option>
+                        <option>62</option>
+                        <option>63</option>
+                        <option>64</option>
+                        <option selected>65+</option>
+                      </select>
+                    </div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Gender
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+
+                    <div style="display:flex;gap:16px;margin-bottom:16px">
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                        <input type="radio" name="gender" value="all" checked style="width:20px;height:20px" />
+                        <span style="font-size:14px;color:#050505">All</span>
+                      </label>
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                        <input type="radio" name="gender" value="men" style="width:20px;height:20px" />
+                        <span style="font-size:14px;color:#050505">Men</span>
+                      </label>
+                      <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                        <input type="radio" name="gender" value="women" style="width:20px;height:20px" />
+                        <span style="font-size:14px;color:#050505">Women</span>
+                      </label>
+                    </div>
+
+                    <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Detailed targeting</div>
+                    <div style="font-size:13px;color:#65676b;margin-bottom:8px">Include people who match</div>
+
+                    <div style="position:relative;margin-bottom:16px">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#65676b">
+                        <circle cx="7" cy="7" r="5"/>
+                        <path d="M11 11l3 3"/>
+                      </svg>
+                      <input type="text" placeholder="Add demographics, interests or behaviors" style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border);border-radius:8px;font-size:14px" />
+                      <button class="btn ghost" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:6px 12px;font-size:13px">Browse</button>
+                    </div>
+                  </div>
+
+                  <div style="display:flex;gap:12px;margin-bottom:16px">
+                    <button class="btn ghost" style="flex:1;padding:8px 12px;font-size:14px">Save audience</button>
+                    <a class="link" href="#" onclick="event.preventDefault();" style="flex:1;text-align:center;padding:8px 12px;font-size:14px;display:flex;align-items:center;justify-content:center">Switch to original audience options</a>
+                  </div>
+                </div>
+
+                <!-- Placements -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Placements</span>
+                  </div>
+
+                  <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Choose where your ad appears across Meta technologies. <a class="link" href="#" onclick="event.preventDefault();">Learn more</a></div>
+
+                  <!-- Blue info box -->
+                  <div style="background:#e7f3ff;border-left:3px solid #1877f2;padding:12px;margin-bottom:16px">
+                    <div style="display:flex;gap:10px">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
+                      <div>
+                        <div style="font-weight:700;font-size:14px;color:#050505;margin-bottom:4px">WhatsApp Status included</div>
+                        <div style="font-size:14px;color:#050505;line-height:20px">To help you reach new audiences, we've included the WhatsApp Status placement. Statuses are vertical photos and videos on the WhatsApp Updates tab that disappear after 24 hours. <a class="link" href="#" onclick="event.preventDefault();">About ads in WhatsApp Status</a></div>
+                      </div>
+                      <button class="btn ghost" style="padding:4px;align-self:flex-start">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4L4 12M4 4l8 8"/></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Advantage+ placements
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="color:#1877f2;vertical-align:middle"><path d="M10 5v10M5 10h10"/></svg>
+                  </div>
+                  <div style="font-size:14px;color:#050505;line-height:20px">Your budget will be allocated by Meta's delivery system across multiple placements based on where it's likely to perform best.</div>
+
+                  <div style="margin-top:16px">
+                    <a class="link" href="#" onclick="event.preventDefault();" style="display:flex;align-items:center;gap:4px;font-size:14px">
+                      Show more options
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right column -->
+              <div class="right-col">
+                <div class="card-block" style="margin-bottom:12px;padding:16px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="font-weight:700;font-size:14px;color:#050505">Campaign score</span>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <div style="width:56px;height:56px;border-radius:50%;border:4px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#050505">100</div>
+                    <div style="font-size:13px;color:#65676b;line-height:18px">You're using our recommended setup.</div>
+                  </div>
+                </div>
+
+                <div class="card-block" style="margin-bottom:12px;padding:16px">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+                    <span style="font-weight:700;font-size:14px;color:#050505">Audience definition</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                  </div>
+                  <div style="font-size:13px;color:#65676b;margin-bottom:10px">Your audience is broad.</div>
+                  <div style="font-size:13px;color:#65676b;margin-bottom:6px;line-height:18px">Broad audiences can improve performance and reach more people likely to respond.</div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;color:#65676b;margin-bottom:6px">
+                    <span>Narrow</span>
+                    <span>Broad</span>
+                  </div>
+                  <div style="height:8px;background:#e4e6eb;border-radius:4px;overflow:hidden;margin-bottom:12px">
+                    <div style="width:85%;height:100%;background:#22c55e;border-radius:4px"></div>
+                  </div>
+                  <div style="font-size:12px;color:#65676b;line-height:16px">Estimated audience size: 20,100,000 - 23,700,000
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="7" cy="7" r="6" fill="currentColor"/><text x="7" y="10" text-anchor="middle" fill="white" font-size="9" font-weight="bold">i</text></svg>
+                  </div>
+                  <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+                    <div style="display:flex;align-items:flex-start;gap:8px">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#65676b;flex-shrink:0;margin-top:2px"><path d="M8 12v-2M8 8V4M14 8c0 3.314-2.686 6-6 6S2 11.314 2 8s2.686-6 6-6 6 2.686 6 6z"/></svg>
+                      <div style="font-size:12px;color:#65676b;line-height:16px">Estimates do not include Advantage+ audience options or WhatsApp placements and may vary significantly over time based on your targeting selections and available data.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-block" style="padding:16px">
+                  <div style="font-weight:700;font-size:14px;margin-bottom:12px;color:#050505">Estimated daily results</div>
+
+                  <div style="margin-bottom:16px">
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+                      <span style="font-size:13px;color:#050505">Reach</span>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:#9ca3af"><circle cx="7" cy="7" r="6" fill="currentColor"/><text x="7" y="10" text-anchor="middle" fill="white" font-size="9" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="font-size:20px;font-weight:700;color:#050505;margin-bottom:6px">10K - 29K</div>
+                    <div style="height:8px;background:#e4e6eb;border-radius:4px;overflow:hidden">
+                      <div style="width:55%;height:100%;background:#1877f2;border-radius:4px"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+                      <span style="font-size:13px;color:#050505">Conversations</span>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:#9ca3af"><circle cx="7" cy="7" r="6" fill="currentColor"/><text x="7" y="10" text-anchor="middle" fill="white" font-size="9" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="font-size:20px;font-weight:700;color:#050505;margin-bottom:6px">4 - 19</div>
+                    <div style="height:8px;background:#e4e6eb;border-radius:4px;overflow:hidden">
+                      <div style="width:30%;height:100%;background:#1877f2;border-radius:4px"></div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:#65676b;line-height:14px">The accuracy of estimates is based on factors like past campaign data, the budget you entered, market data, targeting criteria and ad placements. Numbers are provided to give you an idea of performance for your budget, but are only estimates and don't guarantee results.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="sticky-footer">
+          <div></div>
+          <div class="row" style="gap:8px">
+            <button class="btn ghost" onclick="location.href='engagement-campaign.html'">Back</button>
+            <button class="btn primary" onclick="window.location.href='engagement-ad.html';">Next</button>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Dropdown helper function
+      function setupDropdown(selectId, menuId, valueId) {
+        const select = document.getElementById(selectId);
+        const menu = document.getElementById(menuId);
+        const valueEl = document.getElementById(valueId);
+
+        select.addEventListener('click', ()=>{
+          const open = menu.style.display !== 'none';
+          menu.style.display = open ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', (e)=>{
+          if(!select.contains(e.target) && !menu.contains(e.target)) menu.style.display='none';
+        });
+
+        menu.querySelectorAll('.dropdown-item').forEach(item=>{
+          item.addEventListener('click', ()=>{
+            menu.querySelectorAll('.dropdown-item').forEach(x=>x.classList.remove('selected'));
+            item.classList.add('selected');
+            valueEl.textContent = item.dataset.value;
+            menu.style.display='none';
+          })
+        });
+      }
+
+      // Setup all dropdowns
+      setupDropdown('selectConv', 'convMenu', 'selectConvValue');
+      setupDropdown('selectPerf', 'perfMenu', 'selectPerfValue');
+      setupDropdown('selectBudget', 'budgetMenu', 'selectBudgetValue');
+      setupDropdown('selectAudience', 'audienceMenu', 'selectAudienceValue');
+
+      // Destination radios
+      const destAuto = document.getElementById('destAuto');
+      const destManual = document.getElementById('destManual');
+      const manualDestContent = document.getElementById('manualDestContent');
+
+      function selectDest(which){
+        const sel = which === 'auto' ? destAuto : destManual;
+        const un = which === 'auto' ? destManual : destAuto;
+        sel.classList.add('selected');
+        sel.querySelector('.rb').style.borderColor = '#1877f2';
+        sel.querySelector('.dot').style.display='block';
+        un.classList.remove('selected');
+        un.querySelector('.rb').style.borderColor = '#9ca3af';
+        un.querySelector('.dot').style.display='none';
+
+        // Show/hide manual destination content
+        if (which === 'manual') {
+          manualDestContent.style.display = 'block';
+        } else {
+          manualDestContent.style.display = 'none';
+        }
+      }
+
+      destAuto.addEventListener('click', ()=> selectDest('auto'));
+      destManual.addEventListener('click', ()=> selectDest('manual'));
+
+      // Location expand/collapse
+      const locationBox = document.getElementById('locationBox');
+      const locationCollapsed = document.getElementById('locationCollapsed');
+      const locationExpanded = document.getElementById('locationExpanded');
+      const toggleMapBtn = document.getElementById('toggleMapBtn');
+      const mapContainer = document.getElementById('mapContainer');
+      let map = null;
+      let marker = null;
+
+      locationBox.addEventListener('click', () => {
+        locationCollapsed.style.display = 'none';
+        locationExpanded.style.display = 'block';
+      });
+
+      // Toggle map
+      toggleMapBtn.addEventListener('click', () => {
+        if (mapContainer.style.display === 'none') {
+          mapContainer.style.display = 'block';
+          toggleMapBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+
+          // Initialize map if not already done
+          if (!map) {
+            setTimeout(() => {
+              map = L.map('realMap', {
+                zoomControl: false,
+                attributionControl: false,
+                scrollWheelZoom: true
+              }).setView([4.2105, 101.9758], 6);
+
+              // Use Mapbox-style map (closest to Facebook's style)
+              L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                subdomains: 'abcd',
+                maxZoom: 19
+              }).addTo(map);
+
+              // Add custom zoom control on the right
+              const zoomControl = L.control.zoom({
+                position: 'topright'
+              }).addTo(map);
+
+              // Add custom marker for Malaysia with Facebook-style pin
+              marker = L.marker([4.2105, 101.9758], {
+                icon: L.divIcon({
+                  html: `<div style="position:relative">
+                    <div style="background:#5B8FF9;width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(91,143,249,0.4);border:3px solid white">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="transform:rotate(45deg)">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                      </svg>
+                    </div>
+                    <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:12px;height:6px;background:rgba(91,143,249,0.25);border-radius:50%;filter:blur(3px)"></div>
+                  </div>`,
+                  className: 'custom-marker',
+                  iconSize: [40, 48],
+                  iconAnchor: [20, 40]
+                }),
+                draggable: false
+              }).addTo(map);
+
+              // Add smooth animations
+              map.on('zoomstart', () => {
+                document.getElementById('realMap').style.transition = 'all 0.25s ease-out';
+              });
+
+              // Store map for later use
+              window.leafletMap = map;
+              window.leafletMarker = marker;
+            }, 100);
+          }
+        } else {
+          mapContainer.style.display = 'none';
+          toggleMapBtn.querySelector('svg').style.transform = 'rotate(180deg)';
+        }
+      });
+
+      // Include/Exclude dropdown
+      const includeExcludeBtn = document.getElementById('includeExcludeBtn');
+      const includeExcludeMenu = document.getElementById('includeExcludeMenu');
+      const includeExcludeText = document.getElementById('includeExcludeText');
+
+      includeExcludeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        includeExcludeMenu.style.display = includeExcludeMenu.style.display === 'none' ? 'block' : 'none';
+      });
+
+      includeExcludeMenu.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          includeExcludeText.textContent = item.dataset.value;
+          includeExcludeMenu.style.display = 'none';
+        });
+      });
+
+      document.addEventListener('click', () => {
+        includeExcludeMenu.style.display = 'none';
+      });
+
+      // Location search with Nominatim API
+      const locationSearch = document.getElementById('locationSearch');
+      const searchResults = document.getElementById('searchResults');
+      let searchTimeout;
+
+      locationSearch.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+
+        clearTimeout(searchTimeout);
+
+        if (query.length < 2) {
+          searchResults.style.display = 'none';
+          return;
+        }
+
+        searchTimeout = setTimeout(async () => {
+          try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=my&limit=5`);
+            const data = await response.json();
+
+            if (data.length > 0) {
+              searchResults.innerHTML = data.map(place => `
+                <div class="search-result-item"
+                     data-lat="${place.lat}"
+                     data-lon="${place.lon}"
+                     data-osm-id="${place.osm_id}"
+                     data-osm-type="${place.osm_type}"
+                     style="padding:12px;cursor:pointer;border-bottom:1px solid #e5e7eb;font-size:14px">
+                  <div style="font-weight:600;color:#050505">${place.display_name.split(',')[0]}</div>
+                  <div style="font-size:12px;color:#65676b">${place.display_name}</div>
+                </div>
+              `).join('');
+
+              searchResults.style.display = 'block';
+
+              // Add click handlers
+              searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', async () => {
+                  const lat = parseFloat(item.dataset.lat);
+                  const lon = parseFloat(item.dataset.lon);
+                  const placeName = item.querySelector('div').textContent;
+                  const osmId = item.dataset.osmId;
+                  const osmType = item.dataset.osmType;
+
+                  // Auto-expand map if not already shown
+                  if (mapContainer.style.display === 'none') {
+                    mapContainer.style.display = 'block';
+                    toggleMapBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+
+                    // Initialize map if needed
+                    if (!map) {
+                      setTimeout(() => {
+                        map = L.map('realMap', {
+                          zoomControl: false,
+                          attributionControl: false,
+                          scrollWheelZoom: true
+                        }).setView([lat, lon], 10);
+
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                          subdomains: 'abcd',
+                          maxZoom: 19
+                        }).addTo(map);
+
+                        L.control.zoom({
+                          position: 'topright'
+                        }).addTo(map);
+
+                        marker = L.marker([lat, lon], {
+                          icon: L.divIcon({
+                            html: `<div style="position:relative">
+                              <div style="background:#5B8FF9;width:40px;height:40px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(91,143,249,0.4);border:3px solid white">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="transform:rotate(45deg)">
+                                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                              </div>
+                              <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:12px;height:6px;background:rgba(91,143,249,0.25);border-radius:50%;filter:blur(3px)"></div>
+                            </div>`,
+                            className: 'custom-marker',
+                            iconSize: [40, 48],
+                            iconAnchor: [20, 40]
+                          }),
+                          draggable: false
+                        }).addTo(map);
+
+                        window.leafletMap = map;
+                        window.leafletMarker = marker;
+                      }, 100);
+                    }
+                  }
+
+                  // Wait a bit for map to initialize if needed
+                  await new Promise(resolve => setTimeout(resolve, 200));
+
+                  if (window.leafletMap && window.leafletMarker) {
+                    // Move map and marker to new location
+                    window.leafletMap.setView([lat, lon], 10);
+                    window.leafletMarker.setLatLng([lat, lon]);
+
+                    // Remove old highlights
+                    if (window.selectedAreaPolygon) {
+                      window.leafletMap.removeLayer(window.selectedAreaPolygon);
+                    }
+                    if (window.selectedAreaCircle) {
+                      window.leafletMap.removeLayer(window.selectedAreaCircle);
+                    }
+
+                    // Try to get boundary from Overpass API
+                    if (osmId && osmType) {
+                      try {
+                        const overpassQuery = `
+                          [out:json];
+                          (
+                            ${osmType}(${osmId});
+                          );
+                          out geom;
+                        `;
+
+                        const response = await fetch('https://overpass-api.de/api/interpreter', {
+                          method: 'POST',
+                          body: overpassQuery
+                        });
+
+                        const data = await response.json();
+
+                        if (data.elements && data.elements.length > 0) {
+                          const element = data.elements[0];
+
+                          // Convert to GeoJSON
+                          let coordinates = [];
+                          if (element.geometry) {
+                            coordinates = element.geometry.map(point => [point.lon, point.lat]);
+                          }
+
+                          if (coordinates.length > 0) {
+                            const geojson = {
+                              type: 'Feature',
+                              geometry: {
+                                type: element.type === 'way' ? 'Polygon' : 'MultiPolygon',
+                                coordinates: element.type === 'way' ? [coordinates] : [[coordinates]]
+                              }
+                            };
+
+                            window.selectedAreaPolygon = L.geoJSON(geojson, {
+                              style: {
+                                color: '#5B8FF9',
+                                weight: 3,
+                                opacity: 0.8,
+                                fillColor: '#5B8FF9',
+                                fillOpacity: 0.2
+                              }
+                            }).addTo(window.leafletMap);
+
+                            // Fit map to boundary
+                            window.leafletMap.fitBounds(window.selectedAreaPolygon.getBounds(), {
+                              padding: [50, 50]
+                            });
+
+                            // Animate highlight
+                            setTimeout(() => {
+                              if (window.selectedAreaPolygon) {
+                                window.selectedAreaPolygon.setStyle({
+                                  fillOpacity: 0.25
+                                });
+                              }
+                            }, 100);
+                          }
+                        } else {
+                          // Fallback to circle if no boundary found
+                          window.selectedAreaCircle = L.circle([lat, lon], {
+                            color: '#5B8FF9',
+                            fillColor: '#5B8FF9',
+                            fillOpacity: 0.2,
+                            weight: 2,
+                            radius: 5000
+                          }).addTo(window.leafletMap);
+                        }
+                      } catch (error) {
+                        console.log('Could not fetch boundary, using circle:', error);
+                        // Fallback to circle
+                        window.selectedAreaCircle = L.circle([lat, lon], {
+                          color: '#5B8FF9',
+                          fillColor: '#5B8FF9',
+                          fillOpacity: 0.2,
+                          weight: 2,
+                          radius: 5000
+                        }).addTo(window.leafletMap);
+                      }
+                    } else {
+                      // Fallback to circle if no OSM data
+                      window.selectedAreaCircle = L.circle([lat, lon], {
+                        color: '#5B8FF9',
+                        fillColor: '#5B8FF9',
+                        fillOpacity: 0.2,
+                        weight: 2,
+                        radius: 5000
+                      }).addTo(window.leafletMap);
+                    }
+                  }
+
+                  searchResults.style.display = 'none';
+                  locationSearch.value = placeName;
+                });
+
+                item.addEventListener('mouseenter', () => {
+                  item.style.background = '#f0f2f5';
+                });
+
+                item.addEventListener('mouseleave', () => {
+                  item.style.background = 'white';
+                });
+              });
+            } else {
+              searchResults.style.display = 'none';
+            }
+          } catch (error) {
+            console.error('Search error:', error);
+            searchResults.style.display = 'none';
+          }
+        }, 300);
+      });
+
+      // Language selection
+      const languageCollapsed = document.getElementById('languageCollapsed');
+      const languageExpanded = document.getElementById('languageExpanded');
+      const languageSearch = document.getElementById('languageSearch');
+      const languageResults = document.getElementById('languageResults');
+      const selectedLanguages = document.getElementById('selectedLanguages');
+
+      // Language database
+      const languages = [
+        { name: 'Chinese (All)', value: 'chinese-all' },
+        { name: 'Simplified Chinese (China)', value: 'zh-cn' },
+        { name: 'Traditional Chinese (Hong Kong)', value: 'zh-hk' },
+        { name: 'Traditional Chinese (Taiwan)', value: 'zh-tw' },
+        { name: 'English (All)', value: 'english-all' },
+        { name: 'Malay', value: 'ms' },
+        { name: 'Tamil', value: 'ta' }
+      ];
+
+      let selectedLanguagesList = [];
+
+      languageCollapsed.addEventListener('click', () => {
+        languageCollapsed.style.display = 'none';
+        languageExpanded.style.display = 'block';
+        setTimeout(() => languageSearch.focus(), 100);
+      });
+
+      languageSearch.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+
+        if (query.length === 0) {
+          languageResults.style.display = 'none';
+          return;
+        }
+
+        const filtered = languages.filter(lang =>
+          lang.name.toLowerCase().includes(query)
+        );
+
+        if (filtered.length > 0) {
+          languageResults.innerHTML = filtered.map((lang, index) => `
+            <div class="language-result-item"
+                 data-value="${lang.value}"
+                 data-name="${lang.name}"
+                 style="padding:12px 16px;cursor:pointer;font-size:14px;background:${index === 0 ? '#1877f2' : 'white'};color:${index === 0 ? 'white' : '#050505'}">
+              ${lang.name}
+            </div>
+          `).join('');
+
+          languageResults.style.display = 'block';
+
+          // Add click handlers
+          languageResults.querySelectorAll('.language-result-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+              const langName = item.dataset.name;
+              const langValue = item.dataset.value;
+
+              if (!selectedLanguagesList.find(l => l.value === langValue)) {
+                selectedLanguagesList.push({ name: langName, value: langValue });
+                updateSelectedLanguages();
+              }
+
+              languageSearch.value = '';
+              languageResults.style.display = 'none';
+            });
+
+            if (index !== 0) {
+              item.addEventListener('mouseenter', () => {
+                item.style.background = '#f0f2f5';
+              });
+
+              item.addEventListener('mouseleave', () => {
+                item.style.background = 'white';
+              });
+            }
+          });
+        } else {
+          languageResults.style.display = 'none';
+        }
+      });
+
+      function updateSelectedLanguages() {
+        if (selectedLanguagesList.length > 0) {
+          selectedLanguages.innerHTML = selectedLanguagesList.map(lang => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f0f2f5;border-radius:8px;margin-bottom:8px">
+              <span style="font-size:14px;color:#050505">${lang.name}</span>
+              <button class="remove-lang-btn" data-value="${lang.value}" style="background:transparent;border:none;cursor:pointer;padding:4px">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#65676b" stroke-width="2">
+                  <path d="M12 4L4 12M4 4l8 8"/>
+                </svg>
+              </button>
+            </div>
+          `).join('');
+
+          // Add remove handlers
+          selectedLanguages.querySelectorAll('.remove-lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              selectedLanguagesList = selectedLanguagesList.filter(l => l.value !== btn.dataset.value);
+              updateSelectedLanguages();
+            });
+          });
+        } else {
+          selectedLanguages.innerHTML = '';
+        }
+      }
+
+      // Audience suggestion expand/collapse
+      const audienceSuggestionBtn = document.getElementById('audienceSuggestionBtn');
+      const audienceSuggestionExpanded = document.getElementById('audienceSuggestionExpanded');
+
+      audienceSuggestionBtn.addEventListener('click', () => {
+        if (audienceSuggestionExpanded.style.display === 'none') {
+          audienceSuggestionExpanded.style.display = 'block';
+          audienceSuggestionBtn.querySelector('svg').style.transform = 'rotate(45deg)';
+        } else {
+          audienceSuggestionExpanded.style.display = 'none';
+          audienceSuggestionBtn.querySelector('svg').style.transform = 'rotate(0deg)';
+        }
+      });
+
+      // Setup ad set name input sync
+      setupNameInputSync('adSetNameInput', NavState.saveAdSetName.bind(NavState));
+    </script>
+  </body>
+</html>
+

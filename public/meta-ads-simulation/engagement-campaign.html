@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New Engagement Campaign</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="shared-nav.js"></script>
+  </head>
+  <body class="app-bg">
+    <div class="ads-layout">
+      <!-- Left rail -->
+      <aside class="rail">
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="4" y="14" width="4" height="7"/>
+            <rect x="10" y="9" width="4" height="12"/>
+            <rect x="16" y="4" width="4" height="17"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </aside>
+
+      <!-- Tree sidebar -->
+      <aside class="sidebar">
+        <div id="sidebarCampaignName" class="tree-item level-1 active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#1877f2">
+            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+          </svg>
+          New Engagement Campaign
+        </div>
+        <div class="tree-item level-2" onclick="location.href='engagement-adset.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          New Engagement Ad Set
+        </div>
+        <div class="tree-item level-3" onclick="location.href='engagement-ad.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          </svg>
+          New Engagement Ad
+        </div>
+      </aside>
+
+      <!-- Main content area -->
+      <main class="main">
+        <header class="crumbs">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="breadcrumbCampaignName" style="color:var(--primary);font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+              </svg>
+              New Engagement Campaign
+            </span>
+            <span class="sep" style="color:#9ca3af">›</span>
+            <span onclick="location.href='engagement-adset.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+              1 Ad set
+            </span>
+            <span class="sep" style="color:#9ca3af">›</span>
+            <span onclick="location.href='engagement-ad.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+              1 Ad
+            </span>
+          </div>
+
+          <div class="crumb-actions">
+            <span class="status" style="display:flex;align-items:center;gap:6px">
+              <span style="width:8px;height:8px;border-radius:50%;border:2px solid #6b7280"></span>
+              <span style="color:#6b7280;font-size:13px">In draft</span>
+            </span>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#1877f2">
+                <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25a1.75 1.75 0 0 1 .445-.758l8.61-8.61Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+              Edit
+            </button>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#65676b">
+                <path d="M8 3c3 0 5.5 2 7 5-1.5 3-4 5-7 5s-5.5-2-7-5c1.5-3 4-5 7-5z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+              Review
+            </button>
+            <button class="btn ghost" style="padding:6px;display:flex;align-items:center">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#65676b">
+                <circle cx="10" cy="4" r="1.5"/>
+                <circle cx="10" cy="10" r="1.5"/>
+                <circle cx="10" cy="16" r="1.5"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="canvas">
+          <div style="max-width:1000px">
+            <div style="display:flex;gap:16px">
+              <div style="flex:1">
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e">
+                      <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                      <path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span style="font-weight:700;font-size:15px">Campaign name</span>
+                  </div>
+                  <div class="tip">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>这个 Campaign Name 只需要填写任何方便你记得/管理的名字，不影响成绩。</div>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <input id="campaignNameInput" class="input" value="New Engagement Campaign" style="flex:1;font-size:14px" />
+                    <button class="btn ghost" style="font-size:14px;white-space:nowrap">Create template</button>
+                  </div>
+                </div>
+
+                <div class="tip">
+                  <div class="tip-icon">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div>以下设置（Campaign details、Advantage+ campaign budget、A/B test、Special Ad Categories）对新手来说无需改动，保持为"Off"即可，稍后我们在 Ad Set 和 Ad 步骤完成核心设置。</div>
+                </div>
+
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e">
+                      <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                      <path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span style="font-weight:700;font-size:15px">Campaign details</span>
+                  </div>
+                  <div style="margin-bottom:16px">
+                    <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Buying type</div>
+                    <div style="color:#111827;font-size:14px">Auction</div>
+                  </div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">
+                      Campaign objective
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af">
+                        <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                        <text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text>
+                      </svg>
+                    </div>
+                    <div style="color:#111827;font-size:14px;margin-bottom:4px">Engagement</div>
+                    <a class="link" href="#" onclick="event.preventDefault();alert('更多选项占位');" style="font-size:13px">Show more options</a>
+                  </div>
+                </div>
+
+                <div class="card-block" style="margin-bottom:16px;position:relative">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="font-weight:700;font-size:15px">Advantage+ campaign budget</span>
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" style="color:#1877f2">
+                        <circle cx="9" cy="9" r="9" fill="currentColor"/>
+                        <text x="9" y="13" text-anchor="middle" fill="white" font-size="14" font-weight="bold">+</text>
+                      </svg>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span id="acbLabel" style="color:#6b7280;font-size:13px">Off</span>
+                      <label class="switch small"><input id="acb" type="checkbox"><span></span></label>
+                    </div>
+                  </div>
+                  <div id="acbWarning" class="tip" style="display:none;margin-top:12px">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>新手还不需要打开这个设定</div>
+                  </div>
+                  <div class="muted" style="font-size:13px;line-height:1.5">Distribute your budget across ad sets to get more results. You can control spending for each ad set. <a class="link" href="#" onclick="event.preventDefault();">About Advantage+ campaign budget</a></div>
+                </div>
+
+                <div class="card-block" style="margin-bottom:16px;position:relative">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                    <span style="font-weight:700;font-size:15px">A/B test</span>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span id="abtestLabel" style="color:#6b7280;font-size:13px">Off</span>
+                      <label class="switch small"><input id="abtest" type="checkbox"><span></span></label>
+                    </div>
+                  </div>
+                  <div id="abtestWarning" class="tip" style="display:none;margin-top:12px">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>新手还不需要打开这个设定</div>
+                  </div>
+                  <div class="muted" style="font-size:13px;line-height:1.5">Help improve ad performance by comparing versions to see what works best. For accuracy, each one will be shown to separate groups of your audience. <a class="link" href="#" onclick="event.preventDefault();">About A/B tests</a></div>
+                </div>
+
+                <div class="card-block">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e">
+                      <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                      <path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span style="font-weight:700;font-size:15px">Special Ad Categories</span>
+                  </div>
+                  <div class="muted" style="font-size:13px;line-height:1.5;margin-bottom:16px">Declare if your ads are related to financial products and services, employment, housing, social issues, elections or politics to help prevent ad rejections. Requirements differ by country. <a class="link" href="#" onclick="event.preventDefault();">About Special Ad Categories</a></div>
+                  <div>
+                    <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Categories</div>
+                    <div class="muted" style="font-size:13px;margin-bottom:8px">Select the categories that best describe what this campaign will advertise.</div>
+                    <select class="input" style="max-width:100%;font-size:14px">
+                      <option>Declare category if applicable</option>
+                      <option>Credit</option>
+                      <option>Employment</option>
+                      <option>Housing</option>
+                      <option>Social issues, elections or politics</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div style="width:280px">
+                <div class="card-block">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <div class="score">100</div>
+                    <div style="flex:1">
+                      <div style="font-weight:700;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+                        Campaign score
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af">
+                          <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                          <text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text>
+                        </svg>
+                      </div>
+                      <div class="muted" style="font-size:13px;line-height:1.4">You're using our recommended setup.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="sticky-footer">
+          <div></div>
+          <div class="row" style="gap:8px">
+            <button class="btn ghost" onclick="location.href='engagement-setup.html'">Close</button>
+            <button class="btn primary" onclick="location.href='engagement-adset.html'">Next</button>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Update switch labels text
+      function bindSwitch(id){
+        const el = document.getElementById(id);
+        const label = el.parentElement.querySelector('.switch-label');
+        const update=()=> label && (label.textContent = el.checked ? 'On' : 'Off');
+        el.addEventListener('change', update); update();
+      }
+      bindSwitch('acb');
+      bindSwitch('abtest');
+
+      // Sync campaign name across UI
+      const campaignNameInput = document.getElementById('campaignNameInput');
+      const sidebarName = document.getElementById('sidebarCampaignName');
+      const breadcrumbName = document.getElementById('breadcrumbCampaignName');
+
+      const folderIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#1877f2"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+      const folderIconBreadcrumb = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>';
+
+      campaignNameInput.addEventListener('input', function() {
+        const newName = this.value || 'New Engagement Campaign';
+        sidebarName.innerHTML = folderIcon + newName;
+        breadcrumbName.innerHTML = folderIconBreadcrumb + newName;
+      });
+
+      // Prevent beginners from turning on advanced features
+      const acbSwitch = document.getElementById('acb');
+      const acbWarning = document.getElementById('acbWarning');
+      const acbLabel = document.getElementById('acbLabel');
+
+      acbSwitch.addEventListener('change', function() {
+        if (this.checked) {
+          // Show warning
+          acbWarning.style.display = 'flex';
+          // Auto turn off after 2 seconds
+          setTimeout(() => {
+            this.checked = false;
+            acbLabel.textContent = 'Off';
+            // Hide warning after another 2 seconds
+            setTimeout(() => {
+              acbWarning.style.display = 'none';
+            }, 2000);
+          }, 2000);
+        } else {
+          acbWarning.style.display = 'none';
+        }
+      });
+
+      const abtestSwitch = document.getElementById('abtest');
+      const abtestWarning = document.getElementById('abtestWarning');
+      const abtestLabel = document.getElementById('abtestLabel');
+
+      abtestSwitch.addEventListener('change', function() {
+        if (this.checked) {
+          // Show warning
+          abtestWarning.style.display = 'flex';
+          // Auto turn off after 2 seconds
+          setTimeout(() => {
+            this.checked = false;
+            abtestLabel.textContent = 'Off';
+            // Hide warning after another 2 seconds
+            setTimeout(() => {
+              abtestWarning.style.display = 'none';
+            }, 2000);
+          }, 2000);
+        } else {
+          abtestWarning.style.display = 'none';
+        }
+      });
+
+      // Setup campaign name input sync
+      setupNameInputSync('campaignNameInput', NavState.saveCampaignName.bind(NavState));
+    </script>
+  </body>
+</html>

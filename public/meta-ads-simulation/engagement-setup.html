@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Choose a campaign setup - Engagement</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="workspace">
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="modal-overlay" style="align-items:flex-start">
+      <div style="width:100%;max-width:1280px;margin-top:24px">
+        <div class="notice" style="margin-bottom:12px">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <div>不同账号可能看到不同的设置界面。请按你屏幕上的版本继续，本训练都会引导你选择「Manual engagement campaign」。</div>
+        </div>
+
+        <div class="two-cols">
+          <!-- 左：Tailored messages campaign（meta 3.png） -->
+          <div class="modal is-compact" id="containerA">
+            <div class="modal-header">
+              <div class="tab active">Choose a campaign setup</div>
+            </div>
+            <div class="modal-body" style="grid-template-columns:1fr;gap:10px">
+              <div class="setup-suggestion selectable" id="a-tailored" role="button" tabindex="0" aria-pressed="false">
+                <div class="sel-radio radio" aria-hidden="true"><span class="dot"></span></div>
+                <div class="setup-suggestion" style="padding:0;gap:12px">
+                  <div class="badge">💬</div>
+                  <div class="grow">
+                    <div class="header">Tailored messages campaign</div>
+                    <div class="info-text">Quickly create a campaign optimized to help get more messages at the best value. Preset settings include Advantage+ placements, highest volume bid strategy and more.</div>
+                    <div class="meta">
+                      <span class="chip">Streamlined</span>
+                      <span class="chip">Tailored</span>
+                      <span class="chip">Best practices</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="option-row highlight pulse" id="a-manual" role="button" tabindex="0" aria-pressed="false">
+                <div class="radio" aria-hidden="true"><span class="dot"></span></div>
+                <div class="option-icon">⚙️</div>
+                <div class="option-text grow">
+                  <div class="title">Manual engagement campaign</div>
+                  <div class="desc">Create an engagement campaign from scratch for finer control over all settings.</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div></div>
+              <div class="row">
+                <button class="btn ghost" onclick="location.href='create.html'">Back</button>
+                <button id="continueA" class="btn primary" disabled>Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右：Recommended settings（meta 3.2.png） -->
+          <div class="modal is-compact" id="containerB">
+            <div class="modal-header">
+              <div class="tab active">Choose a campaign setup</div>
+            </div>
+            <div class="modal-body" style="grid-template-columns:1fr;gap:10px">
+              <div class="recommended-row" id="b-recommended" role="button" tabindex="0" aria-pressed="false">
+                <div class="radio" aria-hidden="true"><span class="dot"></span></div>
+                <div class="big-icon">✨</div>
+                <div class="grow">
+                  <div class="title">Recommended settings</div>
+                  <div class="sub">Use preset campaign optimizations to help meet your goals. Preset settings include Advantage+ audience, Advantage+ placements and more.</div>
+                  <div class="meta" style="margin-top:6px">
+                    <span class="chip">Streamlined</span>
+                    <span class="chip">Best practices</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="option-row highlight pulse" id="b-manual" role="button" tabindex="0" aria-pressed="false">
+                <div class="radio" aria-hidden="true"><span class="dot"></span></div>
+                <div class="option-icon">⚙️</div>
+                <div class="option-text grow">
+                  <div class="title">Manual engagement campaign</div>
+                  <div class="desc">Create an engagement campaign from scratch for finer control over all settings.</div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div></div>
+              <div class="row">
+                <button class="btn ghost" onclick="location.href='create.html'">Back</button>
+                <button id="continueB" class="btn primary" disabled>Continue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide" id="guide"></div>
+
+    <script src="sim.js"></script>
+    <script>
+      // Guard: ensure we came here with Engagement objective as part of training
+      (function(){
+        const obj = (window.Sim && Sim.getObjective && Sim.getObjective()) || '';
+        if(obj !== 'Engagement'){
+          // If not from engagement, still allow opening but message the user
+          console.warn('Opened setup without Engagement objective.');
+        }
+      })();
+
+      const guide = document.getElementById('guide');
+      guide.innerHTML = '<strong>引导：</strong> 无论左或右版本，请选择 <strong>Manual engagement campaign</strong>，然后点击 Continue。';
+
+      // A 侧
+      const aTailored = document.getElementById('a-tailored');
+      const aManual = document.getElementById('a-manual');
+      const continueA = document.getElementById('continueA');
+
+      // B 侧
+      const bRec = document.getElementById('b-recommended');
+      const bManual = document.getElementById('b-manual');
+      const continueB = document.getElementById('continueB');
+
+      let a = { tailored:false, manual:false };
+      let b = { tailored:false, manual:false };
+
+      function updateState(){
+        continueA.disabled = !a.manual;
+        continueB.disabled = !b.manual;
+      }
+
+      function updateVisual(el, selected, manual){
+        el.classList.toggle('selected', selected);
+        el.classList.toggle('highlight', manual ? !selected : el.classList.contains('highlight'));
+        el.classList.toggle('pulse', manual ? !selected : el.classList.contains('pulse'));
+        const radio = el.querySelector('.radio') || el.querySelector('.sel-radio');
+        if(radio) radio.classList.toggle('selected', selected);
+      }
+
+      function selectInVariant(variant, which){
+        if(variant === 'a'){
+          a = { tailored: which==='tailored', manual: which==='manual' };
+          updateVisual(aTailored, a.tailored, false);
+          updateVisual(aManual, a.manual, true);
+        } else {
+          b = { tailored: which==='tailored', manual: which==='manual' };
+          updateVisual(bRec, b.tailored, false);
+          updateVisual(bManual, b.manual, true);
+        }
+        updateState();
+      }
+
+      aTailored.addEventListener('click', ()=> selectInVariant('a','tailored'));
+      aManual.addEventListener('click', ()=> selectInVariant('a','manual'));
+      bRec.addEventListener('click', ()=> selectInVariant('b','tailored'));
+      bManual.addEventListener('click', ()=> selectInVariant('b','manual'));
+
+      updateState();
+
+      continueA.addEventListener('click', ()=>{ if(!a.manual) return; location.href='engagement-campaign.html'; });
+      continueB.addEventListener('click', ()=>{ if(!b.manual) return; location.href='engagement-campaign.html'; });
+    </script>
+  </body>
+</html>

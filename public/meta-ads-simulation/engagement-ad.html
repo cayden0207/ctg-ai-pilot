@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New Engagement Ad</title>
+    <link rel="icon" type="image/jpeg" href="Meta favicon.jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="shared-nav.js"></script>
+  </head>
+  <body class="app-bg">
+    <div class="ads-layout">
+      <aside class="rail">
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="4" y="14" width="4" height="7"/>
+            <rect x="10" y="9" width="4" height="12"/>
+            <rect x="16" y="4" width="4" height="17"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+          </svg>
+        </div>
+        <div class="rail-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </aside>
+
+      <aside class="sidebar">
+        <div class="tree-item level-1" onclick="location.href='engagement-campaign.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+          </svg>
+          New Engagement Campaign
+        </div>
+        <div class="tree-item level-2" onclick="location.href='engagement-adset.html'" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#6b7280">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          New Engagement Ad Set
+        </div>
+        <div class="tree-item level-3 active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:8px;color:#1877f2">
+            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          </svg>
+          New Engagement Ad
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="crumbs">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span onclick="location.href='engagement-campaign.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+              </svg>
+              New Engagement Campaign
+            </span>
+            <span class="sep">›</span>
+            <span onclick="location.href='engagement-adset.html'" style="color:#6b7280;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer" onmouseover="this.style.color='#1877f2'" onmouseout="this.style.color='#6b7280'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+              New Engagement Ad Set
+            </span>
+            <span class="sep">›</span>
+            <span style="color:var(--primary);font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+              </svg>
+              New Engagement Ad
+            </span>
+          </div>
+
+          <div class="crumb-actions">
+            <span class="status" style="display:flex;align-items:center;gap:6px">
+              <span style="width:8px;height:8px;border-radius:50%;border:2px solid #6b7280"></span>
+              <span style="color:#6b7280;font-size:13px">In draft</span>
+            </span>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#1877f2">
+                <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25a1.75 1.75 0 0 1 .445-.758l8.61-8.61Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              </svg>
+              Edit
+            </button>
+            <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:14px">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:#050505">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8" cy="8" r="2" fill="currentColor"/>
+              </svg>
+              Review
+            </button>
+          </div>
+        </header>
+
+        <section class="canvas">
+          <div style="max-width:1050px">
+            <div style="display:flex;gap:16px">
+              <div style="flex:1">
+                <!-- Ad name -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:15px">Ad name</span>
+                  </div>
+                  <div style="display:flex;gap:8px">
+                    <input id="adNameInput" class="input" value="New Engagement Ad" style="flex:1;font-size:14px" />
+                    <button class="btn ghost" style="font-size:14px;white-space:nowrap">Create template</button>
+                  </div>
+                </div>
+
+                <!-- Partnership ad -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-weight:700;font-size:15px">Partnership ad</span>
+                    <label class="switch">
+                      <input type="checkbox" id="partnershipToggle" />
+                      <span class="slider"></span>
+                      <span class="switch-label">Off</span>
+                    </label>
+                  </div>
+                  <div style="font-size:14px;color:#65676b;line-height:20px">Run ads with creators, brands and other businesses. These ads leverage signals from both accounts to improve campaign performance. <a class="link" href="#" onclick="event.preventDefault();">About partnership ads</a></div>
+                </div>
+
+                <!-- Ad setup -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:15px">Ad setup</span>
+                  </div>
+
+                  <div style="position:relative;margin-bottom:16px">
+                    <button id="createAdBtn" class="select-lg" style="width:100%;text-align:left;cursor:pointer;border:2px solid #1877f2;background:#fff">
+                      <span>Create ad</span>
+                      <i class="caret"></i>
+                    </button>
+                    <div id="createAdDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);margin-top:4px;z-index:10">
+                      <div style="padding:8px 0">
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;background:#e7f3ff">
+                          <div style="width:24px;height:24px;border-radius:50%;background:#1877f2;display:flex;align-items:center;justify-content:center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                              <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                          </div>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:14px;color:#050505">Create ad</div>
+                          </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'">
+                          <div style="width:24px;height:24px;border-radius:50%;background:#e4e6eb;display:flex;align-items:center;justify-content:center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#050505" stroke-width="2">
+                              <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            </svg>
+                          </div>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:14px;color:#050505">Use existing post</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom:12px">
+                    <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#050505">Format</div>
+                    <div style="font-size:14px;color:#65676b;margin-bottom:12px">Choose how you'd like to structure your ad.</div>
+                  </div>
+
+                  <div style="margin-bottom:12px;border:1px solid #1877f2;border-radius:8px;padding:12px;background:#e7f3ff">
+                    <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
+                      <input type="radio" name="format" value="single" checked style="width:20px;height:20px;margin-top:2px;accent-color:#1877f2" />
+                      <div>
+                        <div style="font-weight:700;font-size:14px;color:#050505;margin-bottom:4px">Single image or video</div>
+                        <div style="font-size:13px;color:#65676b">One image or video, or a slideshow with multiple images</div>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div style="margin-bottom:12px;border:1px solid var(--border);border-radius:8px;padding:12px">
+                    <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
+                      <input type="radio" name="format" value="carousel" style="width:20px;height:20px;margin-top:2px" />
+                      <div>
+                        <div style="font-weight:700;font-size:14px;color:#050505;margin-bottom:4px">Carousel</div>
+                        <div style="font-size:13px;color:#65676b">2 or more scrollable images or videos</div>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f0f2f5;border-radius:8px">
+                    <input type="checkbox" checked style="width:20px;height:20px;margin-top:2px;accent-color:#1877f2" />
+                    <div>
+                      <div style="font-weight:700;font-size:14px;color:#050505;margin-bottom:4px">Multi-advertiser ads</div>
+                      <div style="font-size:13px;color:#65676b;line-height:18px">Your ads can appear alongside other ads in the same ad unit to help people discover products and services from businesses that are personalized to them. Your ad creative may be resized or cropped to fit the ad unit. <a class="link" href="#" onclick="event.preventDefault();">Learn about multi-advertiser ads</a></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ad creative -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Ad creative</span>
+                  </div>
+
+                  <div style="font-size:14px;color:#65676b;margin-bottom:16px">Select and optimize your ad text, media and enhancements.</div>
+
+                  <div style="position:relative">
+                    <button id="setupCreativeBtn" class="btn ghost" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 12px;border:1px solid var(--border)">
+                      <span style="font-size:14px;font-weight:600">Set up creative</span>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                    </button>
+                    <div id="setupCreativeDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);margin-top:4px;z-index:10">
+                      <div style="padding:8px 0">
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="color:#050505">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <rect x="8" y="8" width="4" height="4" fill="white"/>
+                            <rect x="8" y="14" width="8" height="2" fill="white"/>
+                          </svg>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:14px;color:#050505">Image ad</div>
+                          </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer" onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='transparent'">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="color:#050505">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <polygon points="10,9 10,15 15,12" fill="white"/>
+                          </svg>
+                          <div style="flex:1">
+                            <div style="font-weight:600;font-size:14px;color:#050505">Video ad</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Chat builder -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Chat builder</span>
+                  </div>
+
+                  <div style="font-size:14px;color:#65676b;margin-bottom:16px">Create the messaging experience people see after they tap on your ad. <a class="link" href="#" onclick="event.preventDefault();">Learn more</a></div>
+
+                  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
+                    <button class="tab-btn active" data-tab="suggested">Suggested template</button>
+                    <button class="tab-btn" data-tab="saved">Saved templates</button>
+                  </div>
+
+                  <div id="suggestedTab" class="tab-content active">
+                    <div style="background:#f0f2f5;border-radius:8px;padding:16px;margin-bottom:12px">
+                      <div style="font-weight:700;font-size:15px;color:#050505;margin-bottom:8px">Greeting</div>
+                      <div style="font-size:14px;color:#050505;margin-bottom:12px">Hi Kah Hong! Please let us know how we can help you.</div>
+
+                      <div style="font-weight:700;font-size:15px;color:#050505;margin-bottom:8px">Questions and responses</div>
+                      <div style="font-size:14px;color:#050505;margin-bottom:6px">1. 马来西亚首屈一指 数据营销培训课</div>
+                      <div style="font-size:14px;color:#050505;margin-bottom:6px">2. 7 Days Creative Studio | 7天创意工作室</div>
+                      <div style="font-size:14px;color:#050505;margin-bottom:12px">3. CTG Legal Hub 让中小企业 更轻松、更容易 得到法律的庇护</div>
+
+                      <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Add responses</a>
+                    </div>
+
+                    <button class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:8px 12px">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25a1.75 1.75 0 0 1 .445-.758l8.61-8.61Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                      </svg>
+                      Edit
+                    </button>
+                  </div>
+
+                  <div id="savedTab" class="tab-content" style="display:none">
+                    <div style="text-align:center;padding:32px;color:#65676b">No saved templates</div>
+                  </div>
+                </div>
+
+                <!-- Tracking -->
+                <div class="card-block" style="margin-bottom:16px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color:#22c55e"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6 10 L9 13 L14 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span style="font-weight:700;font-size:20px;color:#050505">Tracking</span>
+                  </div>
+
+                  <div style="font-size:14px;color:#65676b;margin-bottom:16px;line-height:20px">Track event datasets that contain the conversions your ad might motivate. The dataset that contains the conversion selected for the ad account will be tracked by default.</div>
+
+                  <div style="margin-bottom:12px">
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer">
+                      <input type="checkbox" style="width:20px;height:20px" />
+                      <span style="font-size:14px;color:#050505">Website events</span>
+                    </label>
+                  </div>
+
+                  <div style="margin-bottom:12px">
+                    <label style="display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer">
+                      <input type="checkbox" style="width:20px;height:20px" />
+                      <span style="font-size:14px;color:#050505">App events</span>
+                    </label>
+                  </div>
+
+                  <div style="margin-bottom:16px;border:1px solid var(--border);border-radius:8px;padding:12px">
+                    <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
+                      <input type="checkbox" style="width:20px;height:20px;margin-top:2px;accent-color:#1877f2" />
+                      <div style="flex:1">
+                        <span style="font-size:14px;color:#050505;font-weight:600">Offline events</span>
+                      </div>
+                    </label>
+                    <div style="margin-top:12px;font-size:13px;color:#65676b">We'll use the following offline event set for tracking and data upload:</div>
+                    <div style="margin-top:12px;display:flex;align-items:flex-start;gap:12px;padding:12px;background:#f0f2f5;border-radius:8px">
+                      <div style="width:8px;height:8px;border-radius:50%;background:#22c55e;margin-top:6px"></div>
+                      <div style="flex:1">
+                        <div style="font-weight:600;font-size:14px;color:#050505;margin-bottom:4px">Default Offline Event Set For your dataset</div>
+                        <div style="font-size:13px;color:#65676b">Offline Event Set ID: 467221896945012 <span style="display:inline-block;padding:2px 6px;background:#9ca3af;color:white;border-radius:4px;font-size:11px;margin-left:4px">AUTO</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom:12px">
+                    <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Edit tracked offline event sets</a>
+                  </div>
+
+                  <div style="margin-bottom:16px">
+                    <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Manage Events Manager datasets</a>
+                  </div>
+
+                  <div style="background:#e7f3ff;border-left:3px solid #1877f2;padding:12px;margin-bottom:16px;border-radius:4px">
+                    <div style="display:flex;gap:10px">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0">
+                        <circle cx="10" cy="10" r="9" fill="currentColor"/>
+                        <text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text>
+                      </svg>
+                      <div style="font-size:13px;color:#050505;line-height:18px">
+                        You no longer need to select a domain for your web events. There's nothing you need to do for this change.<br/>
+                        <a class="link" href="#" onclick="event.preventDefault();">Learn more</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+                      <span style="font-weight:700;font-size:14px;color:#050505">URL parameters</span>
+                      <span style="color:#65676b;font-size:14px">· Optional</span>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af">
+                        <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                        <text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text>
+                      </svg>
+                    </div>
+                    <input type="text" class="input" placeholder="key1=value1&key2=value2" style="width:100%;font-size:14px;font-family:monospace" />
+                  </div>
+
+                  <div>
+                    <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Build a URL parameter</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right column - Ad Preview -->
+              <div class="right-col">
+                <div class="card-block" style="margin-bottom:12px;padding:16px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span style="font-weight:700;font-size:14px;color:#050505">Campaign score</span>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af">
+                        <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                        <text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text>
+                      </svg>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <div style="width:56px;height:56px;border-radius:50%;border:4px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#050505">100</div>
+                    <div style="font-size:13px;color:#65676b;line-height:18px">You're using our recommended setup.</div>
+                  </div>
+                </div>
+
+                <div class="card-block" style="padding:16px">
+                  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
+                    <button class="tab-btn active" style="flex:1;padding:10px;font-size:14px;border-bottom:3px solid #1877f2;color:#1877f2;font-weight:600">Ad preview</button>
+                    <button class="tab-btn" style="flex:1;padding:10px;font-size:14px;color:#65676b;font-weight:400">Destination</button>
+                  </div>
+
+                  <div style="text-align:center;padding:40px 20px">
+                    <svg width="120" height="120" viewBox="0 0 120 120" style="margin:0 auto 16px">
+                      <rect x="20" y="30" width="80" height="60" fill="#d1d5db" rx="4"/>
+                      <rect x="25" y="35" width="30" height="20" fill="#9ca3af" rx="2"/>
+                      <line x1="60" y1="40" x2="90" y2="40" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+                      <line x1="60" y1="48" x2="85" y2="48" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+                      <rect x="30" y="65" width="60" height="8" fill="#9ca3af" rx="2"/>
+                      <rect x="30" y="78" width="40" height="6" fill="#b0b5bd" rx="2"/>
+                      <rect x="45" y="25" width="30" height="30" fill="#6ee7b7" rx="4"/>
+                      <path d="M55 33 L52 36 L48 40" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                      <rect x="47" y="36" width="8" height="2" fill="white" rx="1"/>
+                    </svg>
+                    <div style="font-size:14px;color:#65676b">Add media to see ad examples.</div>
+                  </div>
+
+                  <div style="font-size:11px;color:#9ca3af;text-align:center;margin-top:20px;line-height:16px">
+                    Ad rendering and interaction may vary based on device, format and other factors.
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" style="color:#9ca3af;vertical-align:middle;margin-left:4px">
+                      <circle cx="7" cy="7" r="6" fill="currentColor"/>
+                      <text x="7" y="10" text-anchor="middle" fill="white" font-size="9" font-weight="bold">i</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="sticky-footer">
+          <div></div>
+          <div class="row" style="gap:8px">
+            <button class="btn ghost" onclick="location.href='engagement-adset.html'">Back</button>
+            <button class="btn primary" onclick="alert('Campaign published successfully!')">Publish</button>
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <style>
+      .switch {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        width: 44px;
+        height: 24px;
+        background-color: #d1d5db;
+        border-radius: 12px;
+        position: relative;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .slider:before {
+        content: "";
+        position: absolute;
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        top: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .switch input:checked + .slider {
+        background-color: #1877f2;
+      }
+      .switch input:checked + .slider:before {
+        transform: translateX(20px);
+      }
+      .switch-label {
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 500;
+      }
+
+      .tab-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #65676b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        font-weight: 400;
+        transition: all 0.2s;
+      }
+      .tab-btn.active {
+        color: #1877f2;
+        border-bottom-color: #1877f2;
+        font-weight: 600;
+      }
+      .tab-btn:hover:not(.active) {
+        color: #050505;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+
+    <script>
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabName = btn.dataset.tab;
+          const parent = btn.closest('.card-block');
+
+          // Update buttons
+          parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Update content
+          if (tabName === 'suggested') {
+            document.getElementById('suggestedTab').style.display = 'block';
+            document.getElementById('savedTab').style.display = 'none';
+          } else if (tabName === 'saved') {
+            document.getElementById('suggestedTab').style.display = 'none';
+            document.getElementById('savedTab').style.display = 'block';
+          }
+        });
+      });
+
+      // Toggle switch label
+      document.querySelectorAll('.switch input').forEach(input => {
+        const label = input.parentElement.querySelector('.switch-label');
+        input.addEventListener('change', () => {
+          label.textContent = input.checked ? 'On' : 'Off';
+        });
+      });
+
+      // Setup ad name input sync
+      setupNameInputSync('adNameInput', NavState.saveAdName.bind(NavState));
+
+      // Create ad dropdown toggle
+      const createAdBtn = document.getElementById('createAdBtn');
+      const createAdDropdown = document.getElementById('createAdDropdown');
+      if (createAdBtn && createAdDropdown) {
+        createAdBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          createAdDropdown.style.display = createAdDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        document.addEventListener('click', () => {
+          createAdDropdown.style.display = 'none';
+        });
+      }
+
+      // Setup creative dropdown toggle
+      const setupCreativeBtn = document.getElementById('setupCreativeBtn');
+      const setupCreativeDropdown = document.getElementById('setupCreativeDropdown');
+      if (setupCreativeBtn && setupCreativeDropdown) {
+        setupCreativeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setupCreativeDropdown.style.display = setupCreativeDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        document.addEventListener('click', () => {
+          setupCreativeDropdown.style.display = 'none';
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meta Ads Simulation - Create</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="workspace">
+    <div class="bg-grid" aria-hidden="true"></div>
+    <!-- Centered modal, mimicking Ads Manager "Create new campaign" -->
+    <div class="modal-overlay">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+        <div class="modal-header">
+          <div class="tabs">
+            <div class="tab active">Create new campaign</div>
+            <div class="tab" style="opacity:.5">New ad set or ad</div>
+          </div>
+          <button class="modal-close" title="Close" onclick="location.href='index.html'">×</button>
+        </div>
+
+        <div class="modal-body">
+          <section class="section">
+            <h4>Choose a buying type <span style="color:#9ca3af" title="For training only">ⓘ</span></h4>
+            <div style="position:relative">
+              <div class="select" id="buying-select" role="button" aria-haspopup="listbox" aria-expanded="false">
+                <span id="buying-value">Auction</span>
+                <i class="caret"></i>
+              </div>
+              <div id="buying-menu" class="menu hidden" role="listbox" aria-label="Buying type">
+                <div class="item" data-value="Auction">Auction</div>
+                <div class="item" data-value="Reach & Frequency">Reach & Frequency (mock)</div>
+              </div>
+            </div>
+
+            <h4>Choose a campaign objective</h4>
+            <div class="objective-list" id="objectives"></div>
+          </section>
+
+          <aside class="info-card">
+            <div class="illustration">Preview</div>
+            <div class="info-text" id="info-text">
+              Your campaign objective is the business goal you hope to achieve by running your ads. Hover or select one to see more information.
+            </div>
+          </aside>
+        </div>
+
+        <div class="modal-footer">
+          <a href="#" class="link" onclick="alert('将在后续步骤提供教学链接');return false;">About campaign objectives</a>
+          <div class="row">
+            <button class="btn ghost" onclick="location.href='index.html'">Cancel</button>
+            <button id="continue" class="btn primary" disabled>Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide" id="guide"></div>
+
+    <script src="sim.js"></script>
+    <script>
+      // Minimal data for objectives with short descriptions
+      const OBJECTIVES = [
+        { key: 'Awareness', label: 'Awareness', desc: 'Show your ads to people who are most likely to remember them.', goodFor: ['Reach','Brand awareness','Video views'] },
+        { key: 'Traffic', label: 'Traffic', desc: 'Send people to a destination, like your website, app, Instagram profile or Facebook event.', goodFor: ['Link clicks','Landing page views','Instagram profile visits','Messenger, Instagram and WhatsApp','Calls'], about:{label:'About traffic', href:'#'} },
+        { key: 'Engagement', label: 'Engagement', desc: 'Get more messages, purchases through messaging, video views, post engagement, Page likes or event responses.', goodFor: ['Messenger, Instagram and WhatsApp','Video views','Post engagement','Conversions','Calls'] },
+        { key: 'Leads', label: 'Leads', desc: 'Collect lead information from people interested in your business.' },
+        { key: 'AppPromotions', label: 'App promotion', desc: 'Find new people to install your app and continue using it.', goodFor: ['App installs','App events'], about:{label:'About app promotion', href:'#'} },
+        { key: 'Sales', label: 'Sales', desc: 'Find people likely to purchase your product or service.', goodFor: ['Conversions','Catalog sales','Messenger, Instagram and WhatsApp','Calls'] },
+      ];
+
+      const icons = {
+        Awareness: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6"/><path d="M4 12a8 8 0 0 1 8-8v0"/><path d="M4 12a8 8 0 0 0 8 8v0"/></svg>`,
+        Traffic: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17l10-10"/></svg>`,
+        Engagement: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h2l3 4 3-4h2a3 3 0 0 0 3-3V6z"/></svg>`,
+        Leads: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/></svg>`,
+        AppPromotions: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>`,
+        Sales: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="19" r="1"/><circle cx="18" cy="19" r="1"/></svg>`,
+      };
+
+      const listEl = document.getElementById('objectives');
+      const infoEl = document.getElementById('info-text');
+      const continueBtn = document.getElementById('continue');
+      const guideEl = document.getElementById('guide');
+
+      let selected = null;
+      let step = 1; // 1: 引导选择 Engagement, 2: 引导点击 Continue
+
+      function renderInfo(key){
+        if(!key){
+          infoEl.innerHTML = 'Your campaign objective is the business goal you hope to achieve by running your ads. Hover or select one to see more information.';
+          return;
+        }
+        const obj = OBJECTIVES.find(o=>o.key===key);
+        const chips = (obj.goodFor||[]).map(t=>`<span class="chip">${t}</span>`).join('');
+        const about = obj.about ? ` <a class="link" href="${obj.about.href}" onclick="event.preventDefault();alert('教学链接占位：${obj.about.label}');">${obj.about.label}</a>` : '';
+        infoEl.innerHTML = `
+          <div class=\"info-title\">${obj.label}</div>
+          <div>${obj.desc}${about}</div>
+          ${(obj.goodFor && obj.goodFor.length) ? `<div style=\"margin-top:8px;font-weight:600\">Good for:</div><div class=\"chips\">${chips}</div>` : ''}
+        `;
+      }
+
+      function updateGuide(){
+        if(step === 1){
+          guideEl.innerHTML = '<strong>步骤 1/2：</strong> 点击中间列表中的 <strong>Engagement</strong> 目标（互动）。';
+        } else if(step === 2){
+          guideEl.innerHTML = '<strong>步骤 2/2：</strong> 已选择 Engagement，请点击右下角 <strong>Continue</strong> 继续。';
+        }
+      }
+
+      function updateContinueState(){
+        // 仅当选择 Engagement 才允许继续
+        continueBtn.disabled = selected !== 'Engagement';
+        continueBtn.classList.toggle('cta', step === 2 && selected === 'Engagement');
+      }
+
+      function renderList() {
+        listEl.innerHTML = '';
+        OBJECTIVES.forEach(obj => {
+          const item = document.createElement('div');
+          const isSelected = selected === obj.key;
+          const isEngagement = obj.key === 'Engagement';
+          const cta = step === 1 && isEngagement && !selected;
+          item.className = 'objective-item' + (isSelected ? ' selected' : '') + (cta ? ' highlight pulse' : '');
+          item.innerHTML = `
+            <span class="radio" aria-hidden="true"><span class="dot"></span></span>
+            ${icons[obj.key] || ''}
+            <span class="grow">${obj.label}</span>
+          `;
+          if(cta){
+            const tag = document.createElement('div');
+            tag.className = 'nudge';
+            tag.textContent = '点击选择 Engagement';
+            item.appendChild(tag);
+          }
+          item.addEventListener('mouseenter', () => renderInfo(obj.key));
+          item.addEventListener('mouseleave', () => { if(!selected) renderInfo(null); });
+          item.addEventListener('click', () => {
+            selected = obj.key;
+            // 如果选的不是 Engagement，提示用户本练习以 Engagement 开始
+            if(selected !== 'Engagement'){
+              alert('本练习以 Engagement（互动）作为示例，请选择 Engagement 继续。');
+              selected = null; // 保持未选择状态
+            } else {
+              step = 2; // 进入第二步：引导点击 Continue
+            }
+            renderList();
+            renderInfo(selected || null);
+            updateGuide();
+            updateContinueState();
+          });
+          listEl.appendChild(item);
+        });
+      }
+
+      // Buying type dropdown
+      const select = document.getElementById('buying-select');
+      const menu = document.getElementById('buying-menu');
+      const buyingValue = document.getElementById('buying-value');
+      select.addEventListener('click', (e) => {
+        const expanded = select.getAttribute('aria-expanded') === 'true';
+        select.setAttribute('aria-expanded', String(!expanded));
+        menu.classList.toggle('hidden');
+      });
+      menu.querySelectorAll('.item').forEach(it => {
+        it.addEventListener('click', () => {
+          buyingValue.textContent = it.dataset.value;
+          select.setAttribute('aria-expanded', 'false');
+          menu.classList.add('hidden');
+          try { Sim.setBuyingType(it.dataset.value); } catch(e){}
+        })
+      });
+      document.addEventListener('click', (e) => {
+        if(!select.contains(e.target) && !menu.contains(e.target)){
+          select.setAttribute('aria-expanded','false');
+          menu.classList.add('hidden');
+        }
+      });
+
+      renderList();
+      renderInfo(null);
+      updateGuide();
+      updateContinueState();
+
+      continueBtn.addEventListener('click', () => {
+        if (selected !== 'Engagement') return;
+        try { Sim.setObjective(selected); } catch(e){}
+        const next = (window.Sim && Sim.nextAfterObjective(selected)) || 'index.html';
+        Sim.goto(next);
+      });
+    </script>
+  </body>
+</html>
