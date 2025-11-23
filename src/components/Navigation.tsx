@@ -58,11 +58,13 @@ interface NavigationProps {
 export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps) {
   const location = useLocation();
   const { email, status, isAdmin, logout } = useMembership();
+  const isMetaSim = location.pathname.startsWith('/meta-ads-simulation');
+  const desktopAlwaysOpen = !isMetaSim;
 
   return (
     <>
       {/* Mobile menu button - Visible only on mobile */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className={cn("fixed top-4 left-4 z-50", !isMetaSim && "lg:hidden")}>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -74,8 +76,9 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
 
       {/* Sidebar Container */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-40 w-72 bg-gray-900 text-white transform transition-transform duration-300 ease-out lg:translate-x-0 lg:static shadow-xl flex flex-col border-r border-gray-800",
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        "fixed inset-y-0 left-0 z-40 w-72 bg-gray-900 text-white transform transition-transform duration-300 ease-out shadow-xl flex flex-col border-r border-gray-800",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full",
+        desktopAlwaysOpen && "lg:translate-x-0 lg:static"
       )}>
         {/* Logo Area */}
         <div className="h-20 flex items-center px-6 border-b border-gray-800/50 bg-gray-900/50 backdrop-blur-xl">
@@ -186,7 +189,10 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-30 lg:hidden"
+          className={cn(
+            "fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-30",
+            !isMetaSim && "lg:hidden"
+          )}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
