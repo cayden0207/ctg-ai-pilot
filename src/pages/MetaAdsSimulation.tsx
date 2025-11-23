@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const BASE_PATH = '/meta-ads-simulation/';
+const BASE_PATH = '/meta-ads-sim-assets/';
 
 export function MetaAdsSimulation() {
   const location = useLocation();
@@ -41,11 +41,14 @@ export function MetaAdsSimulation() {
   }, []);
 
   const syncFromLocation = useCallback(() => {
-    if (location.pathname.startsWith(BASE_PATH)) {
+    if (location.pathname.startsWith('/meta-ads-simulation')) {
+      // Strip leading "/meta-ads-simulation" and any leading slash after
+      const tail = location.pathname.replace('/meta-ads-simulation', '').replace(/^\//, '');
+      const next = tail ? normalizePage(tail) : 'index.html';
+      setCurrentPage(next);
+    } else if (location.pathname.startsWith(BASE_PATH)) {
       const next = normalizePage(location.pathname);
       setCurrentPage(next);
-    } else if (location.pathname === '/meta-ads-simulation') {
-      setCurrentPage('index.html');
     }
   }, [location.pathname, normalizePage]);
 
