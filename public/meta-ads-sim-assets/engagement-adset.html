@@ -119,6 +119,14 @@
                     <input id="adSetNameInput" class="input" value="New Engagement Ad Set" style="flex:1;font-size:14px" />
                     <button class="btn ghost" style="font-size:14px;white-space:nowrap">Create template</button>
                   </div>
+                  <div class="tip" style="margin-top:10px">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>这个 Ad Set Name 只需要填写任何方便你记得/管理的名字，不影响成绩。</div>
+                  </div>
                 </div>
 
                 <!-- Conversion -->
@@ -177,6 +185,14 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div id="convHelp" class="tip" style="margin-top:12px;display:flex">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div id="convHelpText">FB帮你找可以跟你在Inbox / Whatsapp / IG 聊天成交的顾客，大部分情况下都是默认选择这个选项。</div>
                   </div>
 
                   <!-- Facebook Page -->
@@ -954,7 +970,7 @@
 
     <script>
       // Dropdown helper function
-      function setupDropdown(selectId, menuId, valueId) {
+      function setupDropdown(selectId, menuId, valueId, onChange) {
         const select = document.getElementById(selectId);
         const menu = document.getElementById(menuId);
         const valueEl = document.getElementById(valueId);
@@ -974,15 +990,30 @@
             item.classList.add('selected');
             valueEl.textContent = item.dataset.value;
             menu.style.display='none';
+            if (typeof onChange === 'function') onChange(item.dataset.value);
           })
         });
       }
 
       // Setup all dropdowns
-      setupDropdown('selectConv', 'convMenu', 'selectConvValue');
+      const convTips = {
+        'Message destinations': 'FB帮你找可以跟你在Inbox / Whatsapp / IG 聊天成交的顾客，大部分情况下都是默认选择这个选项。',
+        'On your ad': 'FB 帮你找最可能在你的帖子上跟你互动的顾客 ，这类型的互动包括 “看Video“ ”点Like“ ”分享“ 等等。',
+        'Calls': 'FB 帮你最可能Call 你的顾客群 ，但是这个在新马效果都不大好。',
+        'Website': 'FB 帮你找愿意进去你网站互动的顾客 ，但是实际上我们有其他的objective 可以专门找这类顾客，所以不需要选择。',
+        'Facebook Page': 'FB 帮你找愿意 “LIKE PAGE” 的顾客 ，就是简称 “买LIKE” ，但是不建议选择 ，浪费钱。',
+        'App': '此练习聚焦消息类互动，App 仅作占位。'
+      };
+      const convHelpText = document.getElementById('convHelpText');
+      const updateConvTip = (value) => {
+        convHelpText.textContent = convTips[value] || '选择适合本次广告目标的转化位置。';
+      };
+
+      setupDropdown('selectConv', 'convMenu', 'selectConvValue', updateConvTip);
       setupDropdown('selectPerf', 'perfMenu', 'selectPerfValue');
       setupDropdown('selectBudget', 'budgetMenu', 'selectBudgetValue');
       setupDropdown('selectAudience', 'audienceMenu', 'selectAudienceValue');
+      updateConvTip(document.getElementById('selectConvValue').textContent.trim());
 
       // Destination radios
       const destAuto = document.getElementById('destAuto');
@@ -1450,4 +1481,3 @@
     </script>
   </body>
 </html>
-
