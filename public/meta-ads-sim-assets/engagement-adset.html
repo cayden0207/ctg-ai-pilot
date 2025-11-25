@@ -520,13 +520,13 @@
 
                   <!-- Info box -->
                   <div style="background:#e7f3ff;border:1px solid #c2e0ff;border-radius:8px;padding:12px;margin-bottom:16px">
-                    <div style="display:flex;gap:10px">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
-                      <div>
-                        <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:6px">You can set audience controls for this ad account to apply to all campaigns.</div>
-                        <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Set audience controls for all campaigns</a>
-                      </div>
+                  <div style="display:flex;gap:10px;align-items:center">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" style="color:#1877f2;flex-shrink:0"><circle cx="10" cy="10" r="9" fill="currentColor"/><text x="10" y="14" text-anchor="middle" fill="white" font-size="12" font-weight="bold">i</text></svg>
+                    <div>
+                      <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:6px">You can set audience controls for this ad account to apply to all campaigns.</div>
+                      <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px">Set audience controls for all campaigns</a>
                     </div>
+                  </div>
                   </div>
 
                   <div style="position:relative;margin-bottom:20px">
@@ -640,15 +640,23 @@
                     </div>
                   </div>
 
-                  <a class="link" href="#" onclick="event.preventDefault();" style="display:flex;align-items:center;gap:4px;font-size:14px;margin-bottom:16px">
-                    Show more options
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2 4h8L6 8z"/></svg>
+                  <a class="link pulse" href="#" onclick="event.preventDefault();" style="display:inline-flex;align-items:center;gap:6px;font-size:14px;margin-bottom:16px;padding:6px 10px;border-radius:8px;background:rgba(24,119,242,0.08);border:1px dashed #1877f2;">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#1877f2" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+                    <span>Show more options（务必展开查看）</span>
                   </a>
 
                   <!-- Minimum age -->
                   <div>
                     <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Minimum age
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div class="tip" style="margin-bottom:10px">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>如果 Target 年轻市场就维持 18 岁；保健品 / 高消费力群体建议设 25+。</div>
                     </div>
                     <ul style="padding-left:20px;margin:0 0 12px 0">
                       <li style="font-size:14px;color:#050505">18</li>
@@ -685,6 +693,14 @@
                   <div>
                     <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Languages
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div class="tip" style="margin-bottom:10px">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>语言代表用户常看的内容语言，不是 app 语言。按市场设置：华人市场就选 Chinese (All)。</div>
                     </div>
 
                     <!-- Collapsed view -->
@@ -723,6 +739,14 @@
                   </div>
 
                   <div style="font-size:14px;color:#050505;line-height:20px;margin-bottom:12px">Our AI finds audiences for your ads. If you add an audience suggestion, you'll guide our AI towards people you think are likely to respond. <a class="link" href="#" onclick="event.preventDefault();">About Advantage+ audience</a></div>
+                  <div class="tip" style="margin-bottom:12px">
+                    <div class="tip-icon">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div>FB 现在普遍建议直接让 AI 学习，不必强设受众；但特定行业可自行设定。可以点开 “Audience suggestion (optional)” 查看或添加建议。</div>
+                  </div>
 
                   <button id="audienceSuggestionBtn" class="btn ghost" style="display:flex;align-items:center;gap:6px;padding:8px 12px;margin-bottom:16px">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg>
