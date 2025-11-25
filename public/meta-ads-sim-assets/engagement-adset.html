@@ -411,6 +411,17 @@
                     <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:#050505">Budget
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
                     </div>
+                    <div class="tip" style="margin-bottom:10px">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <div>建议日预算 RM15-30/天；除非非常熟悉自己的策略再提高。</div>
+                        <div style="margin-top:4px">⚠️ FB 会按周控制总花费，单日可能略超出日预算。</div>
+                      </div>
+                    </div>
                     <div style="display:flex;gap:8px;margin-bottom:10px">
                       <div style="position:relative;flex:1">
                         <div id="selectBudget" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false">
@@ -436,6 +447,14 @@
                     </div>
                     <div style="font-size:14px;color:#050505;line-height:20px">You'll spend an average of RM60.00 per day. Your maximum daily spend is <span style="font-weight:700">RM105.00</span> and your maximum weekly spend is <span style="font-weight:700">RM420.00</span>.</div>
                     <a class="link" href="#" onclick="event.preventDefault();" style="font-size:14px;margin-top:4px;display:inline-block">About daily budget</a>
+                    <div id="budgetHelp" class="tip" style="margin-top:10px">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>一律推荐用 Daily Budget，可以养成每天检查广告的习惯。</div>
+                    </div>
                   </div>
 
                   <!-- Schedule -->
@@ -459,6 +478,14 @@
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
                       <input type="checkbox" id="endDateCheck" style="width:20px;height:20px;cursor:pointer" />
                       <label for="endDateCheck" style="font-size:15px;color:#050505;cursor:pointer">Set an end date</label>
+                    </div>
+                    <div id="endDateTip" class="tip" style="display:none;margin-top:-8px;margin-bottom:16px">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>不建议设 End Date；养成每天查看/开关广告的习惯，避免到期后表现好的广告无法无缝继续。</div>
                     </div>
 
                     <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px">
@@ -1137,9 +1164,17 @@
           buildPerfMenu(perfMessagingOptions, perfMessagingOptions[0].value);
         }
       });
-      setupDropdown('selectBudget', 'budgetMenu', 'selectBudgetValue');
+      const budgetTips = {
+        'Daily budget': '一律推荐用 Daily Budget，可以养成每天检查广告的习惯。',
+        'Lifetime budget': '给 FB 一笔总预算，让系统在期限内分配；除非策略清晰，否则用 Daily Budget 即可。',
+      };
+      const budgetHelp = document.getElementById('budgetHelp').querySelector('div:last-child');
+      const updateBudgetTip = (v)=>{ budgetHelp.textContent = budgetTips[v] || budgetTips['Daily budget']; };
+
+      setupDropdown('selectBudget', 'budgetMenu', 'selectBudgetValue', updateBudgetTip);
       setupDropdown('selectAudience', 'audienceMenu', 'selectAudienceValue');
       updateConvTip(document.getElementById('selectConvValue').textContent.trim());
+      updateBudgetTip(document.getElementById('selectBudgetValue').textContent.trim());
 
       // Perf dropdown toggles
       perfSelect.addEventListener('click', ()=>{
@@ -1158,6 +1193,13 @@
       // Init defaults
       buildEngTypeMenu(currentEngType);
       buildPerfMenu(perfMessagingOptions, perfMessagingOptions[0].value);
+
+      // End date tip toggle
+      const endDateCheck = document.getElementById('endDateCheck');
+      const endDateTip = document.getElementById('endDateTip');
+      endDateCheck.addEventListener('change', ()=>{
+        endDateTip.style.display = endDateCheck.checked ? 'flex' : 'none';
+      });
 
       // Destination radios
       const destAuto = document.getElementById('destAuto');
