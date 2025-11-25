@@ -195,6 +195,30 @@
                     <div id="convHelpText">FB帮你找可以跟你在Inbox / Whatsapp / IG 聊天成交的顾客，大部分情况下都是默认选择这个选项。</div>
                   </div>
 
+                  <!-- Engagement type (only for On your ad) -->
+                  <div id="engTypeSection" style="margin-top:16px;display:none">
+                    <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Engagement type
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:#9ca3af;vertical-align:middle"><circle cx="8" cy="8" r="7" fill="currentColor"/><text x="8" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">i</text></svg>
+                    </div>
+                    <div style="position:relative;max-width:520px">
+                      <div id="selectEngType" class="select-lg" role="button" aria-haspopup="listbox" aria-expanded="false">
+                        <span id="selectEngTypeValue">Video views</span>
+                        <i class="caret"></i>
+                      </div>
+                      <div id="engTypeMenu" class="dropdown-panel" style="display:none">
+                        <!-- filled by script -->
+                      </div>
+                    </div>
+                    <div id="engTypeHelp" class="tip" style="margin-top:12px;display:flex">
+                      <div class="tip-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                          <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div>就是专门找可以看我们视频的顾客群。</div>
+                    </div>
+                  </div>
+
                   <!-- Facebook Page -->
                   <div style="margin-top:16px">
                     <div style="font-weight:600;font-size:14px;margin-bottom:6px;color:#111827">Facebook Page
@@ -227,6 +251,14 @@
                           <span class="chip ig">@changingthegame_17</span>
                           <span class="chip wa">+60 11-1783 8775</span>
                         </div>
+                        <div class="tip" style="margin-top:10px">
+                          <div class="tip-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                          </div>
+                          <div>如果 Page 已绑定 WhatsApp Business / Instagram，并且你允许顾客在这些渠道聊天成交，默认就用 Automatic。</div>
+                        </div>
                       </div>
                     </div>
 
@@ -235,6 +267,14 @@
                       <div style="width:100%">
                         <div style="font-weight:700;font-size:14px;margin-bottom:4px">Manual destination</div>
                         <div class="muted" style="font-size:13px">We'll only send people to the messaging apps you choose.</div>
+                        <div class="tip" style="margin-top:8px">
+                          <div class="tip-icon">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <path d="M7 3v1M7 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                          </div>
+                          <div>如果只想让顾客通过特定渠道联系你（如只用 WhatsApp 或 Messenger），就手动勾选想要的渠道。</div>
+                        </div>
                       </div>
                     </div>
 
@@ -316,7 +356,7 @@
                 </div>
 
                 <!-- Performance goal -->
-                <div class="card-block" style="margin-bottom:16px">
+                <div id="perfSection" class="card-block" style="margin-bottom:16px">
                   <div style="font-weight:700;font-size:20px;margin-bottom:8px;color:#050505">Performance goal</div>
                   <div style="font-size:14px;color:#65676b;margin-bottom:12px">How you measure success for your ads. <a class="link" href="#" onclick="event.preventDefault();">About performance goals</a></div>
 
@@ -325,27 +365,7 @@
                       <span id="selectPerfValue">Maximize number of conversations</span>
                       <i class="caret"></i>
                     </div>
-                    <div id="perfMenu" class="dropdown-panel" style="display:none;max-height:400px;overflow-y:auto">
-                      <!-- Engagement goals section -->
-                      <div style="padding:12px 16px;font-weight:700;font-size:15px;color:#050505;background:#f0f2f5">Engagement goals</div>
-                      <div class="dropdown-item selected" data-value="Maximize number of conversations" style="background:#e7f3ff;border-left:3px solid #1877f2;padding-left:13px">
-                        <div class="rb" style="border-color:#1877f2"><div class="dot" style="display:block;background:#1877f2"></div></div>
-                        <div>
-                          <div style="font-weight:700;font-size:14px;color:#050505">Maximize number of conversations</div>
-                          <div class="muted" style="font-size:13px">We'll try to show your ads to people most likely to have a conversation with you through messaging.</div>
-                        </div>
-                      </div>
-
-                      <!-- Other goals section -->
-                      <div style="padding:12px 16px;font-weight:700;font-size:15px;color:#050505;background:#f0f2f5;margin-top:8px">Other goals</div>
-                      <div class="dropdown-item" data-value="Maximize number of link clicks">
-                        <div class="rb"><div class="dot"></div></div>
-                        <div>
-                          <div style="font-weight:700;font-size:14px;color:#050505">Maximize number of link clicks</div>
-                          <div class="muted" style="font-size:13px">We'll try to show your ads to the people most likely to click on them.</div>
-                        </div>
-                      </div>
-                    </div>
+                    <div id="perfMenu" class="dropdown-panel" style="display:none;max-height:400px;overflow-y:auto"></div>
                   </div>
                 </div>
 
@@ -1002,18 +1022,142 @@
         'Calls': 'FB 帮你最可能Call 你的顾客群 ，但是这个在新马效果都不大好。',
         'Website': 'FB 帮你找愿意进去你网站互动的顾客 ，但是实际上我们有其他的objective 可以专门找这类顾客，所以不需要选择。',
         'Facebook Page': 'FB 帮你找愿意 “LIKE PAGE” 的顾客 ，就是简称 “买LIKE” ，但是不建议选择 ，浪费钱。',
-        'App': '此练习聚焦消息类互动，App 仅作占位。'
+        'App': 'FB 帮你找愿意和你的APP互动的顾客群 ，基本上和产品/服务业SME没关系'
       };
       const convHelpText = document.getElementById('convHelpText');
       const updateConvTip = (value) => {
         convHelpText.textContent = convTips[value] || '选择适合本次广告目标的转化位置。';
       };
 
-      setupDropdown('selectConv', 'convMenu', 'selectConvValue', updateConvTip);
-      setupDropdown('selectPerf', 'perfMenu', 'selectPerfValue');
+      const perfSelect = document.getElementById('selectPerf');
+      const perfMenu = document.getElementById('perfMenu');
+      const perfValueEl = document.getElementById('selectPerfValue');
+      const engSection = document.getElementById('engTypeSection');
+      const selectEngType = document.getElementById('selectEngType');
+      const engTypeMenu = document.getElementById('engTypeMenu');
+      const engTypeValueEl = document.getElementById('selectEngTypeValue');
+      const engTypeHelp = document.getElementById('engTypeHelp').querySelector('div:last-child');
+
+      const perfMessagingOptions = [
+        { value:'Maximize number of conversations', desc:'We\'ll try to show your ads to people most likely to have a conversation with you through messaging.' },
+        { value:'Maximize number of link clicks', desc:'We\'ll try to show your ads to the people most likely to click on them.' }
+      ];
+
+      const engTypes = [
+        { value:'Video views', desc:'就是专门找可以看我们视频的顾客群' },
+        { value:'Post engagement', desc:'就是专门找那些可以 “按LIKE” “Comment” “分享”的顾客群' },
+        { value:'Event responses', desc:'就是专门找那些可以会和 Event Post 互动的顾客群（新马非常少）' },
+        { value:'Reminders set', desc:'找那些在 FB 帖子/活动设过 Reminders 的顾客，提醒他们之前的设置（很少用）' },
+      ];
+
+      const perfByEngType = {
+        'Video views': [
+          { value:'Maximize ThruPlay views', desc:'Show视频给更可能完整看完 15s+ 的人；短视频尽量看完整。' },
+          { value:'Maximize 2-second continuous video plays', desc:'找最可能连续观看 2 秒以上的人，曝光更高。' },
+        ],
+        'Post engagement': [
+          { value:'Maximize engagement with a post', desc:'找最可能与帖子互动的人。' },
+          { value:'Maximize daily unique reach', desc:'尽量覆盖更多独立用户（一天一次）。' },
+          { value:'Maximize number of impressions', desc:'尽量多展示次数。' },
+        ],
+        'Event responses': [
+          { value:'Maximize number of event responses', desc:'找最可能响应你活动的人。' },
+          { value:'Maximize engagement with a post', desc:'找最可能与帖子互动的人。' },
+          { value:'Maximize daily unique reach', desc:'尽量覆盖更多独立用户（一天一次）。' },
+          { value:'Maximize number of impressions', desc:'尽量多展示次数。' },
+        ],
+        'Reminders set': [
+          { value:'Maximize reminders set', desc:'Show to people more likely to set reminders for your upcoming event.' }
+        ],
+      };
+
+      let currentEngType = 'Video views';
+
+      function buildPerfMenu(options, selected) {
+        const sel = selected || options[0]?.value || '';
+        perfValueEl.textContent = sel;
+        perfMenu.innerHTML = options.map(opt => `
+          <div class="dropdown-item${opt.value === sel ? ' selected' : ''}" data-value="${opt.value}">
+            <div class="rb"><div class="dot"${opt.value === sel ? ' style="display:block"' : ''}></div></div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#050505">${opt.value}</div>
+              <div class="muted" style="font-size:13px">${opt.desc || ''}</div>
+            </div>
+          </div>
+        `).join('');
+
+        perfMenu.querySelectorAll('.dropdown-item').forEach(item => {
+          item.addEventListener('click', () => {
+            perfMenu.querySelectorAll('.dropdown-item').forEach(x => {
+              x.classList.remove('selected');
+              const dot = x.querySelector('.dot');
+              if (dot) dot.style.display = 'none';
+            });
+            item.classList.add('selected');
+            const dot = item.querySelector('.dot');
+            if (dot) dot.style.display = 'block';
+            perfValueEl.textContent = item.dataset.value;
+            perfMenu.style.display = 'none';
+          });
+        });
+      }
+
+      function buildEngTypeMenu(selected) {
+        engTypeMenu.innerHTML = engTypes.map(t => `
+          <div class="dropdown-item${t.value === selected ? ' selected' : ''}" data-value="${t.value}">
+            <div class="rb"><div class="dot"${t.value === selected ? ' style="display:block"' : ''}></div></div>
+            <div style="font-weight:700;font-size:14px">${t.value}</div>
+          </div>
+        `).join('');
+        engTypeMenu.querySelectorAll('.dropdown-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const val = item.dataset.value;
+            setEngType(val);
+            engTypeMenu.style.display = 'none';
+          });
+        });
+      }
+
+      function setEngType(val) {
+        currentEngType = val || 'Video views';
+        engTypeValueEl.textContent = currentEngType;
+        const found = engTypes.find(t => t.value === currentEngType);
+        if (found) engTypeHelp.textContent = found.desc;
+        buildEngTypeMenu(currentEngType);
+        buildPerfMenu(perfByEngType[currentEngType] || [], (perfByEngType[currentEngType] || [])[0]?.value);
+      }
+
+      setupDropdown('selectConv', 'convMenu', 'selectConvValue', (val) => {
+        updateConvTip(val);
+        if (val === 'On your ad') {
+          engSection.style.display = 'block';
+          setEngType(currentEngType || 'Video views');
+        } else {
+          engSection.style.display = 'none';
+          buildPerfMenu(perfMessagingOptions, perfMessagingOptions[0].value);
+        }
+      });
       setupDropdown('selectBudget', 'budgetMenu', 'selectBudgetValue');
       setupDropdown('selectAudience', 'audienceMenu', 'selectAudienceValue');
       updateConvTip(document.getElementById('selectConvValue').textContent.trim());
+
+      // Perf dropdown toggles
+      perfSelect.addEventListener('click', ()=>{
+        const open = perfMenu.style.display !== 'none';
+        perfMenu.style.display = open ? 'none' : 'block';
+      });
+      document.addEventListener('click', (e)=>{
+        if(!perfSelect.contains(e.target) && !perfMenu.contains(e.target)) perfMenu.style.display='none';
+        if(selectEngType && !selectEngType.contains(e.target) && !engTypeMenu.contains(e.target)) engTypeMenu.style.display='none';
+      });
+      selectEngType.addEventListener('click', ()=>{
+        const open = engTypeMenu.style.display !== 'none';
+        engTypeMenu.style.display = open ? 'none' : 'block';
+      });
+
+      // Init defaults
+      buildEngTypeMenu(currentEngType);
+      buildPerfMenu(perfMessagingOptions, perfMessagingOptions[0].value);
 
       // Destination radios
       const destAuto = document.getElementById('destAuto');
