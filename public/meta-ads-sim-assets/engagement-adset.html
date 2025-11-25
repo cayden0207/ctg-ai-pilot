@@ -1098,6 +1098,9 @@
       const engTypeMenu = document.getElementById('engTypeMenu');
       const engTypeValueEl = document.getElementById('selectEngTypeValue');
       const engTypeHelp = document.getElementById('engTypeHelp').querySelector('div:last-child');
+      const advancedWrap = document.getElementById('advancedOptions');
+      const toggleAdvanced = document.getElementById('toggleAdvanced');
+      const toggleAdvancedText = document.getElementById('toggleAdvancedText');
 
       const perfMessagingOptions = [
         { value:'Maximize number of conversations', desc:'We\'ll try to show your ads to people most likely to have a conversation with you through messaging.' },
@@ -1251,6 +1254,13 @@
       }
       budgetInput.addEventListener('input', updateBudgetCalc);
       updateBudgetCalc();
+
+      // Advanced options toggle
+      toggleAdvanced.addEventListener('click', ()=>{
+        const isOpen = advancedWrap.style.display === 'block';
+        advancedWrap.style.display = isOpen ? 'none' : 'block';
+        toggleAdvancedText.textContent = isOpen ? 'Show more options（务必展开查看）' : 'Hide more options';
+      });
 
       // Destination radios
       const destAuto = document.getElementById('destAuto');
