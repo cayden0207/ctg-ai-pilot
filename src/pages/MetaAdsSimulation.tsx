@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Loader2, Menu, X, Home, Grid3x3, Target, Brain, Users } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const BASE_PATH = '/meta-ads-sim-assets/';
 
@@ -12,7 +12,6 @@ export function MetaAdsSimulation() {
   const [currentPage, setCurrentPage] = useState<string>('index.html');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [navOpen, setNavOpen] = useState<boolean>(false);
 
   const ensureHeadAssets = useCallback(() => {
     const doc = document;
@@ -191,13 +190,6 @@ export function MetaAdsSimulation() {
     return '';
   }, [loading, error]);
 
-  const navItems = [
-    { to: '/', label: '9宫格题材分析', icon: Grid3x3 },
-    { to: '/nine-grid', label: '9宫格生成选题', icon: Target },
-    { to: '/ctg-mindset', label: 'CTG Mindset AI', icon: Brain },
-    { to: '/admin/users', label: '会员管理', icon: Users },
-  ];
-
   return (
     <div className="relative">
       {(loading || error) && (
@@ -208,44 +200,6 @@ export function MetaAdsSimulation() {
           </div>
         </div>
       )}
-
-      {/* Collapsible helper menu */}
-      <div className="fixed left-2 top-24 z-40">
-        <button
-          onClick={() => setNavOpen((v) => !v)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg bg-gray-900 text-white hover:bg-gray-800 transition"
-        >
-          {navOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          <span className="text-xs font-semibold">{navOpen ? '收起菜单' : '展开菜单'}</span>
-        </button>
-        {navOpen && (
-          <div className="mt-2 w-56 rounded-xl shadow-2xl bg-white border border-gray-200 overflow-hidden">
-            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">CTG 导航</div>
-            <div className="divide-y divide-gray-100">
-              <Link
-                to="/"
-                className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-sm font-medium text-gray-800"
-              >
-                <Home className="w-4 h-4 text-primary-500" />
-                首页
-              </Link>
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-sm text-gray-800"
-                  >
-                    <Icon className="w-4 h-4 text-gray-500" />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
 
       <div
         ref={containerRef}
