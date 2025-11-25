@@ -35,6 +35,15 @@ svg[viewBox="0 0 20 20"][style*="vertical-align:middle"]{
   position:relative;
   top:-2px;
 }
+/* fallback for inline info icons without explicit vertical-align */
+div > svg[viewBox="0 0 16 16"],
+div > svg[viewBox="0 0 20 20"]{
+  display:inline-block;
+  vertical-align:middle;
+  position:relative;
+  top:1px;
+  margin-left:6px;
+}
 
 /* Create dialog styles */
 .workspace{position:relative;min-height:100vh;}
