@@ -132,7 +132,7 @@ export function CTGMindset() {
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-sm text-gray-600">AI 秀宗在线</span>
+                  <span className="text-sm text-gray-600">AI CMO</span>
                   <span className="ml-2 text-xs text-gray-400">Prompt v{PROMPT_VERSION}</span>
                 </div>
                 {messages.length > 0 && (
@@ -152,13 +152,10 @@ export function CTGMindset() {
                   <div className="text-center py-12">
                     <Brain className="h-16 w-16 text-purple-200 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      欢迎使用 CTG Mindset
+                      CTG Mindset is the digital reflection of CTG's way of thinking — practical, data-driven, and deeply rooted in CTG’s entrepreneurial ecosystem.
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      我是您的战略智能助手，可以帮您解决经营难题
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      直接在下方输入您的问题开始对话
+                      Core belief: 推陈促新｜利他利己｜让创业变得简单。
                     </p>
                   </div>
                 ) : (

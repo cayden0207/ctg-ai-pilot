@@ -88,7 +88,7 @@ export function Navigation({ isSidebarOpen, setIsSidebarOpen }: NavigationProps)
             </div>
             <div>
               <h1 className="text-lg font-bold font-sans tracking-tight text-white">CTG AI-PILOT</h1>
-              <p className="text-[10px] text-gray-400 font-medium tracking-wider uppercase">Enterprise Edition</p>
+              <p className="text-[10px] text-gray-400 font-medium tracking-wider uppercase">AI MARKETING</p>
             </div>
           </div>
         </div>
